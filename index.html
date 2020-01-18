@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Crawler Game Demo</title>
+    <title>Crawler Game</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.19.0/dist/phaser.min.js"></script>
     <script type="module" src="src/app.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css" />
@@ -13,10 +13,10 @@
       <div id="game" class="col"><span id="information_box"></span></div>
       <button id="next" class="col choice">Next</button>
     </div>
-    <div id="settings">
-      <h1>Crawler demo</h1>
+    <div id="settings" style="background-image: url('assets/background.png');">
+      <h1>Crawler Game</h1>
       <p>
-        Intro info.
+        Welcome to the dungeon!
       </p>
       <p>Select a game play mode:</p>
       <div>
@@ -41,7 +41,7 @@
       <div>
         <label for="delay">Game speed: Fastest</label>
         <input type="range" min="300" max="2000" value="600" class="slider" id="speed">
-        Slowest
+        <label for="delay">Slowest</label>
       </div>
       <p>
         More info.
@@ -53,9 +53,8 @@
         <input type="checkbox" id="roomDictation" />
         <label for="roomDictation">Enable room description dictation</label>
       </div>
-
       <p>
-        Use the gear icon in the upper right to come back here from the game
+        Use the gear icon in the upper left to come back here from the game
       </p>
       <button id="playButton">Play</button>
     </div>

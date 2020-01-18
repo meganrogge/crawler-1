@@ -47,6 +47,7 @@ window.onload = () => {
   if (document.body.classList.value === "play") {
     game = new MyGame(config);
   }
+  // setup menu should be initially open
   document.getElementById('setup').click();
 
   getInputAll("input[name=mode]").map(

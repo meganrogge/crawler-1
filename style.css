@@ -1,3 +1,18 @@
+p {
+  color: white;
+}
+
+h1 {
+  color: white;
+}
+
+label {
+  color: white;
+}
+
+#test {
+  color: white;
+}
 .row {
   display: flex;
   flex-direction: row;

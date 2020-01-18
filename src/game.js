@@ -15,7 +15,7 @@ const directions = [
   "x-1y+0",
   "x+0y+0",
   "x+1y+0",
-  "x-1y+1",
+  "x-1y+1", 
   "x+0y+1",
   "x+1y+1"
 ];
@@ -240,8 +240,6 @@ export class GameScene extends Phaser.Scene {
           await this.makeChoice();
         } else if (e.key == " " || e.key == "ArrowRight") {
           await this.selectNext();
-        } else if (e.key == "a") {
-          await this.autoPlay();
         }
         this.inputEnabled = true;
       }
@@ -265,10 +263,10 @@ export class GameScene extends Phaser.Scene {
 
     this.updateRoomDescription();
 
-    if (settings.mode != "full") {
-      this.setRoomInfo("press any key to start sound!");
-      this.autoPlay();
-    }
+    // if (settings.mode != "full") {
+    //   this.setRoomInfo("press any key to start sound!");
+    //   this.autoPlay();
+    // }
     this.speak(this.getRoomDescription());
   }
 
