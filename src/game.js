@@ -76,7 +76,6 @@ export class GameScene extends Phaser.Scene {
 
   create() {
     this.isoGroup = this.add.group();
-
     this.map = new Map({
       size: [100, 100],
       rooms: {

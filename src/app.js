@@ -47,6 +47,7 @@ window.onload = () => {
   if (document.body.classList.value === "play") {
     game = new MyGame(config);
   }
+  document.getElementById('setup').click();
 
   getInputAll("input[name=mode]").map(
     node => (node.checked = node.value == settings.mode)
@@ -69,4 +70,5 @@ window.onload = () => {
     settings.dictation = dictationInput.checked;
     settings.persist();
   });
+
 };
