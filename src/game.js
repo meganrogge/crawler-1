@@ -263,10 +263,10 @@ export class GameScene extends Phaser.Scene {
 
     this.updateRoomDescription();
 
-    // if (settings.mode != "full") {
-    //   this.setRoomInfo("press any key to start sound!");
-    //   this.autoPlay();
-    // }
+    if (settings.mode != "full") {
+      this.setRoomInfo("press any key to start sound!");
+      this.autoPlay();
+    }
     this.speak(this.getRoomDescription());
   }
 
