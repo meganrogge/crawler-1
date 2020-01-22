@@ -30,6 +30,8 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
+    
+
     // cast this once so I don't have to below
     // shouldn't I be able to just assert this?
     this.sound = /** @type {Phaser.Sound.WebAudioSoundManager} */ (super.sound);
@@ -273,7 +275,7 @@ export class GameScene extends Phaser.Scene {
   speak(text) {
     if (settings.sound && settings.dictation) {
       this.utterThis = new SpeechSynthesisUtterance(text);
-      this.utterThis.voice = this.speaker.getVoices()[0];
+      this.utterThis.voice = this.speaker.getVoices().filter(voice => voice.name == settings.voice)[0];
       this.speaker.speak(this.utterThis);
     }
   }

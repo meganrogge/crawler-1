@@ -61,6 +61,8 @@ window.onload = () => {
 
   const dictationInput = getInput("#roomDictation");
 
+  const voiceInput = getInput('#voiceSelect');
+
   document.getElementById("settings").addEventListener("change", e => {
     console.log("change");
     const modeInput = getInput("input[name=mode]:checked");
@@ -68,6 +70,7 @@ window.onload = () => {
     settings.mode = mode;
     settings.sound = soundInput.checked;
     settings.speed = Number(speedInput.value);
+    settings.voice = voiceInput.value;
     settings.dictation = dictationInput.checked;
     settings.persist();
   });
