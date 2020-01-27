@@ -43,17 +43,25 @@
         <input type="range" min="300" max="2000" value="600" class="slider" id="speed">
         <label for="delay">Slowest</label>
       </div>
+      <label for="voiceSelect">Dictation voice</label>
       <select id="voiceSelect"></select>
-      <p>
-        More info.
-      </p>
-
+        <div>
+          <label for="rate">Voice Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+          <div class="rate-value">1</div>
+          <div class="clearfix"></div>
+        </div>
+        <div>
+          <label for="pitch">Voice Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+          <div class="pitch-value">1</div>
+          <div class="clearfix"></div>
+        </div>
       <div>
-        <input type="checkbox" id="sound" />
+        <input type="checkbox" id="sound"/>
         <label for="sound">Enable sound</label>
         <input type="checkbox" id="roomDictation" />
         <label for="roomDictation">Enable room description dictation</label>
-        <p><button id="playButton">Play</button>
+        <p>
+        <button class="button is-warning" id="playButton">Play</button>
       <p>
         Use the gear icon in the upper left to come back here from the game
       </p>

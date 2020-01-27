@@ -7,7 +7,9 @@ class Settings {
     this.sound = true;
     this.speed = 300;
     this.dictation = false;
-    this.voice = "Alex"
+    this.voice = "Alex";
+    this.rate = 1;
+    this.pitch = 1;
   }
 
   persist() {
@@ -17,7 +19,9 @@ class Settings {
       sound: this.sound,
       speed: this.speed,
       dictation: this.dictation,
-      voice: this.voice
+      voice: this.voice,
+      rate: this.rate,
+      pitch: this.pitch
     };
     const json = JSON.stringify(data);
     localStorage.setItem(key, json);
@@ -33,6 +37,8 @@ class Settings {
         this.speed = data.speed;
         this.dictation = data.dictation;
         this.voice = data.voice;
+        this.rate = data.rate;
+        this.pitch = data.pitch;
       }
     }
   }

@@ -74,6 +74,8 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("knock", "assets/audio/knock.mp3");
     this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("waterfall", "assets/audio/waterfall.mp3");
+    this.load.audio("music", "assets/audio/background_music.mp3");
+    this.load.audio("footsteps", "assets/audio/footsteps.mp3");
   }
 
   create() {
@@ -276,6 +278,8 @@ export class GameScene extends Phaser.Scene {
     if (settings.sound && settings.dictation) {
       this.utterThis = new SpeechSynthesisUtterance(text);
       this.utterThis.voice = this.speaker.getVoices().filter(voice => voice.name == settings.voice)[0];
+      this.utterThis.rate = settings.rate;
+      this.utterThis.pitch = settings.pitch;
       this.speaker.speak(this.utterThis);
     }
   }
@@ -346,6 +350,7 @@ export class GameScene extends Phaser.Scene {
   moveCharacter(path) {
     // Sets up a list of tweens, one for each tile to walk,
     // that will be chained by the timeline
+    let music = this.playSound("footsteps");
     return new Promise((resolve, reject) => {
       const tweens = [];
       const start = dir => () => this.player.play(dir, true);
@@ -367,9 +372,11 @@ export class GameScene extends Phaser.Scene {
       }
       this.tweens.timeline({
         tweens: tweens,
+        onStart: () => music.play(),
         onComplete: () => {
           this.player.anims.stop();
           resolve();
+          music.stop();
         }
       });
     });
@@ -533,8 +540,10 @@ export class GameScene extends Phaser.Scene {
 
   playSound(sound) {
     if (settings.sound) {
+      console.log(sound);
       let music = this.sound.add(sound);
       music.play();
+      return music;
     }
   }
 
