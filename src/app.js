@@ -67,6 +67,8 @@ window.onload = () => {
 
   const pitchInput = getInput('#pitch');
 
+  const backgroundMusic = getInput('#backgroundMusic');
+
   document.getElementById("settings").addEventListener("change", e => {
     console.log("change");
     const modeInput = getInput("input[name=mode]:checked");
@@ -78,6 +80,7 @@ window.onload = () => {
     settings.dictation = dictationInput.checked;
     settings.rate = Number(rateInput.value);
     settings.pitch = Number(pitchInput.value);
+    settings.backgroundMusic = backgroundMusic.checked;
     settings.persist();
   });
 

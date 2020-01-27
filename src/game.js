@@ -271,7 +271,16 @@ export class GameScene extends Phaser.Scene {
       this.setRoomInfo("press any key to start sound!");
       this.autoPlay();
     }
-    this.speak(this.getRoomDescription());
+    if(settings.dictation){
+      this.speak(this.getRoomDescription());
+    }
+    
+    let music = this.sound.add("music", {loop: true});
+    if(settings.sound && settings.backgroundMusic){
+      music.play();
+    } else {
+      music.stop();
+    }
   }
 
   speak(text) {
