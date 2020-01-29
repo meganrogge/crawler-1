@@ -146,7 +146,7 @@ export class GameScene extends Phaser.Scene {
       let prettyNames = {
         Chest1_closed: "red chest",
         Chest2_opened: "open green chest",
-        fountain: "flowing fountain",
+        fountain: "fountain",
         over_grass_flower1: "flower",
         Rock_1: "rock",
         Rock_2: "rock",
@@ -344,7 +344,7 @@ export class GameScene extends Phaser.Scene {
 
   getRoomDescription() {
     if (this.room.objects.length == 0) {
-      return "This room is empty! Go explore others.";
+      return "This room is empty!";
     }
     // let description = "You've found ";
     // let index = 0;
@@ -560,7 +560,8 @@ export class GameScene extends Phaser.Scene {
     if (this.target.object.description) {
       this.speak(this.target.object.description);
     } else {
-      this.speak("exit");
+      console.log(this.room.exits);
+      this.speak("exit "+this.getExitNumber(targets));
     }
 
     this.selectionIndicator.visible = true;
@@ -578,6 +579,10 @@ export class GameScene extends Phaser.Scene {
       await this.visitChoice(this.target);
       this.target = null;
     }
+  }
+
+  getExitNumber(targets){
+    return Number(Number(this.targetIndex%targets.length)%this.room.exits.length)+Number(1);
   }
 
   playSound(sound) {
