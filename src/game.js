@@ -56,6 +56,11 @@ export class GameScene extends Phaser.Scene {
     this.load.image("Rock_1", "assets/Rock_1.png");
     this.load.image("Rock_2", "assets/Rock_2.png");
     this.load.image("over_grass_flower1", "assets/over_grass_flower1.png");
+    this.load.image("flag", "assets/kenny-isometric/flag_NE.png");
+    this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
+    this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
+    this.load.image("key", "assets/kenny-isometric/key_SW.png");
+
 
     this.load.image("particle", "assets/animations/particle.png");
 
@@ -65,7 +70,11 @@ export class GameScene extends Phaser.Scene {
       "fountain",
       "Rock_1",
       "Rock_2",
-      "over_grass_flower1"
+      "over_grass_flower1",
+      "flag",
+      "lever",
+      "jewel",
+      "key"
     ];
 
     this.load.audio("click", "assets/audio/click.mp3");
@@ -116,7 +125,11 @@ export class GameScene extends Phaser.Scene {
         fountain: 0,
         over_grass_flower1: -1 / 2,
         Rock_1: -1 / 2,
-        Rock_2: -1 / 2
+        Rock_2: -1 / 2,
+        flag: 0,
+        lever: 0,
+        jewel: 0,
+        key: 0
       };
       let audio = {
         Chest1_closed: "knock",
@@ -124,15 +137,35 @@ export class GameScene extends Phaser.Scene {
         fountain: "waterfall",
         over_grass_flower1: "ding",
         Rock_1: "thump",
-        Rock_2: "thump"
+        Rock_2: "thump",
+        flag: "thump",
+        lever: "thump",
+        jewel: "thump",
+        key: "thump"
       };
       let prettyNames = {
+        Chest1_closed: "red chest",
+        Chest2_opened: "open green chest",
+        fountain: "flowing fountain",
+        over_grass_flower1: "flower",
+        Rock_1: "rock",
+        Rock_2: "rock",
+        flag: "flag",
+        lever: "lever",
+        jewel: "jewel",
+        key: "key"
+      };
+      let animations = {
         Chest1_closed: "a red chest",
         Chest2_opened: "an open green chest",
         fountain: "a flowing fountain",
         over_grass_flower1: "a pretty flower",
         Rock_1: "a rock",
-        Rock_2: "a rock"
+        Rock_2: "a rock",
+        flag: "a flag",
+        lever: "a lever",
+        jewel: "a jewel",
+        key: "a key"
       };
       let positions = this.generateObjectPositions(room);
       // remove the player position
@@ -313,25 +346,25 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty! Go explore others.";
     }
-    let description = "You've found ";
-    let index = 0;
-    this.room.objects.forEach(o => {
-      if (
-        index == this.room.objects.length - 1 &&
-        this.room.objects.length > 1
-      ) {
-        description += " and ";
-      } else if (
-        index < this.room.objects.length - 1 &&
-        this.room.objects.length > 2 &&
-        index > 0
-      ) {
-        description += ", ";
-      }
-      description += o.getDescription();
-      index++;
-    });
-    return description;
+    // let description = "You've found ";
+    // let index = 0;
+    // this.room.objects.forEach(o => {
+    //   if (
+    //     index == this.room.objects.length - 1 &&
+    //     this.room.objects.length > 1
+    //   ) {
+    //     description += " and ";
+    //   } else if (
+    //     index < this.room.objects.length - 1 &&
+    //     this.room.objects.length > 2 &&
+    //     index > 0
+    //   ) {
+    //     description += ", ";
+    //   }
+    //   description += o.getDescription();
+    //   index++;
+    // });
+    return "";
   }
 
   lighting() {
@@ -525,9 +558,9 @@ export class GameScene extends Phaser.Scene {
     this.targetIndex += 1;
     this.target = targets[this.targetIndex % targets.length];
     if (this.target.object.description) {
-      this.speak("You've selected " + this.target.object.description);
+      this.speak(this.target.object.description);
     } else {
-      this.speak("go to the next room");
+      this.speak("exit");
     }
 
     this.selectionIndicator.visible = true;
@@ -590,7 +623,7 @@ export class GameScene extends Phaser.Scene {
         console.log("particles", this.particles);
         this.map.removeObject(target.object, x, y);
         this.updateRoomDescription();
-        this.speak("You've chosen " + target.object.description);
+        // this.speak("You've chosen " + target.object.description);
         this.playSound(target.object.audio);
         target.object.destroy();
       }

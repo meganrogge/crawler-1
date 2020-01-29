@@ -72,6 +72,7 @@ populateVoiceList();
 window.speechSynthesis.onvoiceschanged = () => {
   populateVoiceList();
 }
+
 settings.restore();
 
 export default settings;
