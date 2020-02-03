@@ -227,18 +227,19 @@ export class GameScene extends Phaser.Scene {
         frameRate: 20,
         repeat: -1
       });
-      this.anims.create({ 
-        key: direction, 
-        frames: this.anims.generateFrameNames('explosion', {
-          prefix: direction + "_",
-          end: 9,
-          zeroPad: 2
-        }),
-        frameRate: 20, 
-        repeat: -1
-     });
     }
     this.player = hero;
+
+    this.anims.create({ 
+      key: "explosion", 
+      frames: this.anims.generateFrameNames('explosion', {
+        prefix: "explosion",
+        end: 1,
+        zeroPad: 2
+      }),
+      frameRate: 20, 
+      repeat: -1
+   });
     this.player.scale = (0.6 * Math.sqrt(3)) / this.player.width;
     this.lighting();
 
