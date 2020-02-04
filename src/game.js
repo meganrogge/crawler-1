@@ -50,7 +50,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("ground", "assets/cube.png");
     this.load.image("door", "assets/door.png");
     this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
-    this.load.atlas("explosion", "assets/animations/explosion/atlas_name.png", "assets/animations/explosion/atlas_name_atlas.json");
+    this.load.atlas("explosion", "assets/animations/explosion/explosion.png", "assets/animations/explosion/explosion.json");
     this.load.image("Chest1_closed", "assets/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/Chest2_opened.png");
     this.load.image("fountain", "assets/fountain.png");
@@ -230,16 +230,21 @@ export class GameScene extends Phaser.Scene {
     }
     this.player = hero;
 
-    this.anims.create({ 
-      key: "explosion", 
-      frames: this.anims.generateFrameNames('explosion', {
-        prefix: "explosion",
-        end: 1,
-        zeroPad: 2
-      }),
-      frameRate: 20, 
-      repeat: -1
-   });
+      this.anims.create({ 
+        key: "explosion",
+        frames: this.anims.generateFrameNames('explosion', {
+          prefix: "Explosions_Left-animation_",
+          suffix: '.png',
+          start: 0,
+          end: 15
+        }),
+        frameRate: 4, 
+        repeat: 0
+     });
+     
+    
+
+    
     this.player.scale = (0.6 * Math.sqrt(3)) / this.player.width;
     this.lighting();
 
@@ -635,10 +640,11 @@ export class GameScene extends Phaser.Scene {
       // interact with the object
       let keep = await target.object.interact(this.player, this.room);
       if (!keep) {
-       let e =  this.add.isoSprite(x, y, 0, 'explosion', this.isoGroup).setScale(4);
-       console.log(e);
+      //  let e =  this.add.isoSprite(x, y, 0, 'explosion', this.isoGroup).setScale(4);
+
        console.log(this.player);
-       e.play("explosion", true);
+        
+       await this.createExplosionAt(this.player.isoX, this.player.isoY);
        console.log("emit", x, y, target);
         this.particles.emitParticleAt(target.object.x, target.object.y);
         console.log("emitter", this.emitter);
@@ -651,6 +657,14 @@ export class GameScene extends Phaser.Scene {
       }
       this.score++;
     }
+  }
+
+  async createExplosionAt(x, y){
+    let e = this.add.isoSprite(x, y, 0, "explosion", this.isoGroup, null);
+    e.scale = Math.sqrt(3) /50;
+    e.play("explosion", true);
+    await this.delay(2000);
+    e.destroy();
   }
 
   getTargets() {
