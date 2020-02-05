@@ -15,7 +15,7 @@ const directions = [
   "x-1y+0",
   "x+0y+0",
   "x+1y+0",
-  "x-1y+1", 
+  "x-1y+1",
   "x+0y+1",
   "x+1y+1"
 ];
@@ -30,7 +30,6 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
-    
 
     // cast this once so I don't have to below
     // shouldn't I be able to just assert this?
@@ -50,7 +49,11 @@ export class GameScene extends Phaser.Scene {
     this.load.image("ground", "assets/cube.png");
     this.load.image("door", "assets/door.png");
     this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
-    this.load.atlas("explosion", "assets/animations/explosion/explosion.png", "assets/animations/explosion/explosion.json");
+    this.load.atlas(
+      "explosion",
+      "assets/animations/explosion/explosion.png",
+      "assets/animations/explosion/explosion.json"
+    );
     this.load.image("Chest1_closed", "assets/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/Chest2_opened.png");
     this.load.image("fountain", "assets/fountain.png");
@@ -61,7 +64,6 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
     this.load.image("key", "assets/kenny-isometric/key_SW.png");
-
 
     this.load.image("particle", "assets/animations/particle.png");
 
@@ -89,7 +91,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-
     this.isoGroup = this.add.group();
     this.map = new Map({
       size: [100, 100],
@@ -158,16 +159,16 @@ export class GameScene extends Phaser.Scene {
         key: "key"
       };
       let animations = {
-        Chest1_closed: "a red chest",
-        Chest2_opened: "an open green chest",
-        fountain: "a flowing fountain",
-        over_grass_flower1: "a pretty flower",
-        Rock_1: "a rock",
-        Rock_2: "a rock",
-        flag: "a flag",
-        lever: "a lever",
-        jewel: "a jewel",
-        key: "a key"
+        Chest1_closed: "explosion",
+        Chest2_opened: "explosion",
+        fountain: "explosion",
+        over_grass_flower1: "explosion",
+        Rock_1: "explosion",
+        Rock_2: "explosion",
+        flag: "particles",
+        lever: "particles",
+        jewel: "particles",
+        key: "particles"
       };
       let positions = this.generateObjectPositions(room);
       // remove the player position
@@ -191,7 +192,8 @@ export class GameScene extends Phaser.Scene {
           description: prettyNames[o],
           reward: 1,
           room: room,
-          audio: audio[o]
+          audio: audio[o],
+          animation: animations[o]
         });
         isoObj.scale = Math.sqrt(3) / isoObj.width;
         this.map.addObject(isoObj, ox, oy);
@@ -230,21 +232,18 @@ export class GameScene extends Phaser.Scene {
     }
     this.player = hero;
 
-      this.anims.create({ 
-        key: "explosion",
-        frames: this.anims.generateFrameNames('explosion', {
-          prefix: "Explosions_Left-animation_",
-          suffix: '.png',
-          start: 0,
-          end: 15
-        }),
-        frameRate: 4, 
-        repeat: 0
-     });
-     
-    
+    this.anims.create({
+      key: "explosion",
+      frames: this.anims.generateFrameNames("explosion", {
+        prefix: "Explosions_Left-animation_",
+        suffix: ".png",
+        start: 0,
+        end: 15
+      }),
+      frameRate: 4,
+      repeat: 0
+    });
 
-    
     this.player.scale = (0.6 * Math.sqrt(3)) / this.player.width;
     this.lighting();
 
@@ -322,12 +321,12 @@ export class GameScene extends Phaser.Scene {
       this.setRoomInfo("press any key to start sound!");
       this.autoPlay();
     }
-    if(settings.dictation){
+    if (settings.dictation) {
       this.speak(this.getRoomDescription());
     }
-    
-    let music = this.sound.add("music", {loop: true});
-    if(settings.sound && settings.backgroundMusic){
+
+    let music = this.sound.add("music", { loop: true });
+    if (settings.sound && settings.backgroundMusic) {
       music.play();
     } else {
       music.stop();
@@ -337,7 +336,9 @@ export class GameScene extends Phaser.Scene {
   speak(text) {
     if (settings.sound && settings.dictation) {
       this.utterThis = new SpeechSynthesisUtterance(text);
-      this.utterThis.voice = this.speaker.getVoices().filter(voice => voice.name == settings.voice)[0];
+      this.utterThis.voice = this.speaker
+        .getVoices()
+        .filter(voice => voice.name == settings.voice)[0];
       this.utterThis.rate = settings.rate;
       this.utterThis.pitch = settings.pitch;
       this.speaker.speak(this.utterThis);
@@ -578,8 +579,7 @@ export class GameScene extends Phaser.Scene {
     if (this.target.object.description) {
       this.speak(this.target.object.description);
     } else {
-      console.log(this.room.exits);
-      this.speak("exit "+this.getExitNumber(targets));
+      this.speak("exit " + this.getExitNumber(targets));
     }
 
     this.selectionIndicator.visible = true;
@@ -599,13 +599,16 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  getExitNumber(targets){
-    return Number(Number(this.targetIndex%targets.length)%this.room.exits.length)+Number(1);
+  getExitNumber(targets) {
+    return (
+      Number(
+        Number(this.targetIndex % targets.length) % this.room.exits.length
+      ) + Number(1)
+    );
   }
 
   playSound(sound) {
-    if (settings.sound) {
-      console.log(sound);
+    if (settings.sound && sound != null) {
       let music = this.sound.add(sound);
       music.play();
       return music;
@@ -640,31 +643,26 @@ export class GameScene extends Phaser.Scene {
       // interact with the object
       let keep = await target.object.interact(this.player, this.room);
       if (!keep) {
-      //  let e =  this.add.isoSprite(x, y, 0, 'explosion', this.isoGroup).setScale(4);
-
-       console.log(this.player);
-        
-       await this.createExplosionAt(this.player.isoX, this.player.isoY);
-       console.log("emit", x, y, target);
-        this.particles.emitParticleAt(target.object.x, target.object.y);
-        console.log("emitter", this.emitter);
-        console.log("particles", this.particles);
+        if (target.object.animation == "particles") {
+          this.particles.emitParticleAt(target.object.x, target.object.y);
+        } else {
+          this.createAnimation(target.object.animation, x, y);
+        }
         this.map.removeObject(target.object, x, y);
-        this.updateRoomDescription();
-        // this.speak("You've chosen " + target.object.description);
-        this.playSound(target.object.audio);
         target.object.destroy();
       }
+      this.updateRoomDescription();
+      this.playSound(target.object.audio);
       this.score++;
     }
   }
 
-  async createExplosionAt(x, y){
-    let e = this.add.isoSprite(x, y, 0, "explosion", this.isoGroup, null);
-    e.scale = Math.sqrt(3) /50;
-    e.play("explosion", true);
-    await this.delay(2000);
-    e.destroy();
+  async createAnimation(type, x, y) {
+    let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
+    a.scale = Math.sqrt(3) / 50;
+    a.play(type, true);
+    await this.delay(1000);
+    a.destroy();
   }
 
   getTargets() {

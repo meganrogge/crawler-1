@@ -13,6 +13,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
     this.audio = config.audio;
     this.description = config.description;
     this.room = config.room;
+    this.animation = config.animation;
     this.config = config;
     config.scene.add.existing(this);
     if (config.group) config.group.add(this);
@@ -38,6 +39,12 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * The idea is to give the object an opportunity to edit the path
    */
   path(path) {
+    switch (this.description) {
+      // for landmarks that serve no purpose, 
+      // don't go to the object. stop one square before it.
+      case "waterfall":
+        return path.slice(0, -1);
+    }
     return path;
   }
 
@@ -45,11 +52,16 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * Interact with the object
    */
   async interact(player, room) {
-    this.visible = false;
-    return false; // false to remove, true to keep
+    // keep landmarks that can't be collected
+    switch (this.description) {
+      case "waterfall":
+        return true;
+    }
+    // don't keep things that are collected
+    return false; 
   }
 
-  getDescription(){
+  getDescription() {
     return this.description;
-   }
+  }
 }
