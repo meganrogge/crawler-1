@@ -39,10 +39,17 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * The idea is to give the object an opportunity to edit the path
    */
   path(path) {
+    if(path.length < 2){
+      return path;
+    }
     switch (this.description) {
-      // for landmarks that serve no purpose, 
+      // for landmarks that serve no purpose,
       // don't go to the object. stop one square before it.
-      case "waterfall":
+      case "fountain":
+        return path.slice(0, -1);
+      case "flag":
+        return path.slice(0, -1);
+      case "rock":
         return path.slice(0, -1);
     }
     return path;
@@ -54,11 +61,13 @@ export default class EnhancedIsoSprite extends IsoSprite {
   async interact(player, room) {
     // keep landmarks that can't be collected
     switch (this.description) {
-      case "waterfall":
+      case "fountain":
+        return true;
+      case "flag":
         return true;
     }
     // don't keep things that are collected
-    return false; 
+    return false;
   }
 
   getDescription() {

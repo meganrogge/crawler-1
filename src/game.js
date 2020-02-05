@@ -119,6 +119,7 @@ export class GameScene extends Phaser.Scene {
     this.room = this.map.initial_room;
 
     this.tiles = [];
+    this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
@@ -365,24 +366,6 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    // let description = "You've found ";
-    // let index = 0;
-    // this.room.objects.forEach(o => {
-    //   if (
-    //     index == this.room.objects.length - 1 &&
-    //     this.room.objects.length > 1
-    //   ) {
-    //     description += " and ";
-    //   } else if (
-    //     index < this.room.objects.length - 1 &&
-    //     this.room.objects.length > 2 &&
-    //     index > 0
-    //   ) {
-    //     description += ", ";
-    //   }
-    //   description += o.getDescription();
-    //   index++;
-    // });
     return "";
   }
 
@@ -649,11 +632,15 @@ export class GameScene extends Phaser.Scene {
           this.createAnimation(target.object.animation, x, y);
         }
         this.map.removeObject(target.object, x, y);
+        // collect object before it's destroyed
+        this.acquiredObjects.push(target.object);
         target.object.destroy();
+        this.score++;
+        this.updateRoomDescription();
+        console.log(this.acquiredObjects.map(o => o.description));
       }
-      this.updateRoomDescription();
+      console.log("here");
       this.playSound(target.object.audio);
-      this.score++;
     }
   }
 
