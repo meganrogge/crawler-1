@@ -14,6 +14,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
     this.description = config.description;
     this.room = config.room;
     this.animation = config.animation;
+    this.reward = config.reward || 0;
     this.config = config;
     config.scene.add.existing(this);
     if (config.group) config.group.add(this);

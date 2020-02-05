@@ -1,0 +1,29 @@
+{
+"frames": {
+	"coinGold_NE.png": {
+		"frame": {"x":0, "y":55, "w":46, "h":55},
+		"spriteSourceSize": {"x":0,"y":0,"w":46,"h":55},
+		"sourceSize": {"w":46,"h":55}
+	},
+	"coinGold_NW.png": {
+		"frame": {"x":47, "y":0, "w":46, "h":54},
+		"spriteSourceSize": {"x":0,"y":0,"w":46,"h":54},
+		"sourceSize": {"w":46,"h":54}
+	},
+	"coinGold_SE.png": {
+		"frame": {"x":47, "y":55, "w":46, "h":54},
+		"spriteSourceSize": {"x":0,"y":0,"w":46,"h":54},
+		"sourceSize": {"w":46,"h":54}
+	},
+	"coinGold_SW.png": {
+		"frame": {"x":0, "y":0, "w":46, "h":54},
+		"spriteSourceSize": {"x":0,"y":0,"w":46,"h":54},
+		"sourceSize": {"w":46,"h":54}
+	}
+},
+"meta": {
+	"image": "sprites.png",
+	"size": {"w": 94, "h": 111},
+	"scale": "1"
+}
+}

@@ -5,7 +5,10 @@
     <script src="//cdn.jsdelivr.net/npm/phaser@3.19.0/dist/phaser.min.js"></script>
     <script type="module" src="src/app.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
+    />
   </head>
   <body class="play">
     <div id="play" class="row">
@@ -14,7 +17,10 @@
       <div id="game" class="col"><span id="information_box"></span></div>
       <button id="next" class="col choice">Next</button>
     </div>
-    <div id="settings" style="background-image: url('assets/background.png'); background-repeat: no-repeat; background-size:cover;">
+    <div
+      id="settings"
+      style="background-image: url('assets/background.png'); background-repeat: no-repeat; background-size:cover;"
+    >
       <h1>Crawler Game</h1>
       <p>
         Welcome to the dungeon!
@@ -41,35 +47,45 @@
       </div>
       <div>
         <label for="delay">Game speed: Fastest</label>
-        <input type="range" min="300" max="2000" value="600" class="slider" id="speed">
+        <input
+          type="range"
+          min="300"
+          max="2000"
+          value="600"
+          class="slider"
+          id="speed"
+        />
         <label for="delay">Slowest</label>
       </div>
       <label for="voiceSelect">Dictation voice</label>
       <select id="voiceSelect"></select>
-        <div>
-          <label for="rate">Voice Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
-          <div class="rate-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <div>
-          <label for="pitch">Voice Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
-          <div class="pitch-value">1</div>
-          <div class="clearfix"></div>
-        </div>
       <div>
-        <input type="checkbox" id="sound"/>
+        <label for="rate">Voice Rate</label
+        ><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate" />
+        <div class="rate-value">1</div>
+        <div class="clearfix"></div>
+      </div>
+      <div>
+        <label for="pitch">Voice Pitch</label
+        ><input type="range" min="0" max="2" value="1" step="0.1" id="pitch" />
+        <div class="pitch-value">1</div>
+        <div class="clearfix"></div>
+      </div>
+      <div>
+        <input type="checkbox" id="sound" />
         <label for="sound">Enable sound</label>
         <input type="checkbox" id="roomDictation" />
         <label for="roomDictation">Enable room description dictation</label>
         <input type="checkbox" id="backgroundMusic" />
         <label for="backgroundMusic">Play background music</label>
         <p>
-        <button class="button is-primary" id="playButton">Play</button>
-      <p>
-        Use the gear icon in the upper left to come back here from the game
-      </p>
-      
-    </div>
+          <button class="button is-primary" id="playButton">Play</button>
+        </p>
+
+        <p>
+          Use the gear icon in the upper left to come back here from the game
+        </p>
+      </div>
     </div>
   </body>
 </html>
