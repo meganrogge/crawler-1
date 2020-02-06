@@ -22,7 +22,7 @@
 	}
 },
 "meta": {
-	"image": "sprites.png",
+	"image": "coin.png",
 	"size": {"w": 94, "h": 111},
 	"scale": "1"
 }
