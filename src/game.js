@@ -60,6 +60,11 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/coin/coin.png",
       "assets/animations/coin/coin.json"
     );
+    this.load.atlas(
+      "dragon",
+      "assets/animations/dragon/dragon.png",
+      "assets/animations/dragon/dragon.json"
+    );
     this.load.image("Chest1_closed", "assets/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/Chest2_opened.png");
     this.load.image("fountain", "assets/fountain.png");
@@ -88,7 +93,8 @@ export class GameScene extends Phaser.Scene {
       "key",
       "coin",
       "ruby",
-      "sapphire"
+      "sapphire",
+      "dragon"
     ];
 
     this.load.audio("click", "assets/audio/click.mp3");
@@ -142,6 +148,12 @@ export class GameScene extends Phaser.Scene {
         frameRate: 2,
         repeat: -1
       });
+      this.anims.create({
+        key: "dragon",
+        frames: this.anims.generateFrameNames("dragon"),
+        frameRate: 2,
+        repeat: -1
+      })
       let positions = this.generateObjectPositions(room);
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
@@ -170,10 +182,13 @@ export class GameScene extends Phaser.Scene {
         });
 
         isoObj.scale = Math.sqrt(3) / isoObj.width;
+
         if (isoObj.description == "coin") {
           isoObj.play("coin", true);
-          console.log("here");
+        } else if(isoObj.description == "dragon"){
+          isoObj.play("dragon", true);
         }
+
         this.map.addObject(isoObj, ox, oy);
         // eliminate this position and its neighbors
         positions = positions.filter(
@@ -293,10 +308,10 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
+    this.roomInfo = "press any key to start sound!";
     this.updateRoomDescription();
 
     if (settings.mode != "full") {
-      this.setRoomInfo("press any key to start sound!");
       this.autoPlay();
     }
     if (settings.dictation) {
@@ -340,7 +355,7 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    return "";
+    return this.roomInfo;
   }
 
   lighting() {
@@ -368,6 +383,8 @@ export class GameScene extends Phaser.Scene {
   moveCharacter(path) {
     // Sets up a list of tweens, one for each tile to walk,
     // that will be chained by the timeline
+    this.updateRoomDescription();
+
     if(path.length == 0) {
       return;
     }
@@ -614,9 +631,25 @@ export class GameScene extends Phaser.Scene {
         this.acquiredObjects.push(target.object);
         target.object.destroy();
         this.score += target.object.reward;
-        console.log(this.score);
         this.updateRoomDescription();
-        console.log(this.acquiredObjects.map(o => o.description));
+      } else if(target.object.description == "dragon"){
+        console.log("drago");
+        if(this.acquiredObjects.indexOf("sword") > -1){
+          // do kill animation at the dragon's coordinates
+          // do player animation of fight and move to dragon's coordinates
+        } else {
+          // change description to you need a sword to fight and defeat the dragon
+          // do kill animation at the player's coordinates?
+          this.roomInfo = ("you need a sword to fight and slay the dragon!");
+          this.updateRoomDescription();
+          this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+        }
+      } else if (target.object.description == "Chest1_closed"){
+        // change description to you need a key to open the chest
+         
+      } else if(target.object.description == "Chest2_open"){
+        // change description to you've already opened that chest?
+
       }
       this.playSound(target.object.audio);
     }

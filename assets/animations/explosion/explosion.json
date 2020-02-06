@@ -83,7 +83,7 @@
 	
 	},
 	"meta": {
-		"image": "sprites.png",
+		"image": "explosion.png",
 		"size": {"w": 150, "h": 150},
 		"scale": "1"
 	}
