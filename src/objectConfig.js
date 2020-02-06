@@ -69,7 +69,10 @@ export class objectConfig {
             coin: 2,
             ruby: 3,
             sapphire: 4,
-            dragon: 20
+            dragon: -20,
+            Chest1_closed: 5,
+            Chest2_opened: 0,
+            fountain: 10
           };
           this.isCollectible = {
             Chest1_closed: false,

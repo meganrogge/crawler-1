@@ -28,7 +28,7 @@ export class GameScene extends Phaser.Scene {
       mapAdd: { isoPlugin: "iso" }
     });
     this.canvas = document.querySelector("canvas");
-    this.score = 0;
+    this.health = 50;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
 
@@ -267,8 +267,6 @@ export class GameScene extends Phaser.Scene {
     });
     this.particles.depth = 100;
 
-    this.scoreDisplay = this.add.text(20, 20, "0", { fontSize: 20 });
-
     // configure the camera
     // I'm making the camera follow the selection box and it follows the
     // player when the player moves. I'm using this hack to keep the selection
@@ -322,6 +320,8 @@ export class GameScene extends Phaser.Scene {
     } else {
       music.stop();
     }
+
+    this.updateHealth();
   }
 
   speak(text) {
@@ -353,7 +353,7 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    return this.getRoomInfo();
+    return "";
   }
 
   lighting() {
@@ -386,7 +386,7 @@ export class GameScene extends Phaser.Scene {
     if (path.length == 0) {
       return;
     }
-    let music = this.playSound("footsteps");
+    let walkingSound = this.playSound("footsteps");
     return new Promise((resolve, reject) => {
       const tweens = [];
       const start = dir => () => this.player.play(dir, true);
@@ -408,11 +408,11 @@ export class GameScene extends Phaser.Scene {
       }
       this.tweens.timeline({
         tweens: tweens,
-        onStart: () => music.play(),
+        onStart: () => walkingSound.play(),
         onComplete: () => {
           this.player.anims.stop();
           resolve();
-          music.stop();
+          walkingSound.stop();
         }
       });
     });
@@ -609,13 +609,14 @@ export class GameScene extends Phaser.Scene {
     } else {
       // allow the object to provide the destination
       let { x, y, z } = target.object.position();
+      this.health += target.object.reward;
+      this.updateHealth();
       // get the path there
       let path = await this.map.path(this.player.isoX, this.player.isoY, x, y);
       // allow the object to edit the path
       path = target.object.path(path);
       // go there
       await this.moveCharacter(path);
-
       if (target.object.isCollectible) {
         if (target.object.animation == "particles") {
           this.particles.emitParticleAt(target.object.x, target.object.y);
@@ -626,25 +627,25 @@ export class GameScene extends Phaser.Scene {
         // collect object before it's destroyed
         this.acquiredObjects.push(target.object);
         target.object.destroy();
-        this.score += target.object.reward;
       } else if (target.object.description == "dragon") {
-        if (this.hasAcquired("sword")) {
+        if (this.health > 50) {
           // do kill animation at the dragon's coordinates
           // do player animation of fight and move to dragon's coordinates
           //this.createAnimation("kill", x, y);
           target.object.destroy();
         } else {
-          // change description to you need a sword to fight and defeat the dragon
+          // change description to you need a shield to fight and defeat the dragon
           // do kill animation at the player's coordinates?
-          this.setRoomInfo("you need a sword to fight and slay the dragon!");
+
+          this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
 
           this.createAnimation("explosion", this.player.isoX, this.player.isoY);
         }
       } else if (target.object.description == "Chest1_closed") {
         if (this.hasAcquired("key")) {
           // unlock the chest (replacing closed with open chest) and
-          // have sword pop out in surrounding area with announcement that
-          // you've found a sword and can now slay the dragon
+          // have contents pop out in surrounding area with announcement that
+          // you've found these objects
         } else {
           // change description to you need a key to open the chest
           this.setRoomInfo("you need a key to open this chest!");
@@ -654,6 +655,15 @@ export class GameScene extends Phaser.Scene {
       }
       this.playSound(target.object.audio);
     }
+  }
+
+  updateHealth() {
+    let healthBar = document.getElementById("health_box");
+    this.health = this.health < 0 ? 0 : this.health;
+    healthBar.style.width = this.health;  
+    healthBar.innerHTML = this.health;
+    console.log(this.health);
+    document.getElementById("health_box").innerHTML = "Health "+this.health;
   }
 
   hasAcquired = item => {
