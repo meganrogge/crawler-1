@@ -5,8 +5,9 @@ import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
-
+import { objectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
+// @ts-ignore
 
 const directions = [
   "x-1y-1",
@@ -98,6 +99,7 @@ export class GameScene extends Phaser.Scene {
 
   create() {
     this.isoGroup = this.add.group();
+    this.objectConfig = new objectConfig();
     this.map = new Map({
       size: [100, 100],
       rooms: {
@@ -129,62 +131,6 @@ export class GameScene extends Phaser.Scene {
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
-      let heights = {
-        Chest1_closed: 0,
-        Chest2_opened: 0,
-        fountain: 0,
-        over_grass_flower1: -1 / 2,
-        Rock_1: -1 / 2,
-        Rock_2: -1 / 2,
-        flag: 0,
-        lever: 0,
-        jewel: 0,
-        key: 0,
-        coin: 0
-      };
-      let audio = {
-        Chest1_closed: "knock",
-        Chest2_opened: "doorClose",
-        fountain: "waterfall",
-        over_grass_flower1: "ding",
-        Rock_1: "thump",
-        Rock_2: "thump",
-        flag: "thump",
-        lever: "thump",
-        jewel: "thump",
-        key: "thump",
-        coin: "ding"
-      };
-      let prettyNames = {
-        Chest1_closed: "red chest",
-        Chest2_opened: "open green chest",
-        fountain: "fountain",
-        over_grass_flower1: "flower",
-        Rock_1: "rock",
-        Rock_2: "rock",
-        flag: "flag",
-        lever: "lever",
-        jewel: "jewel",
-        key: "key",
-        coin: "coin"
-      };
-      let animations = {
-        Chest1_closed: "explosion",
-        Chest2_opened: "explosion",
-        fountain: "explosion",
-        over_grass_flower1: "explosion",
-        Rock_1: "explosion",
-        Rock_2: "explosion",
-        flag: "particles",
-        lever: "particles",
-        jewel: "particles",
-        key: "particles",
-        coin: "particles"
-      };
-      let rewards = {
-        jewel: 1,
-        coin: 2
-      };
 
       this.anims.create({
         key: "coin",
@@ -208,16 +154,16 @@ export class GameScene extends Phaser.Scene {
           scene: this,
           x: ox,
           y: oy,
-          z: heights[o],
+          z: this.objectConfig.heights[o],
           texture: o,
           group: this.isoGroup,
-          description: prettyNames[o],
-          reward: rewards[o],
+          description: this.objectConfig.descriptions[o],
+          reward: this.objectConfig.rewards[o] || 0,
           room: room,
-          audio: audio[o],
-          animation: animations[o]
+          audio: this.objectConfig.audio[o],
+          animation: this.objectConfig.animations[o]
         });
-        
+
         isoObj.scale = Math.sqrt(3) / isoObj.width;
         if (isoObj.description == "coin") {
           isoObj.play("coin", true);
