@@ -87,5 +87,21 @@ export class objectConfig {
             sapphire: true,
             dragon: false
           }
+          this.isAnimated = {
+            Chest1_closed: false,
+            Chest2_opened: false,
+            fountain: false,
+            over_grass_flower1: false,
+            Rock_1: false,
+            Rock_2: false,
+            flag: false,
+            lever: false,
+            jewel: false,
+            key: false,
+            coin: true,
+            ruby: false,
+            sapphire: false,
+            dragon: false
+          }
     }
 }

@@ -153,7 +153,7 @@ export class GameScene extends Phaser.Scene {
         frames: this.anims.generateFrameNames("dragon"),
         frameRate: 2,
         repeat: -1
-      })
+      });
       let positions = this.generateObjectPositions(room);
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
@@ -178,15 +178,14 @@ export class GameScene extends Phaser.Scene {
           room: room,
           audio: this.objectConfig.audio[o],
           animation: this.objectConfig.animations[o],
-          isCollectible: this.objectConfig.isCollectible[o]
+          isCollectible: this.objectConfig.isCollectible[o],
+          isAnimated: this.objectConfig.isAnimated[o]
         });
 
         isoObj.scale = Math.sqrt(3) / isoObj.width;
 
-        if (isoObj.description == "coin") {
-          isoObj.play("coin", true);
-        } else if(isoObj.description == "dragon"){
-          isoObj.play("dragon", true);
+        if (isoObj.isAnimated) {
+          isoObj.play(isoObj.description, true);
         }
 
         this.map.addObject(isoObj, ox, oy);
@@ -308,8 +307,7 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.roomInfo = "press any key to start sound!";
-    this.updateRoomDescription();
+    this.setRoomInfo("press any key to start sound!");
 
     if (settings.mode != "full") {
       this.autoPlay();
@@ -355,7 +353,7 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    return this.roomInfo;
+    return this.getRoomInfo();
   }
 
   lighting() {
@@ -385,7 +383,7 @@ export class GameScene extends Phaser.Scene {
     // that will be chained by the timeline
     this.updateRoomDescription();
 
-    if(path.length == 0) {
+    if (path.length == 0) {
       return;
     }
     let music = this.playSound("footsteps");
@@ -617,9 +615,7 @@ export class GameScene extends Phaser.Scene {
       path = target.object.path(path);
       // go there
       await this.moveCharacter(path);
-      // interact with the object
-      let keep = await target.object.interact(this.player, this.room);
-      console.log(target.object.isCollectible);
+
       if (target.object.isCollectible) {
         if (target.object.animation == "particles") {
           this.particles.emitParticleAt(target.object.x, target.object.y);
@@ -631,29 +627,38 @@ export class GameScene extends Phaser.Scene {
         this.acquiredObjects.push(target.object);
         target.object.destroy();
         this.score += target.object.reward;
-        this.updateRoomDescription();
-      } else if(target.object.description == "dragon"){
-        console.log("drago");
-        if(this.acquiredObjects.indexOf("sword") > -1){
+      } else if (target.object.description == "dragon") {
+        if (this.hasAcquired("sword")) {
           // do kill animation at the dragon's coordinates
           // do player animation of fight and move to dragon's coordinates
+          //this.createAnimation("kill", x, y);
+          target.object.destroy();
         } else {
           // change description to you need a sword to fight and defeat the dragon
           // do kill animation at the player's coordinates?
-          this.roomInfo = ("you need a sword to fight and slay the dragon!");
-          this.updateRoomDescription();
+          this.setRoomInfo("you need a sword to fight and slay the dragon!");
+
           this.createAnimation("explosion", this.player.isoX, this.player.isoY);
         }
-      } else if (target.object.description == "Chest1_closed"){
-        // change description to you need a key to open the chest
-         
-      } else if(target.object.description == "Chest2_open"){
+      } else if (target.object.description == "Chest1_closed") {
+        if (this.hasAcquired("key")) {
+          // unlock the chest (replacing closed with open chest) and
+          // have sword pop out in surrounding area with announcement that
+          // you've found a sword and can now slay the dragon
+        } else {
+          // change description to you need a key to open the chest
+          this.setRoomInfo("you need a key to open this chest!");
+        }
+      } else if (target.object.description == "Chest2_open") {
         // change description to you've already opened that chest?
-
       }
       this.playSound(target.object.audio);
     }
   }
+
+  hasAcquired = item => {
+    return this.acquiredObjects.indexOf(item) > -1;
+  };
 
   async createAnimation(type, x, y) {
     let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
