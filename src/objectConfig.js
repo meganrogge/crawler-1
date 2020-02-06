@@ -11,7 +11,9 @@ export class objectConfig {
             lever: 0,
             jewel: 0,
             key: 0,
-            coin: 0
+            coin: 0,
+            ruby: 0,
+            sapphire: 0
           };
            this.audio = {
             Chest1_closed: "knock",
@@ -24,7 +26,9 @@ export class objectConfig {
             lever: "thump",
             jewel: "thump",
             key: "thump",
-            coin: "ding"
+            coin: "ding",
+            ruby: "ding",
+            sapphire: "ding"
           };
            this.descriptions = {
             Chest1_closed: "red chest",
@@ -37,7 +41,9 @@ export class objectConfig {
             lever: "lever",
             jewel: "jewel",
             key: "key",
-            coin: "coin"
+            coin: "coin",
+            ruby: "ruby",
+            sapphire: "sapphire"
           };
           this.animations = {
             Chest1_closed: "explosion",
@@ -50,12 +56,30 @@ export class objectConfig {
             lever: "particles",
             jewel: "particles",
             key: "particles",
-            coin: "particles"
+            coin: "particles",
+            ruby: "particles",
+            sapphire: "particles"
           };
            this.rewards = {
             jewel: 1,
-            coin: 2
+            coin: 2,
+            ruby: 3,
+            sapphire: 4
           };
+          this.isCollectible = {
+            Chest1_closed: false,
+            Chest2_opened: false,
+            fountain: false,
+            over_grass_flower1: true,
+            Rock_1: false,
+            Rock_2: false,
+            flag: false,
+            lever: false,
+            jewel: true,
+            key: true,
+            coin: true,
+            ruby: true,
+            sapphire: true
+          }
     }
-   
 }

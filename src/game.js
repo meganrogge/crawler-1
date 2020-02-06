@@ -70,6 +70,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
     this.load.image("key", "assets/kenny-isometric/key_SW.png");
+    this.load.image("ruby", "assets/ruby.png");
+    this.load.image("sapphire", "assets/sapphire.png");
 
     this.load.image("particle", "assets/animations/particle.png");
 
@@ -84,7 +86,9 @@ export class GameScene extends Phaser.Scene {
       "lever",
       "jewel",
       "key",
-      "coin"
+      "coin",
+      "ruby",
+      "sapphire"
     ];
 
     this.load.audio("click", "assets/audio/click.mp3");
@@ -142,7 +146,7 @@ export class GameScene extends Phaser.Scene {
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
       positions = Phaser.Math.RND.shuffle(positions);
-      const nobjects = Phaser.Math.RND.between(0, 3);
+      const nobjects = Phaser.Math.RND.between(1, 3);
       for (let i = 0; i < nobjects; i++) {
         if (!positions.length) {
           break;
@@ -161,7 +165,8 @@ export class GameScene extends Phaser.Scene {
           reward: this.objectConfig.rewards[o] || 0,
           room: room,
           audio: this.objectConfig.audio[o],
-          animation: this.objectConfig.animations[o]
+          animation: this.objectConfig.animations[o],
+          isCollectible: this.objectConfig.isCollectible[o]
         });
 
         isoObj.scale = Math.sqrt(3) / isoObj.width;
@@ -363,6 +368,9 @@ export class GameScene extends Phaser.Scene {
   moveCharacter(path) {
     // Sets up a list of tweens, one for each tile to walk,
     // that will be chained by the timeline
+    if(path.length == 0) {
+      return;
+    }
     let music = this.playSound("footsteps");
     return new Promise((resolve, reject) => {
       const tweens = [];
@@ -594,7 +602,8 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // interact with the object
       let keep = await target.object.interact(this.player, this.room);
-      if (!keep) {
+      console.log(target.object.isCollectible);
+      if (target.object.isCollectible) {
         if (target.object.animation == "particles") {
           this.particles.emitParticleAt(target.object.x, target.object.y);
         } else {
@@ -605,7 +614,6 @@ export class GameScene extends Phaser.Scene {
         this.acquiredObjects.push(target.object);
         target.object.destroy();
         this.score += target.object.reward;
-
         console.log(this.score);
         this.updateRoomDescription();
         console.log(this.acquiredObjects.map(o => o.description));

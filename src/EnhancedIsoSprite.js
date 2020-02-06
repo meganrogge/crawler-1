@@ -15,6 +15,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
     this.room = config.room;
     this.animation = config.animation;
     this.reward = config.reward || 0;
+    this.isCollectible = config.isCollectible;
     this.config = config;
     config.scene.add.existing(this);
     if (config.group) config.group.add(this);
@@ -40,20 +41,18 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * The idea is to give the object an opportunity to edit the path
    */
   path(path) {
-    if(path.length < 2){
+    if(!this.isCollectible){
+      console.log(path);
+      if(path.length > 2){
+        return path.slice(0, -1);
+      } else {
+        // don't move because you're already 1 square away
+        console.log("break");
+        return [];
+      }
+    } else {
       return path;
     }
-    switch (this.description) {
-      // for landmarks that serve no purpose,
-      // don't go to the object. stop one square before it.
-      case "fountain":
-        return path.slice(0, -1);
-      case "flag":
-        return path.slice(0, -1);
-      case "rock":
-        return path.slice(0, -1);
-    }
-    return path;
   }
 
   /*
