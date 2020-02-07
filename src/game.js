@@ -5,7 +5,8 @@ import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
-import { objectConfig } from "./objectConfig.js";
+import { sortForDragons } from "./helpers.js";
+import { ObjectConfig } from "./ObjectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
 
@@ -47,8 +48,6 @@ export class GameScene extends Phaser.Scene {
       sceneKey: "iso"
     });
 
-    this.load.image("ground", "assets/cube.png");
-    this.load.image("door", "assets/door.png");
     this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
     this.load.atlas(
       "explosion",
@@ -65,6 +64,10 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/dragon/dragon.png",
       "assets/animations/dragon/dragon.json"
     );
+
+    this.load.image("ground", "assets/cube.png");
+    this.load.image("door", "assets/door.png");
+    this.load.image("particle", "assets/animations/particle.png");
     this.load.image("Chest1_closed", "assets/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/Chest2_opened.png");
     this.load.image("fountain", "assets/fountain.png");
@@ -78,38 +81,21 @@ export class GameScene extends Phaser.Scene {
     this.load.image("ruby", "assets/ruby.png");
     this.load.image("sapphire", "assets/sapphire.png");
 
-    this.load.image("particle", "assets/animations/particle.png");
-
-    this.RandomlyPlacedObjects = [
-      "Chest1_closed",
-      "Chest2_opened",
-      "fountain",
-      "Rock_1",
-      "Rock_2",
-      "over_grass_flower1",
-      "flag",
-      "lever",
-      "jewel",
-      "key",
-      "coin",
-      "ruby",
-      "sapphire",
-      "dragon"
-    ];
-
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
-    this.load.audio("doorClose", "assets/audio/doorClose.mp3");
+    this.load.audio("door_close", "assets/audio/door_close.mp3");
     this.load.audio("knock", "assets/audio/knock.mp3");
     this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("waterfall", "assets/audio/waterfall.mp3");
-    this.load.audio("music", "assets/audio/background_music.mp3");
+    this.load.audio("background_music", "assets/audio/background_music.mp3");
     this.load.audio("footsteps", "assets/audio/footsteps.mp3");
+    this.load.audio("dragon_roar", "assets/audio/dragon_roar.mp3");
+    this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
   }
 
   create() {
     this.isoGroup = this.add.group();
-    this.objectConfig = new objectConfig();
+    this.objectConfig = new ObjectConfig();
     this.map = new Map({
       size: [100, 100],
       rooms: {
@@ -132,6 +118,8 @@ export class GameScene extends Phaser.Scene {
       max_interconnect_length: 10,
       room_count: 10
     });
+    this.RandomlyPlacedObjects = this.objectConfig.objects;
+
     let { x: ix, y: iy } = this.map.initial_position;
 
     this.room = this.map.initial_room;
@@ -141,7 +129,6 @@ export class GameScene extends Phaser.Scene {
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
-
       this.anims.create({
         key: "coin",
         frames: this.anims.generateFrameNames("coin"),
@@ -314,11 +301,11 @@ export class GameScene extends Phaser.Scene {
       this.speak(this.getRoomDescription());
     }
 
-    let music = this.sound.add("music", { loop: true });
-    if (settings.sound && settings.backgroundMusic) {
-      music.play();
+    let background_music = this.sound.add("background_music", { loop: true });
+    if (settings.sound && settings.background_music) {
+      background_music.play();
     } else {
-      music.stop();
+      background_music.stop();
     }
 
     this.updateHealth();
@@ -519,7 +506,8 @@ export class GameScene extends Phaser.Scene {
       // remember that we came here
       roomsVisited.push(this.room);
       // get the local targets
-      const targets = this.getTargets();
+      let targets = this.health <= 50 ? sortForDragons(this.getTargets()) : this.getTargets();
+      console.log(targets);
       // visit each of the targets
       for (const target of targets) {
         // exits are pushed onto the stack to handle later
@@ -611,7 +599,7 @@ export class GameScene extends Phaser.Scene {
       let path = await this.map.path(this.player.isoX, this.player.isoY, x, y);
 
       // allow the object to edit the path
-      path = target.object.path(path);
+      path = target.object.path(path, this.health);
 
       // go there
       await this.moveCharacter(path);
@@ -622,8 +610,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithObject(object, x, y) {
+    this.playSound(object.audio);
     if (object.isCollectible) {
-      if (object.animation == "particles") {
+      // if object doesn't have a custom animation, upon collection, emit particles
+      if (!object.animation) {
         this.particles.emitParticleAt(object.x, object.y);
       } else {
         this.createAnimation(object.animation, x, y);
@@ -667,7 +657,6 @@ export class GameScene extends Phaser.Scene {
   }
     this.health += object.reward;
     this.updateHealth();
-    this.playSound(object.audio);
   }
 
   updateHealth() {

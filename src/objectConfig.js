@@ -1,5 +1,21 @@
-export class objectConfig {
+export class ObjectConfig {
     constructor(){
+        this.objects = [
+          "Chest1_closed",
+          "Chest2_opened",
+          "fountain",
+          "Rock_1",
+          "Rock_2",
+          "over_grass_flower1",
+          "flag",
+          "lever",
+          "jewel",
+          "key",
+          "coin",
+          "ruby",
+          "sapphire",
+          "dragon"
+        ];
          this.heights = {
             Chest1_closed: 0,
             Chest2_opened: 0,
@@ -18,19 +34,19 @@ export class objectConfig {
           };
            this.audio = {
             Chest1_closed: "knock",
-            Chest2_opened: "doorClose",
+            Chest2_opened: "door_close",
             fountain: "waterfall",
             over_grass_flower1: "ding",
             Rock_1: "thump",
             Rock_2: "thump",
             flag: "thump",
             lever: "thump",
-            jewel: "thump",
-            key: "thump",
-            coin: "ding",
-            ruby: "ding",
-            sapphire: "ding",
-            dragon: "thump"
+            jewel: "cha_ching",
+            key: "ding",
+            coin: "cha_ching",
+            ruby: "cha_ching",
+            sapphire: "cha_ching",
+            dragon: "dragon_roar"
           };
            this.descriptions = {
             Chest1_closed: "red chest",
@@ -49,20 +65,7 @@ export class objectConfig {
             dragon: "dragon"
           };
           this.animations = {
-            Chest1_closed: "explosion",
-            Chest2_opened: "explosion",
-            fountain: "explosion",
-            over_grass_flower1: "explosion",
-            Rock_1: "explosion",
-            Rock_2: "explosion",
-            flag: "particles",
-            lever: "particles",
-            jewel: "particles",
-            key: "particles",
-            coin: "particles",
-            ruby: "particles",
-            sapphire: "particles",
-            dragon: "explosion"
+            
           };
            this.rewards = {
             jewel: 1,
@@ -71,7 +74,6 @@ export class objectConfig {
             sapphire: 4,
             dragon: -20,
             Chest1_closed: 5,
-            Chest2_opened: 0,
             fountain: 10
           };
           this.isCollectible = {
@@ -104,7 +106,7 @@ export class objectConfig {
             coin: true,
             ruby: false,
             sapphire: false,
-            dragon: false
+            dragon: true
           }
     }
 }

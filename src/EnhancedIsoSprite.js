@@ -41,8 +41,11 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * Return the path to the interaction position given the path
    * The idea is to give the object an opportunity to edit the path
    */
-  path(path) {
+  path(path, health) {
     if(!this.isCollectible){
+      if(this.description == "dragon" && health < 50){
+        return [];
+      }
       if(path.length > 2){
         return path.slice(0, -1);
       } else {

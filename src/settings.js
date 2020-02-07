@@ -10,7 +10,7 @@ class Settings {
     this.voice = "Alex";
     this.rate = 1;
     this.pitch = 1;
-    this.backgroundMusic = false;
+    this.background_music = false;
   }
 
   persist() {
@@ -23,7 +23,7 @@ class Settings {
       voice: this.voice,
       rate: this.rate,
       pitch: this.pitch,
-      backgroundMusic: this.backgroundMusic
+      backgroundMusic: this.background_music
     };
     const json = JSON.stringify(data);
     localStorage.setItem(key, json);
@@ -41,7 +41,7 @@ class Settings {
         this.voice = data.voice;
         this.rate = data.rate;
         this.pitch = data.pitch;
-        this.backgroundMusic = data.backgroundMusic;
+        this.background_music = data.background_music;
       }
     }
   }
