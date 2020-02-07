@@ -27,3 +27,13 @@ export function sortByDistance(array, x, y) {
       (a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y)
     );
 }
+
+export function sortForDragons(array) {
+  let noDragons = array.filter(i => !i.object.description || i.object.description && i.object.description != "dragon");
+  console.log(noDragons);
+  let dragons = array.filter(i => i.object.description == "dragon");
+  console.log(dragons);
+  let arr = noDragons.concat(dragons);
+  console.log(arr);
+  return arr;
+}

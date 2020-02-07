@@ -13,6 +13,10 @@ export default class EnhancedIsoSprite extends IsoSprite {
     this.audio = config.audio;
     this.description = config.description;
     this.room = config.room;
+    this.animation = config.animation;
+    this.reward = config.reward || 0;
+    this.isCollectible = config.isCollectible;
+    this.isAnimated = config.isAnimated;
     this.config = config;
     config.scene.add.existing(this);
     if (config.group) config.group.add(this);
@@ -37,19 +41,30 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * Return the path to the interaction position given the path
    * The idea is to give the object an opportunity to edit the path
    */
-  path(path) {
-    return path;
+  path(path, health) {
+    if(!this.isCollectible){
+      if(this.description == "dragon" && health < 50){
+        return [];
+      }
+      if(path.length > 2){
+        return path.slice(0, -1);
+      } else {
+        // don't move because you're already 1 square away
+        return [];
+      }
+    } else {
+      return path;
+    }
   }
 
   /*
    * Interact with the object
    */
   async interact(player, room) {
-    this.visible = false;
-    return false; // false to remove, true to keep
+    
   }
 
-  getDescription(){
+  getDescription() {
     return this.description;
-   }
+  }
 }

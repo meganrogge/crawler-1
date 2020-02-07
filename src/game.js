@@ -5,8 +5,10 @@ import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
-
+import { sortForDragons } from "./helpers.js";
+import { ObjectConfig } from "./ObjectConfig.js";
 /* +x is down to right, +y is down to left */
+// @ts-ignore
 
 const directions = [
   "x-1y-1",
@@ -15,7 +17,7 @@ const directions = [
   "x-1y+0",
   "x+0y+0",
   "x+1y+0",
-  "x-1y+1", 
+  "x-1y+1",
   "x+0y+1",
   "x+1y+1"
 ];
@@ -27,10 +29,9 @@ export class GameScene extends Phaser.Scene {
       mapAdd: { isoPlugin: "iso" }
     });
     this.canvas = document.querySelector("canvas");
-    this.score = 0;
+    this.health = 50;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
-    
 
     // cast this once so I don't have to below
     // shouldn't I be able to just assert this?
@@ -47,9 +48,26 @@ export class GameScene extends Phaser.Scene {
       sceneKey: "iso"
     });
 
+    this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
+    this.load.atlas(
+      "explosion",
+      "assets/animations/explosion/explosion.png",
+      "assets/animations/explosion/explosion.json"
+    );
+    this.load.atlas(
+      "coin",
+      "assets/animations/coin/coin.png",
+      "assets/animations/coin/coin.json"
+    );
+    this.load.atlas(
+      "dragon",
+      "assets/animations/dragon/dragon.png",
+      "assets/animations/dragon/dragon.json"
+    );
+
     this.load.image("ground", "assets/cube.png");
     this.load.image("door", "assets/door.png");
-    this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
+    this.load.image("particle", "assets/animations/particle.png");
     this.load.image("Chest1_closed", "assets/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/Chest2_opened.png");
     this.load.image("fountain", "assets/fountain.png");
@@ -60,35 +78,24 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
     this.load.image("key", "assets/kenny-isometric/key_SW.png");
-
-
-    this.load.image("particle", "assets/animations/particle.png");
-
-    this.RandomlyPlacedObjects = [
-      "Chest1_closed",
-      "Chest2_opened",
-      "fountain",
-      "Rock_1",
-      "Rock_2",
-      "over_grass_flower1",
-      "flag",
-      "lever",
-      "jewel",
-      "key"
-    ];
+    this.load.image("ruby", "assets/ruby.png");
+    this.load.image("sapphire", "assets/sapphire.png");
 
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
-    this.load.audio("doorClose", "assets/audio/doorClose.mp3");
+    this.load.audio("door_close", "assets/audio/door_close.mp3");
     this.load.audio("knock", "assets/audio/knock.mp3");
     this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("waterfall", "assets/audio/waterfall.mp3");
-    this.load.audio("music", "assets/audio/background_music.mp3");
+    this.load.audio("background_music", "assets/audio/background_music.mp3");
     this.load.audio("footsteps", "assets/audio/footsteps.mp3");
+    this.load.audio("dragon_roar", "assets/audio/dragon_roar.mp3");
+    this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
   }
 
   create() {
     this.isoGroup = this.add.group();
+    this.objectConfig = new ObjectConfig();
     this.map = new Map({
       size: [100, 100],
       rooms: {
@@ -111,67 +118,34 @@ export class GameScene extends Phaser.Scene {
       max_interconnect_length: 10,
       room_count: 10
     });
+    this.RandomlyPlacedObjects = this.objectConfig.objects;
+
     let { x: ix, y: iy } = this.map.initial_position;
 
     this.room = this.map.initial_room;
 
     this.tiles = [];
+    this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
-      let heights = {
-        Chest1_closed: 0,
-        Chest2_opened: 0,
-        fountain: 0,
-        over_grass_flower1: -1 / 2,
-        Rock_1: -1 / 2,
-        Rock_2: -1 / 2,
-        flag: 0,
-        lever: 0,
-        jewel: 0,
-        key: 0
-      };
-      let audio = {
-        Chest1_closed: "knock",
-        Chest2_opened: "doorClose",
-        fountain: "waterfall",
-        over_grass_flower1: "ding",
-        Rock_1: "thump",
-        Rock_2: "thump",
-        flag: "thump",
-        lever: "thump",
-        jewel: "thump",
-        key: "thump"
-      };
-      let prettyNames = {
-        Chest1_closed: "red chest",
-        Chest2_opened: "open green chest",
-        fountain: "fountain",
-        over_grass_flower1: "flower",
-        Rock_1: "rock",
-        Rock_2: "rock",
-        flag: "flag",
-        lever: "lever",
-        jewel: "jewel",
-        key: "key"
-      };
-      let animations = {
-        Chest1_closed: "a red chest",
-        Chest2_opened: "an open green chest",
-        fountain: "a flowing fountain",
-        over_grass_flower1: "a pretty flower",
-        Rock_1: "a rock",
-        Rock_2: "a rock",
-        flag: "a flag",
-        lever: "a lever",
-        jewel: "a jewel",
-        key: "a key"
-      };
+      this.anims.create({
+        key: "coin",
+        frames: this.anims.generateFrameNames("coin"),
+        frameRate: 2,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "dragon",
+        frames: this.anims.generateFrameNames("dragon"),
+        frameRate: 2,
+        repeat: -1
+      });
       let positions = this.generateObjectPositions(room);
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
       positions = Phaser.Math.RND.shuffle(positions);
-      const nobjects = Phaser.Math.RND.between(0, 3);
+      const nobjects = Phaser.Math.RND.between(1, 3);
       for (let i = 0; i < nobjects; i++) {
         if (!positions.length) {
           break;
@@ -183,15 +157,24 @@ export class GameScene extends Phaser.Scene {
           scene: this,
           x: ox,
           y: oy,
-          z: heights[o],
+          z: this.objectConfig.heights[o],
           texture: o,
           group: this.isoGroup,
-          description: prettyNames[o],
-          reward: 1,
+          description: this.objectConfig.descriptions[o],
+          reward: this.objectConfig.rewards[o] || 0,
           room: room,
-          audio: audio[o]
+          audio: this.objectConfig.audio[o],
+          animation: this.objectConfig.animations[o],
+          isCollectible: this.objectConfig.isCollectible[o],
+          isAnimated: this.objectConfig.isAnimated[o]
         });
+
         isoObj.scale = Math.sqrt(3) / isoObj.width;
+
+        if (isoObj.isAnimated) {
+          isoObj.play(isoObj.description, true);
+        }
+
         this.map.addObject(isoObj, ox, oy);
         // eliminate this position and its neighbors
         positions = positions.filter(
@@ -227,6 +210,19 @@ export class GameScene extends Phaser.Scene {
       });
     }
     this.player = hero;
+
+    this.anims.create({
+      key: "explosion",
+      frames: this.anims.generateFrameNames("explosion", {
+        prefix: "Explosions_Left-animation_",
+        suffix: ".png",
+        start: 0,
+        end: 15
+      }),
+      frameRate: 4,
+      repeat: 0
+    });
+
     this.player.scale = (0.6 * Math.sqrt(3)) / this.player.width;
     this.lighting();
 
@@ -257,8 +253,6 @@ export class GameScene extends Phaser.Scene {
       on: false
     });
     this.particles.depth = 100;
-
-    this.scoreDisplay = this.add.text(20, 20, "0", { fontSize: 20 });
 
     // configure the camera
     // I'm making the camera follow the selection box and it follows the
@@ -298,28 +292,31 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.updateRoomDescription();
+    this.setRoomInfo("press any key to start sound!");
 
     if (settings.mode != "full") {
-      this.setRoomInfo("press any key to start sound!");
       this.autoPlay();
     }
-    if(settings.dictation){
+    if (settings.dictation) {
       this.speak(this.getRoomDescription());
     }
-    
-    let music = this.sound.add("music", {loop: true});
-    if(settings.sound && settings.backgroundMusic){
-      music.play();
+
+    let background_music = this.sound.add("background_music", { loop: true });
+    if (settings.sound && settings.background_music) {
+      background_music.play();
     } else {
-      music.stop();
+      background_music.stop();
     }
+
+    this.updateHealth();
   }
 
   speak(text) {
     if (settings.sound && settings.dictation) {
       this.utterThis = new SpeechSynthesisUtterance(text);
-      this.utterThis.voice = this.speaker.getVoices().filter(voice => voice.name == settings.voice)[0];
+      this.utterThis.voice = this.speaker
+        .getVoices()
+        .filter(voice => voice.name == settings.voice)[0];
       this.utterThis.rate = settings.rate;
       this.utterThis.pitch = settings.pitch;
       this.speaker.speak(this.utterThis);
@@ -329,9 +326,6 @@ export class GameScene extends Phaser.Scene {
   setRoomInfo(text) {
     document.getElementById("information_box").innerHTML = "";
     document.getElementById("information_box").innerHTML = text;
-    // if(text == "This room is empty! Go explore others."){
-    //   this.speak();
-    // }
   }
 
   getRoomInfo() {
@@ -346,24 +340,6 @@ export class GameScene extends Phaser.Scene {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    // let description = "You've found ";
-    // let index = 0;
-    // this.room.objects.forEach(o => {
-    //   if (
-    //     index == this.room.objects.length - 1 &&
-    //     this.room.objects.length > 1
-    //   ) {
-    //     description += " and ";
-    //   } else if (
-    //     index < this.room.objects.length - 1 &&
-    //     this.room.objects.length > 2 &&
-    //     index > 0
-    //   ) {
-    //     description += ", ";
-    //   }
-    //   description += o.getDescription();
-    //   index++;
-    // });
     return "";
   }
 
@@ -392,7 +368,12 @@ export class GameScene extends Phaser.Scene {
   moveCharacter(path) {
     // Sets up a list of tweens, one for each tile to walk,
     // that will be chained by the timeline
-    let music = this.playSound("footsteps");
+    this.updateRoomDescription();
+
+    if (path.length == 0) {
+      return;
+    }
+    let walkingSound = this.playSound("footsteps");
     return new Promise((resolve, reject) => {
       const tweens = [];
       const start = dir => () => this.player.play(dir, true);
@@ -414,11 +395,11 @@ export class GameScene extends Phaser.Scene {
       }
       this.tweens.timeline({
         tweens: tweens,
-        onStart: () => music.play(),
+        onStart: () => walkingSound.play(),
         onComplete: () => {
           this.player.anims.stop();
           resolve();
-          music.stop();
+          walkingSound.stop();
         }
       });
     });
@@ -483,8 +464,6 @@ export class GameScene extends Phaser.Scene {
       } else {
         await this.delay(settings.speed);
       }
-      await this.simulateClick("button#select");
-      this.updateRoomDescription();
       this.selectionIndicator.visible = false;
     };
     // return the exit that is on the path
@@ -527,7 +506,8 @@ export class GameScene extends Phaser.Scene {
       // remember that we came here
       roomsVisited.push(this.room);
       // get the local targets
-      const targets = this.getTargets();
+      let targets = this.health <= 50 ? sortForDragons(this.getTargets()) : this.getTargets();
+      console.log(targets);
       // visit each of the targets
       for (const target of targets) {
         // exits are pushed onto the stack to handle later
@@ -560,10 +540,8 @@ export class GameScene extends Phaser.Scene {
     if (this.target.object.description) {
       this.speak(this.target.object.description);
     } else {
-      console.log(this.room.exits);
-      this.speak("exit "+this.getExitNumber(targets));
+      this.speak("exit " + this.getExitNumber(targets));
     }
-
     this.selectionIndicator.visible = true;
     this.selectionIndicator.isoX = this.target.object.isoX;
     this.selectionIndicator.isoY = this.target.object.isoY;
@@ -581,13 +559,16 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  getExitNumber(targets){
-    return Number(Number(this.targetIndex%targets.length)%this.room.exits.length)+Number(1);
+  getExitNumber(targets) {
+    return (
+      Number(
+        Number(this.targetIndex % targets.length) % this.room.exits.length
+      ) + Number(1)
+    );
   }
 
   playSound(sound) {
-    if (settings.sound) {
-      console.log(sound);
+    if (settings.sound && sound != null) {
       let music = this.sound.add(sound);
       music.play();
       return music;
@@ -607,33 +588,96 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // it is now the current room
       this.room = nextroom;
-      this.updateRoomDescription();
-      this.speak(this.getRoomDescription());
+      // this.updateRoomDescription();
+      // this.speak(this.getRoomDescription());
       this.playSound("click");
     } else {
       // allow the object to provide the destination
       let { x, y, z } = target.object.position();
+
       // get the path there
       let path = await this.map.path(this.player.isoX, this.player.isoY, x, y);
+
       // allow the object to edit the path
-      path = target.object.path(path);
+      path = target.object.path(path, this.health);
+
       // go there
       await this.moveCharacter(path);
-      // interact with the object
-      let keep = await target.object.interact(this.player, this.room);
-      if (!keep) {
-        console.log("emit", x, y, target);
-        this.particles.emitParticleAt(target.object.x, target.object.y);
-        console.log("emitter", this.emitter);
-        console.log("particles", this.particles);
-        this.map.removeObject(target.object, x, y);
-        this.updateRoomDescription();
-        // this.speak("You've chosen " + target.object.description);
-        this.playSound(target.object.audio);
-        target.object.destroy();
-      }
-      this.score++;
+
+      // animate, create sound of, describe, dictate, update game state, and adjust health based on object-player interaction
+      await this.interactWithObject(target.object, x, y);
     }
+  }
+
+  async interactWithObject(object, x, y) {
+    this.playSound(object.audio);
+    if (object.isCollectible) {
+      // if object doesn't have a custom animation, upon collection, emit particles
+      if (!object.animation) {
+        this.particles.emitParticleAt(object.x, object.y);
+      } else {
+        this.createAnimation(object.animation, x, y);
+      }
+      this.map.removeObject(object, x, y);
+      // collect object before it's destroyed
+      this.acquiredObjects.push(object);
+      object.destroy();
+    } else if (object.description == "dragon") {
+      if (this.health > 50) {
+        // do kill animation at the dragon's coordinates
+        // do player animation of fight and move to dragon's coordinates
+        //this.createAnimation("kill", x, y);
+        this.map.removeObject(object, x, y);
+        object.destroy();
+      } else {
+        // change description to you need a shield to fight and defeat the dragon
+        // do kill animation at the player's coordinates?
+        // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
+        this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+        this.player.destroy();
+        this.setRoomInfo("Insufficient health to fight the dragon - game over!");
+        this.inputEnabled = false;
+        await this.delay(3000);
+        document.getElementById('setup').click();
+      }
+    } else {
+      if (object.description == "Chest1_closed") {
+      if (this.hasAcquired("key")) {
+        // unlock the chest (replacing closed with open chest) and
+        // have contents pop out in surrounding area with announcement that
+        // you've found these objects
+      } else {
+        // change description to you need a key to open the chest
+        this.setRoomInfo("you need a key to open this chest!");
+        this.updateRoomDescription();
+      }
+    } else if (object.description == "Chest2_open") {
+      // change description to you've already opened that chest?
+    }
+  }
+    this.health += object.reward;
+    this.updateHealth();
+  }
+
+  updateHealth() {
+    let healthBar = document.getElementById("health_box");
+    this.health = this.health < 0 ? 0 : this.health;
+    healthBar.style.width = this.health;
+    healthBar.innerHTML = this.health;
+    console.log(this.health);
+    document.getElementById("health_box").innerHTML = "Health " + this.health;
+  }
+
+  hasAcquired = item => {
+    return this.acquiredObjects.indexOf(item) > -1;
+  };
+
+  async createAnimation(type, x, y) {
+    let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
+    a.scale = Math.sqrt(3) / 50;
+    a.play(type, true);
+    await this.delay(1000);
+    a.destroy();
   }
 
   getTargets() {
