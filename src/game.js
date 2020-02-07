@@ -477,8 +477,6 @@ export class GameScene extends Phaser.Scene {
       } else {
         await this.delay(settings.speed);
       }
-      await this.simulateClick("button#select");
-      this.updateRoomDescription();
       this.selectionIndicator.visible = false;
     };
     // return the exit that is on the path
@@ -556,7 +554,6 @@ export class GameScene extends Phaser.Scene {
     } else {
       this.speak("exit " + this.getExitNumber(targets));
     }
-
     this.selectionIndicator.visible = true;
     this.selectionIndicator.isoX = this.target.object.isoX;
     this.selectionIndicator.isoY = this.target.object.isoY;
@@ -603,67 +600,83 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // it is now the current room
       this.room = nextroom;
-      this.updateRoomDescription();
-      this.speak(this.getRoomDescription());
+      // this.updateRoomDescription();
+      // this.speak(this.getRoomDescription());
       this.playSound("click");
     } else {
       // allow the object to provide the destination
       let { x, y, z } = target.object.position();
-      this.health += target.object.reward;
-      this.updateHealth();
+
       // get the path there
       let path = await this.map.path(this.player.isoX, this.player.isoY, x, y);
+
       // allow the object to edit the path
       path = target.object.path(path);
+
       // go there
       await this.moveCharacter(path);
-      if (target.object.isCollectible) {
-        if (target.object.animation == "particles") {
-          this.particles.emitParticleAt(target.object.x, target.object.y);
-        } else {
-          this.createAnimation(target.object.animation, x, y);
-        }
-        this.map.removeObject(target.object, x, y);
-        // collect object before it's destroyed
-        this.acquiredObjects.push(target.object);
-        target.object.destroy();
-      } else if (target.object.description == "dragon") {
-        if (this.health > 50) {
-          // do kill animation at the dragon's coordinates
-          // do player animation of fight and move to dragon's coordinates
-          //this.createAnimation("kill", x, y);
-          target.object.destroy();
-        } else {
-          // change description to you need a shield to fight and defeat the dragon
-          // do kill animation at the player's coordinates?
 
-          this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
-
-          this.createAnimation("explosion", this.player.isoX, this.player.isoY);
-        }
-      } else if (target.object.description == "Chest1_closed") {
-        if (this.hasAcquired("key")) {
-          // unlock the chest (replacing closed with open chest) and
-          // have contents pop out in surrounding area with announcement that
-          // you've found these objects
-        } else {
-          // change description to you need a key to open the chest
-          this.setRoomInfo("you need a key to open this chest!");
-        }
-      } else if (target.object.description == "Chest2_open") {
-        // change description to you've already opened that chest?
-      }
-      this.playSound(target.object.audio);
+      // animate, create sound of, describe, dictate, update game state, and adjust health based on object-player interaction
+      await this.interactWithObject(target.object, x, y);
     }
+  }
+
+  async interactWithObject(object, x, y) {
+    if (object.isCollectible) {
+      if (object.animation == "particles") {
+        this.particles.emitParticleAt(object.x, object.y);
+      } else {
+        this.createAnimation(object.animation, x, y);
+      }
+      this.map.removeObject(object, x, y);
+      // collect object before it's destroyed
+      this.acquiredObjects.push(object);
+      object.destroy();
+    } else if (object.description == "dragon") {
+      if (this.health > 50) {
+        // do kill animation at the dragon's coordinates
+        // do player animation of fight and move to dragon's coordinates
+        //this.createAnimation("kill", x, y);
+        this.map.removeObject(object, x, y);
+        object.destroy();
+      } else {
+        // change description to you need a shield to fight and defeat the dragon
+        // do kill animation at the player's coordinates?
+        // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
+        this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+        this.player.destroy();
+        this.setRoomInfo("Insufficient health to fight the dragon - game over!");
+        this.inputEnabled = false;
+        await this.delay(3000);
+        document.getElementById('setup').click();
+      }
+    } else {
+      if (object.description == "Chest1_closed") {
+      if (this.hasAcquired("key")) {
+        // unlock the chest (replacing closed with open chest) and
+        // have contents pop out in surrounding area with announcement that
+        // you've found these objects
+      } else {
+        // change description to you need a key to open the chest
+        this.setRoomInfo("you need a key to open this chest!");
+        this.updateRoomDescription();
+      }
+    } else if (object.description == "Chest2_open") {
+      // change description to you've already opened that chest?
+    }
+  }
+    this.health += object.reward;
+    this.updateHealth();
+    this.playSound(object.audio);
   }
 
   updateHealth() {
     let healthBar = document.getElementById("health_box");
     this.health = this.health < 0 ? 0 : this.health;
-    healthBar.style.width = this.health;  
+    healthBar.style.width = this.health;
     healthBar.innerHTML = this.health;
     console.log(this.health);
-    document.getElementById("health_box").innerHTML = "Health "+this.health;
+    document.getElementById("health_box").innerHTML = "Health " + this.health;
   }
 
   hasAcquired = item => {

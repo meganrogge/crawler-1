@@ -58,7 +58,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * Interact with the object
    */
   async interact(player, room) {
-
+    
   }
 
   getDescription() {
