@@ -506,8 +506,7 @@ export class GameScene extends Phaser.Scene {
       // remember that we came here
       roomsVisited.push(this.room);
       // get the local targets
-      let targets = this.health <= 50 ? sortForDragons(this.getTargets()) : this.getTargets();
-      console.log(targets);
+      let targets = this.health <= 50 ? sortForDragons(this.getTargets(), this.health) : this.getTargets();
       // visit each of the targets
       for (const target of targets) {
         // exits are pushed onto the stack to handle later

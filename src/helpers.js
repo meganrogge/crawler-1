@@ -28,12 +28,22 @@ export function sortByDistance(array, x, y) {
     );
 }
 
-export function sortForDragons(array) {
-  let noDragons = array.filter(i => !i.object.description || i.object.description && i.object.description != "dragon");
-  console.log(noDragons);
+export function sortForDragons(array, health) {
+  let non_dragons = array.filter(i => !i.object.description || i.object.description && i.object.description != "dragon");
   let dragons = array.filter(i => i.object.description == "dragon");
-  console.log(dragons);
-  let arr = noDragons.concat(dragons);
-  console.log(arr);
+  let arr = non_dragons.concat(dragons);
+  if(sum_of_object_rewards(non_dragons) + health <= 50){
+    arr = non_dragons;
+  }
   return arr;
+}
+
+function sum_of_object_rewards(non_dragons){
+  let r = non_dragons.filter(i => i.object.reward);
+  if(r.length > 0){
+    r = r.map(i => i.object.reward).reduce((accumulator, currentValue) => accumulator + currentValue);
+  } else {
+    r = 0;
+  }
+  return r;
 }
