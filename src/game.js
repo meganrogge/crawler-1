@@ -6,7 +6,7 @@ import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
 import { sortForDragons } from "./helpers.js";
-import { ObjectConfig } from "./ObjectConfig.js";
+import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
 
