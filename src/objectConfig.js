@@ -67,14 +67,21 @@ export class ObjectConfig {
           this.animations = {
             
           };
-           this.rewards = {
-            jewel: 1,
-            coin: 2,
-            ruby: 3,
-            sapphire: 4,
-            dragon: -20,
-            Chest1_closed: 5,
-            fountain: 10
+          this.power = {
+            Chest1_closed: 2,
+            Chest2_opened: 3,
+            fountain: 10,
+            over_grass_flower1: 2,
+            Rock_1: 1,
+            Rock_2: 1,
+            flag: 3,
+            lever: 2,
+            jewel: 3,
+            key: 15,
+            coin: 10,
+            ruby: 5,
+            sapphire: 5,
+            dragon: -20
           };
           this.isCollectible = {
             Chest1_closed: false,

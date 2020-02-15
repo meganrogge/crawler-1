@@ -17,7 +17,7 @@ export class GameScene extends Phaser.Scene {
       mapAdd: { isoPlugin: "iso" }
     });
     this.canvas = document.querySelector("canvas");
-    this.health = 50;
+    this.power = 50;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
 
@@ -84,6 +84,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("roar", "assets/audio/roar.wav");
     this.load.audio("sword_slice", "assets/audio/sword_slice.wav");
     this.load.audio("unsheath_sword", "assets/audio/unsheath_sword.mp3");
+    this.load.audio("power_increase", "assets/audio/power_increase.wav");
   }
 
   create() {
@@ -131,7 +132,7 @@ export class GameScene extends Phaser.Scene {
     this.tiles = [];
     this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
-      let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
+      let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects, "dragon", "dragon")];
       /* I bet this can be done by looking at the height of the images */
       this.anims.create({
         key: "coin",
@@ -165,7 +166,7 @@ export class GameScene extends Phaser.Scene {
           texture: o,
           group: this.isoGroup,
           description: this.objectConfig.descriptions[o],
-          reward: this.objectConfig.rewards[o] || 0,
+          power: this.objectConfig.power[o] || 0,
           room: room,
           audio: this.objectConfig.audio[o],
           animation: this.objectConfig.animations[o],
@@ -296,36 +297,34 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.setRoomInfo("press any key to start sound!");
-
     if (settings.mode != "full") {
       this.autoPlay();
     }
-    if (settings.dictation) {
-      this.speak(this.getRoomDescription());
-    }
 
-    let background_music = this.sound.add("background_music", { loop: true });
-    if (settings.sound && settings.background_music) {
-      background_music.play();
+    let backgroundMusic = this.sound.add("background_music", { loop: true });
+    if (settings.sound && settings.backgroundMusic) {
+      backgroundMusic.play();
     } else {
-      background_music.stop();
+      backgroundMusic.stop();
     }
 
-    this.updateHealth();
+    this.updatePower();
+
+    this.roomDescription = this.power <= 50 ? "You need "+(51-this.power)+" more power to fight a dragon" : "";
+    this.updateRoomDescription();
   }
 
   speak(text) {
     if (settings.sound && settings.dictation) {
-      this.utterThis = new SpeechSynthesisUtterance(text);
-      this.utterThis.voice = this.speaker
-        .getVoices()
-        .filter(voice => voice.name == settings.voice)[0];
-      this.utterThis.rate = settings.rate;
-      this.utterThis.pitch = settings.pitch;
-      this.speaker.speak(this.utterThis);
+        this.utterThis = new SpeechSynthesisUtterance(text);
+        this.utterThis.voice = this.speaker
+          .getVoices()
+          .filter(voice => voice.name == settings.voice)[0];
+        this.utterThis.rate = settings.rate;
+        this.utterThis.pitch = settings.pitch;
+        this.speaker.speak(this.utterThis);
+      } 
     }
-  }
 
   setRoomInfo(text) {
     document.getElementById("information_box").innerHTML = "";
@@ -338,13 +337,14 @@ export class GameScene extends Phaser.Scene {
 
   updateRoomDescription() {
     this.setRoomInfo(this.getRoomDescription());
+    this.speak(this.roomDescription);
   }
 
   getRoomDescription() {
     if (this.room.objects.length == 0) {
       return "This room is empty!";
     }
-    return "";
+    return this.roomDescription;
   }
 
   lighting() {
@@ -372,8 +372,6 @@ export class GameScene extends Phaser.Scene {
   moveCharacter(path) {
     // Sets up a list of tweens, one for each tile to walk,
     // that will be chained by the timeline
-    this.updateRoomDescription();
-
     if (path.length == 0) {
       return;
     }
@@ -507,13 +505,25 @@ export class GameScene extends Phaser.Scene {
           return;
         }
       }
-      // remember that we came here
-      roomsVisited.push(this.room);
+      
       // get the local targets
-      let targets =
-        this.health <= 50
-          ? sortForDragons(this.getTargets(), this.health)
-          : this.getTargets();
+      let targets = this.getTargets();
+      let numTargets = targets.length;
+
+      if(this.power <= 50){
+        let result = sortForDragons(this.getTargets(), this.power);
+        targets = result.nonDragons;
+        if(numTargets - targets.length > 0){
+          // we need to revisit this room later when 
+          // we have enough power to fight the dragons
+          targetsToVisit.push(this.room);
+        } else {
+           // remember that we came here
+          roomsVisited.push(this.room);
+        }
+      } else {
+        roomsVisited.push(this.room);
+      }
 
       // visit each of the targets
       for (const target of targets) {
@@ -545,9 +555,11 @@ export class GameScene extends Phaser.Scene {
     this.targetIndex += 1;
     this.target = targets[this.targetIndex % targets.length];
     if (this.target.object.description) {
-      this.speak(this.target.object.description);
+      this.roomDescription = this.target.object.description;
+      this.updateRoomDescription();
     } else {
-      this.speak("exit " + this.getExitNumber(targets));
+      this.roomDescription = "exit "+this.getExitNumber(targets);
+      this.updateRoomDescription();
     }
     this.selectionIndicator.visible = true;
     this.selectionIndicator.isoX = this.target.object.isoX;
@@ -595,9 +607,17 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // it is now the current room
       this.room = nextroom;
-      // this.updateRoomDescription();
-      // this.speak(this.getRoomDescription());
+      // make the sound of a door to indicate room change
       this.playSound("click");
+
+      let dragons = sortForDragons(this.getTargets(), this.power).dragons;
+      if(dragons.length > 0 && this.power <= 50){
+        // this room has dragons
+        this.roomDescription = "You need "+(51-this.power)+" more power to fight a dragon";
+      } else {
+        this.roomDescription = "";
+      }
+      this.updateRoomDescription();
     } else {
       // allow the object to provide the destination
       let { x, y, z } = target.object.position();
@@ -606,17 +626,25 @@ export class GameScene extends Phaser.Scene {
       let path = await this.map.path(this.player.isoX, this.player.isoY, x, y);
 
       // allow the object to edit the path
-      path = target.object.path(path, this.health);
+      path = target.object.path(path, this.power);
 
       // go there
       await this.moveCharacter(path);
 
-      // animate, create sound of, describe, dictate, update game state, and adjust health based on object-player interaction
+      // animate, create sound of, describe, dictate, update game state, and adjust power based on object-player interaction
       await this.interactWithObject(target.object, x, y);
     }
   }
 
   async interactWithObject(object, x, y) {
+    if(object.power > 0){
+      // play score sound 
+        this.playSound("power_increase");
+        if(this.power <= 50 && object.power + this.power > 50 && this.roomDescription != "You're powerful enough to fight a dragon"){
+          this.roomDescription = "You're powerful enough to fight a dragon";
+          this.updateRoomDescription();
+        }
+      } 
     if (object.isCollectible) {
       // if object doesn't have a custom animation, upon collection, emit particles
       if (!object.animation) {
@@ -630,7 +658,7 @@ export class GameScene extends Phaser.Scene {
       this.acquiredObjects.push(object);
       object.destroy();
     } else if (object.description == "dragon") {
-      if (this.health > 50) {
+      if (this.power > 50) {
         // do kill animation at the dragon's coordinates
         // do player animation of fight and move to dragon's coordinates
         //this.createAnimation("kill", x, y);
@@ -641,10 +669,10 @@ export class GameScene extends Phaser.Scene {
         this.playSound("roar");
         this.map.removeObject(object, x, y);
         let d = this.add.isoSprite(x, y, 0, "dragon_skeleton", this.isoGroup, null);
-        this.map.addObject(d, x, y);
         d.scale = Math.sqrt(3) / 50;
         object.destroy();
         await this.delay(1000);
+        d.destroy();
         this.playSound("hero");
       } else {
         // change description to you need a shield to fight and defeat the dragon
@@ -653,9 +681,8 @@ export class GameScene extends Phaser.Scene {
         this.playSound("dragon_roar");
         this.createAnimation("explosion", this.player.isoX, this.player.isoY);
         this.player.destroy();
-        this.setRoomInfo(
-          "Insufficient health to fight the dragon - game over!"
-        );
+        this.roomDescription = "Insufficient power to fight the dragon - game over!";
+        this.updateRoomDescription();
         this.inputEnabled = false;
         await this.delay(3000);
         document.getElementById("setup").click();
@@ -669,24 +696,24 @@ export class GameScene extends Phaser.Scene {
           // you've found these objects
         } else {
           // change description to you need a key to open the chest
-          this.setRoomInfo("you need a key to open this chest!");
+          this.roomDescription = "you need a key to open this chest!";
           this.updateRoomDescription();
         }
       } else if (object.description == "Chest2_open") {
         // change description to you've already opened that chest?
       }
     }
-    this.health += object.reward;
-    this.updateHealth();
+    this.power += object.power;
+    this.updatePower();
   }
 
-  updateHealth() {
-    let healthBar = document.getElementById("health_box");
-    this.health = this.health < 0 ? 0 : this.health;
-    healthBar.style.width = this.health;
-    healthBar.innerHTML = this.health;
-    console.log(this.health);
-    document.getElementById("health_box").innerHTML = "Health " + this.health;
+  updatePower() {
+    let powerBar = document.getElementById("power_bar");
+    this.power = this.power < 0 ? 0 : this.power;
+    powerBar.style.width = this.power;
+    powerBar.innerHTML = this.power;
+    document.getElementById("power_bar").innerHTML = "Power " + this.power;
+    document.getElementById("power_bar").setAttribute('style', "width: "+(this.power > 100 ? 100 : this.power)+"%"); 
   }
 
   hasAcquired = item => {
