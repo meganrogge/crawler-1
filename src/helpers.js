@@ -28,20 +28,20 @@ export function sortByDistance(array, x, y) {
     );
 }
 
-export function sortForDragons(array, health) {
+export function sortForDragons(array, power) {
   let non_dragons = array.filter(i => !i.object.description || i.object.description && i.object.description != "dragon");
   let dragons = array.filter(i => i.object.description == "dragon");
   let arr = non_dragons.concat(dragons);
-  if(sum_of_object_rewards(non_dragons) + health <= 50){
+  if(sum_of_object_rewards(non_dragons) + power <= 50){
     arr = non_dragons;
   }
-  return arr;
+  return { nonDragons: arr, dragons: dragons};
 }
 
 function sum_of_object_rewards(non_dragons){
-  let r = non_dragons.filter(i => i.object.reward);
+  let r = non_dragons.filter(i => i.object.power);
   if(r.length > 0){
-    r = r.map(i => i.object.reward).reduce((accumulator, currentValue) => accumulator + currentValue);
+    r = r.map(i => i.object.power).reduce((accumulator, currentValue) => accumulator + currentValue);
   } else {
     r = 0;
   }

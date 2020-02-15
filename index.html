@@ -12,14 +12,17 @@
       <button id="setup" title="settings"><img src="assets/gear.png" /></button>
       <button id="select" class="col choice">Select</button>
       <div id="game" class="col"><span id="information_box"></span><div class="progress">
-        <div class="progress-bar progress-bar-striped bg-success" id=health_box role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar progress-bar-striped bg-success" id=power_bar role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
       </div> </div>
       <button id="next" class="col choice">Next</button>
     </div>
     <div id="settings" style="background-image: url('assets/background.png'); background-repeat: no-repeat; background-size:cover;">
       <h1 id="settings-menu">Crawler Game</h1>
       <p>
-        Explore the dungeon, interacting with objects along the way to increase your health points. Once you're strong enough, you can slay the dragons and move on to the next level!
+        Explore the dungeon, interacting with objects along the way to increase your power. Once you're strong enough, you can slay the dragons and move on to the next level! 
+      </p>
+      <p>
+        Please note that this game is still a work in progress!
       </p>
       <div id=modes>
       <p>Select a game play mode:</p>
@@ -37,9 +40,8 @@
       </div>
     </div>
       <div>
-        <label for="delay">Game speed: Fastest</label>
-        <input type="range" min="300" max="2000" value="600" class="slider" id="speed">
-        <label for="delay">Slowest</label>
+        <label for="delay">Game speed:</label>
+        <p>Fastest</p><input type="range" min="300" max="2000" value="600" class="span2" id="speed">
       </div>
       <label for="voiceSelect">Dictation voice</label>
       <select id="voiceSelect"></select>
