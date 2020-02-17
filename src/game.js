@@ -397,11 +397,17 @@ export class GameScene extends Phaser.Scene {
       }
       this.tweens.timeline({
         tweens: tweens,
-        onStart: () => walkingSound.play(),
+        onStart: () => {
+          if(settings.sound){
+            walkingSound.play();
+          }
+        },
         onComplete: () => {
           this.player.anims.stop();
           resolve();
-          walkingSound.stop();
+          if(settings.sound) {
+            walkingSound.stop();
+          }
         }
       });
     });
@@ -513,14 +519,9 @@ export class GameScene extends Phaser.Scene {
       if(this.power <= 50){
         let result = sortForDragons(this.getTargets(), this.power);
         targets = result.nonDragons;
-        if(numTargets - targets.length > 0){
-          // we need to revisit this room later when 
-          // we have enough power to fight the dragons
-          targetsToVisit.push(this.room);
-        } else {
-           // remember that we came here
+        if(numTargets - targets.length == 0){
           roomsVisited.push(this.room);
-        }
+        } 
       } else {
         roomsVisited.push(this.room);
       }
