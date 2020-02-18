@@ -5,7 +5,7 @@ class Settings {
   constructor() {
     this.mode = "auto";
     this.sound = true;
-    this.speed = 300;
+    this.delay = 300;
     this.dictation = false;
     this.voice = "Alex";
     this.rate = 1;
@@ -18,7 +18,7 @@ class Settings {
       version: version,
       mode: this.mode,
       sound: this.sound,
-      speed: this.speed,
+      delay: this.delay,
       dictation: this.dictation,
       voice: this.voice,
       rate: this.rate,
@@ -36,7 +36,7 @@ class Settings {
       if (data.version == version) {
         this.mode = data.mode;
         this.sound = data.sound;
-        this.speed = data.speed;
+        this.delay = data.delay;
         this.dictation = data.dictation;
         this.voice = data.voice;
         this.rate = data.rate;

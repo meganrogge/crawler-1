@@ -2,6 +2,10 @@ p {
   color: white;
 }
 
+fieldset legend {
+  color: white;
+}
+
 h1#settings-menu {
   color: white;
   display: block;

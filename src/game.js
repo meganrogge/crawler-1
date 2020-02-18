@@ -69,6 +69,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("ruby", "assets/ruby.png");
     this.load.image("sapphire", "assets/sapphire.png");
     this.load.image("dragon_skeleton", "assets/dragon_skeleton.png");
+    this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
 
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
@@ -132,7 +133,14 @@ export class GameScene extends Phaser.Scene {
     this.tiles = [];
     this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
-      let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects, "dragon", "dragon")];
+      let objects = [
+        ...Phaser.Math.RND.shuffle(
+          this.RandomlyPlacedObjects,
+          "dragon",
+          "dragon",
+          "cupcake"
+        )
+      ];
       /* I bet this can be done by looking at the height of the images */
       this.anims.create({
         key: "coin",
@@ -310,21 +318,24 @@ export class GameScene extends Phaser.Scene {
 
     this.updatePower();
 
-    this.roomDescription = this.power <= 50 ? "You need "+(51-this.power)+" more power to fight a dragon" : "";
+    this.roomDescription =
+      this.power <= 50
+        ? "You need " + (51 - this.power) + " more power to fight a dragon"
+        : "";
     this.updateRoomDescription();
   }
 
   speak(text) {
     if (settings.sound && settings.dictation) {
-        this.utterThis = new SpeechSynthesisUtterance(text);
-        this.utterThis.voice = this.speaker
-          .getVoices()
-          .filter(voice => voice.name == settings.voice)[0];
-        this.utterThis.rate = settings.rate;
-        this.utterThis.pitch = settings.pitch;
-        this.speaker.speak(this.utterThis);
-      } 
+      this.utterThis = new SpeechSynthesisUtterance(text);
+      this.utterThis.voice = this.speaker
+        .getVoices()
+        .filter(voice => voice.name == settings.voice)[0];
+      this.utterThis.rate = settings.rate;
+      this.utterThis.pitch = settings.pitch;
+      this.speaker.speak(this.utterThis);
     }
+  }
 
   setRoomInfo(text) {
     document.getElementById("information_box").innerHTML = "";
@@ -385,7 +396,9 @@ export class GameScene extends Phaser.Scene {
         const dx = ex - path[i - 1].x;
         const dy = ey - path[i - 1].y;
         const duration = 200 * Math.hypot(dx, dy);
-        const dir = this.directions[Math.sign(dx) + 1 + 3 * (Math.sign(dy) + 1)];
+        const dir = this.directions[
+          Math.sign(dx) + 1 + 3 * (Math.sign(dy) + 1)
+        ];
         tweens.push({
           targets: [this.player, this.selectionIndicator],
           isoX: ex,
@@ -398,14 +411,14 @@ export class GameScene extends Phaser.Scene {
       this.tweens.timeline({
         tweens: tweens,
         onStart: () => {
-          if(settings.sound){
+          if (settings.sound) {
             walkingSound.play();
           }
         },
         onComplete: () => {
           this.player.anims.stop();
           resolve();
-          if(settings.sound) {
+          if (settings.sound) {
             walkingSound.stop();
           }
         }
@@ -425,7 +438,7 @@ export class GameScene extends Phaser.Scene {
   async simulateClick(selector) {
     const button = document.querySelector(selector);
     button.style.backgroundColor = "#99badd";
-    await this.delay(settings.speed);
+    await this.delay(settings.delay);
     button.style.backgroundColor = "#FFFFFF";
   }
 
@@ -470,7 +483,7 @@ export class GameScene extends Phaser.Scene {
       if (settings.mode == "one") {
         await this.waitForInput();
       } else {
-        await this.delay(settings.speed);
+        await this.delay(settings.delay);
       }
       this.selectionIndicator.visible = false;
     };
@@ -511,17 +524,17 @@ export class GameScene extends Phaser.Scene {
           return;
         }
       }
-      
+
       // get the local targets
       let targets = this.getTargets();
       let numTargets = targets.length;
 
-      if(this.power <= 50){
+      if (this.power <= 50) {
         let result = sortForDragons(this.getTargets(), this.power);
         targets = result.nonDragons;
-        if(numTargets - targets.length == 0){
+        if (numTargets - targets.length == 0) {
           roomsVisited.push(this.room);
-        } 
+        }
       } else {
         roomsVisited.push(this.room);
       }
@@ -559,7 +572,7 @@ export class GameScene extends Phaser.Scene {
       this.roomDescription = this.target.object.description;
       this.updateRoomDescription();
     } else {
-      this.roomDescription = "exit "+this.getExitNumber(targets);
+      this.roomDescription = "exit " + this.getExitNumber(targets);
       this.updateRoomDescription();
     }
     this.selectionIndicator.visible = true;
@@ -612,9 +625,10 @@ export class GameScene extends Phaser.Scene {
       this.playSound("click");
 
       let dragons = sortForDragons(this.getTargets(), this.power).dragons;
-      if(dragons.length > 0 && this.power <= 50){
+      if (dragons.length > 0 && this.power <= 50) {
         // this room has dragons
-        this.roomDescription = "You need "+(51-this.power)+" more power to fight a dragon";
+        this.roomDescription =
+          "You need " + (51 - this.power) + " more power to fight a dragon";
       } else {
         this.roomDescription = "";
       }
@@ -638,14 +652,18 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithObject(object, x, y) {
-    if(object.power > 0){
-      // play score sound 
-        this.playSound("power_increase");
-        if(this.power <= 50 && object.power + this.power > 50 && this.roomDescription != "You're powerful enough to fight a dragon"){
-          this.roomDescription = "You're powerful enough to fight a dragon";
-          this.updateRoomDescription();
-        }
-      } 
+    if (object.power > 0) {
+      // play score sound
+      this.playSound("power_increase");
+      if (
+        this.power <= 50 &&
+        object.power + this.power > 50 &&
+        this.roomDescription != "You're powerful enough to fight a dragon"
+      ) {
+        this.roomDescription = "You're powerful enough to fight a dragon";
+        this.updateRoomDescription();
+      }
+    }
     if (object.isCollectible) {
       // if object doesn't have a custom animation, upon collection, emit particles
       if (!object.animation) {
@@ -664,13 +682,20 @@ export class GameScene extends Phaser.Scene {
         // do player animation of fight and move to dragon's coordinates
         //this.createAnimation("kill", x, y);
         this.playSound("unsheath_sword");
-        await this.delay(1000);
+        await this.delay(settings.delay);
         this.playSound("sword_slice");
-        await this.delay(1000);
+        await this.delay(settings.delay);
         this.playSound("roar");
         this.map.removeObject(object, x, y);
-        let d = this.add.isoSprite(x, y, 0, "dragon_skeleton", this.isoGroup, null);
-        d.scale = Math.sqrt(3) / 50;
+        let d = this.add.isoSprite(
+          x,
+          y,
+          0,
+          "dragon_skeleton",
+          this.isoGroup,
+          null
+        );
+        d.scale = Math.sqrt(3) / d.width;
         object.destroy();
         await this.delay(1000);
         d.destroy();
@@ -682,7 +707,8 @@ export class GameScene extends Phaser.Scene {
         this.playSound("dragon_roar");
         this.createAnimation("explosion", this.player.isoX, this.player.isoY);
         this.player.destroy();
-        this.roomDescription = "Insufficient power to fight the dragon - game over!";
+        this.roomDescription =
+          "Insufficient power to fight the dragon - game over!";
         this.updateRoomDescription();
         this.inputEnabled = false;
         await this.delay(3000);
@@ -714,7 +740,12 @@ export class GameScene extends Phaser.Scene {
     powerBar.style.width = this.power;
     powerBar.innerHTML = this.power;
     document.getElementById("power_bar").innerHTML = "Power " + this.power;
-    document.getElementById("power_bar").setAttribute('style', "width: "+(this.power > 100 ? 100 : this.power)+"%"); 
+    document
+      .getElementById("power_bar")
+      .setAttribute(
+        "style",
+        "width: " + (this.power > 100 ? 100 : this.power) + "%"
+      );
   }
 
   hasAcquired = item => {
@@ -723,7 +754,7 @@ export class GameScene extends Phaser.Scene {
 
   async createAnimation(type, x, y) {
     let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
-    a.scale = Math.sqrt(3) / 50;
+    a.scale = Math.sqrt(3) / a.width;
     a.play(type, true);
     await this.delay(1000);
     a.destroy();

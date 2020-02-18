@@ -1,73 +1,83 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.19.0/dist/phaser.min.js"></script>
-    <script type="module" src="src/app.js"></script>
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  </head>
-  <body class="play">
-    <div id="play" class="row">
-      <button id="setup" title="settings"><img src="assets/gear.png" /></button>
-      <button id="select" class="col choice">Select</button>
-      <div id="game" class="col"><span id="information_box"></span><div class="progress">
-        <div class="progress-bar progress-bar-striped bg-success" id=power_bar role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-      </div> </div>
-      <button id="next" class="col choice">Next</button>
-    </div>
-    <div id="settings" style="background-image: url('assets/background.png'); background-repeat: no-repeat; background-size:cover;">
+<html lang="en">
+   <head>
+      <title>Crawler Game</title>
+      <script src="//cdn.jsdelivr.net/npm/phaser@3.19.0/dist/phaser.min.js"></script>
+      <script type="module" src="src/app.js"></script>
+      <link href="style.css" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+   </head>
+   <body class="play">
+      <div id="play" class="row">
+         <button id="setup" title="settings"><img src="assets/gear.png" /></button>
+         <button id="select" class="col choice">Select</button>
+         <div id="game" class="col">
+            <span id="information_box"></span>
+            <div class="progress">
+               <div class="progress-bar progress-bar-striped bg-success" id=power_bar role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+         </div>
+         <button id="next" class="col choice">Next</button>
+      </div>
+      <div id="settings" style="background-color:black">
       <h1 id="settings-menu">Crawler Game</h1>
       <p>
-        Explore the dungeon, interacting with objects along the way to increase your power. Once you're strong enough, you can slay the dragons and move on to the next level! 
+         Explore the dungeon, interacting with objects along the way to increase your power. Once you're strong enough, you can slay the dragons and move on to the next level! 
       </p>
       <p>
-        Please note that this game is still a work in progress!
+         Please note that this game is still a work in progress!
       </p>
-      <div id=modes>
-      <p>Select a game play mode:</p>
+      <fieldset>
+         <legend>Game play modes</legend>
+         <div id=modes>
+            <div>
+               <input type="radio" id="auto" name="mode" value="auto" checked/>
+               <label for="auto"><b>Automatic play</b> will demonstrate how gameplay works.</label>
+            </div>
+            <div>
+               <input type="radio" id="one" name="mode" value="one" />
+               <label for="one"><b>One-switch no fail mode</b> has the computer make the correct choice but has the player press their button to continue.</label>
+            </div>
+            <div>
+               <input type="radio" id="full" name="mode" value="full" />
+               <label for="full" ><b>Full play mode</b> has the player making the choices.</label>
+            </div>
+      </fieldset>
       <div>
-        <input type="radio" id="auto" name="mode" value="auto" checked/>
-        <label for="auto"><b>Automatic play</b> will demonstrate how gameplay works.</label>
+      <label for="delay">Game delay:</label>
+      <p>Least (game will progress fastest) </p><input type="range" min="300" max="2000" value="600" class="span2" id="delay">
       </div>
-      <div>
-        <input type="radio" id="one" name="mode" value="one" />
-        <label for="one"><b>One-switch no fail mode</b> has the computer make the correct choice but has the player press their button to continue.</label>
-      </div>
-      <div>
-        <input type="radio" id="full" name="mode" value="full" />
-        <label for="full" ><b>Full play mode</b> has the player making the choices.</label>
-      </div>
-    </div>
-      <div>
-        <label for="delay">Game speed:</label>
-        <p>Fastest</p><input type="range" min="300" max="2000" value="600" class="span2" id="speed">
-      </div>
+      <br>
       <label for="voiceSelect">Dictation voice</label>
       <select id="voiceSelect"></select>
-        <div>
-          <label for="rate">Voice Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
-          <div class="rate-value">1</div>
-          <div class="clearfix"></div>
-        </div>
-        <div>
-          <label for="pitch">Voice Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
-          <div class="pitch-value">1</div>
-          <div class="clearfix"></div>
-        </div>
+      <br>  
       <div>
-        <input type="checkbox" id="sound"/>
-        <label for="sound">Enable sound</label>
-        <input type="checkbox" id="roomDictation" />
-        <label for="roomDictation">Enable room description dictation</label>
-        <input type="checkbox" id="backgroundMusic" />
-        <label for="backgroundMusic">Play background music</label>
-        <p>
-        <button class="button is-primary" id="playButton">Play</button>
+      <label for="rate">Voice Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+      <div class="rate-value">1</div>
+      <div class="clearfix"></div>
+      </div>
+      <br>
+      <div>
+      <label for="pitch">Voice Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+      <div class="pitch-value">1</div>
+      <div class="clearfix"></div>
+      </div>
+      <br>
+      <div>
+      <input type="checkbox" id="sound"/>
+      <label for="sound">Enable sound</label>
+      <input type="checkbox" id="roomDictation" />
+      <label for="roomDictation">Enable dictation</label>
+      <input type="checkbox" id="backgroundMusic" />
+      <label for="backgroundMusic">Play background music</label>
       <p>
-        Use the gear icon in the upper left to come back here from the game
+      <label for="playButton" hidden=true>Play game</label>
+      <button class="button is-primary" id="playButton">Play</button>
+      <p>
+      Use the gear icon in the upper left to come back here from the game
       </p>
-    </div>
-    </div>
-  </body>
+      </div>
+      </div>
+   </body>
 </html>
