@@ -20,14 +20,29 @@
          </div>
          <button id="next" class="col choice">Next</button>
       </div>
-      <div id="settings" style="background-color:black">
+      <div id="settings" role="main" style="background-color:black">
       <h1 id="settings-menu">Crawler Game</h1>
+      <h2 id="gameInformation" style="color:whitesmoke">Game information</h2>
+      <div role="contentinfo">
       <p>
          Explore the dungeon, interacting with objects along the way to increase your power. Once you're strong enough, you can slay the dragons and move on to the next level! 
       </p>
       <p>
+        Click the next button, type the space key, or type the right arrow key to filter through optional next moves.
+      </p>
+      <p>
+        Click the select button, type the enter key, or type the left arrow key to choose a move.
+      </p>
+      <p>
+        Use the gear icon in the upper left to come back here from the game
+      </p>
+      <p>
          Please note that this game is still a work in progress!
       </p>
+      </div>
+      <h2 id="gameSettings" style="color:white">Game settings</h2>
+      <label for="gameSettings" hidden=true></label>
+      <div role=form id=gameSettings>
       <fieldset>
          <legend>Game play modes</legend>
          <div id=modes>
@@ -45,6 +60,7 @@
             </div>
       </fieldset>
       <div>
+      <br>
       <label for="delay">Game delay:</label>
       <p>Least (game will progress fastest) </p><input type="range" min="300" max="2000" value="600" class="span2" id="delay">
       </div>
@@ -52,6 +68,7 @@
       <label for="voiceSelect">Dictation voice</label>
       <select id="voiceSelect"></select>
       <br>  
+      <br>
       <div>
       <label for="rate">Voice Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
       <div class="rate-value">1</div>
@@ -71,13 +88,13 @@
       <label for="roomDictation">Enable dictation</label>
       <input type="checkbox" id="backgroundMusic" />
       <label for="backgroundMusic">Play background music</label>
+      <br>
+      <br>
       <p>
       <label for="playButton" hidden=true>Play game</label>
-      <button class="button is-primary" id="playButton">Play</button>
-      <p>
-      Use the gear icon in the upper left to come back here from the game
-      </p>
+      <button class="button is-white" id="playButton">Play</button>
       </div>
       </div>
+    </div>
    </body>
 </html>
