@@ -57,7 +57,7 @@ window.onload = () => {
   const soundInput = getInput("#sound");
   soundInput.checked = settings.sound;
 
-  const speedInput = getInput("#speed");
+  const delayInput = getInput("#delay");
 
   const dictationInput = getInput("#roomDictation");
 
@@ -75,7 +75,7 @@ window.onload = () => {
     const mode = modeInput.value;
     settings.mode = mode;
     settings.sound = soundInput.checked;
-    settings.speed = Number(speedInput.value);
+    settings.delay = Number(delayInput.value);
     settings.voice = voiceInput.value;
     settings.dictation = dictationInput.checked;
     settings.rate = Number(rateInput.value);
