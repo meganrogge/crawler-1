@@ -2,6 +2,10 @@ p {
   color: white;
 }
 
+.pitch-value {
+  color: white;
+}
+
 h2#gameInformation, h2#gameSettings {
   color: white;
 }
