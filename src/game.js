@@ -52,6 +52,11 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/dragon/dragon.png",
       "assets/animations/dragon/dragon.json"
     );
+    this.load.atlas(
+      "ogre",
+      "assets/animations/ogre/ogre.png",
+      "assets/animations/ogre/ogre.json"
+    );
 
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
@@ -170,6 +175,12 @@ export class GameScene extends Phaser.Scene {
         frameRate: 2,
         repeat: -1
       });
+      this.anims.create({
+        key: "ogre",
+        frames: this.anims.generateFrameNames("ogre"),
+        frameRate: 4,
+        repeat: -1
+      })
       let positions = this.generateObjectPositions(room);
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);

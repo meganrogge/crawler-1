@@ -1,0 +1,64 @@
+{
+"frames": [
+	{
+		"filename": "Armored Ogre_Front-Walking_0.png",
+		"frame": {"x":531, "y":298, "w":257, "h":298},
+		"spriteSourceSize": {"x":7,"y":11,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_1.png",
+		"frame": {"x":272, "y":0, "w":262, "h":297},
+		"spriteSourceSize": {"x":6,"y":10,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_2.png",
+		"frame": {"x":0, "y":595, "w":267, "h":297},
+		"spriteSourceSize": {"x":4,"y":9,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_3.png",
+		"frame": {"x":0, "y":0, "w":271, "h":297},
+		"spriteSourceSize": {"x":2,"y":8,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_4.png",
+		"frame": {"x":0, "y":298, "w":268, "h":296},
+		"spriteSourceSize": {"x":3,"y":7,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_5.png",
+		"frame": {"x":268, "y":595, "w":262, "h":296},
+		"spriteSourceSize": {"x":5,"y":6,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_6.png",
+		"frame": {"x":269, "y":298, "w":257, "h":296},
+		"spriteSourceSize": {"x":7,"y":4,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_7.png",
+		"frame": {"x":531, "y":597, "w":251, "h":296},
+		"spriteSourceSize": {"x":9,"y":3,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	},
+	{
+		"filename": "Armored Ogre_Front-Walking_8.png",
+		"frame": {"x":535, "y":0, "w":245, "h":295},
+		"spriteSourceSize": {"x":11,"y":4,"w":275,"h":310},
+		"sourceSize": {"w":275,"h":310}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 1024, "h": 1024},
+	"scale": "1"
+}
+}
