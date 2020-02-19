@@ -36,7 +36,7 @@ export class GameScene extends Phaser.Scene {
       sceneKey: "iso"
     });
 
-    this.load.atlas("hero", "assets/Knight.png", "assets/Knight.json");
+    this.load.atlas("hero", "assets/animations/Knight/Knight.png", "assets/animations/Knight/Knight.json");
     this.load.atlas(
       "explosion",
       "assets/animations/explosion/explosion.png",
@@ -53,39 +53,55 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/dragon/dragon.json"
     );
 
-    this.load.image("ground", "assets/cube.png");
-    this.load.image("door", "assets/door.png");
-    this.load.image("particle", "assets/animations/particle.png");
-    this.load.image("Chest1_closed", "assets/Chest1_closed.png");
-    this.load.image("Chest2_opened", "assets/Chest2_opened.png");
-    this.load.image("fountain", "assets/fountain.png");
-    this.load.image("Rock_1", "assets/Rock_1.png");
-    this.load.image("Rock_2", "assets/Rock_2.png");
-    this.load.image("over_grass_flower1", "assets/over_grass_flower1.png");
+    this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
+    this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
+    this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
+    this.load.image("door", "assets/game_pieces/door.png");
+    this.load.image("dragon_skeleton", "assets/objects/dragon_skeleton.png");
     this.load.image("flag", "assets/kenny-isometric/flag_NE.png");
-    this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
+    this.load.image("fountain", "assets/objects/fountain.png");
+    this.load.image("ground", "assets/game_pieces/cube.png");
     this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
     this.load.image("key", "assets/kenny-isometric/key_SW.png");
-    this.load.image("ruby", "assets/ruby.png");
-    this.load.image("sapphire", "assets/sapphire.png");
-    this.load.image("dragon_skeleton", "assets/dragon_skeleton.png");
-    this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
+    this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
+    this.load.image("over_grass_flower1", "assets/objects/over_grass_flower1.png");
+    this.load.image("particle", "assets/animations/particle.png");
+    this.load.image("Rock_1", "assets/objects/Rock_1.png");
+    this.load.image("Rock_2", "assets/objects/Rock_2.png");
+    this.load.image("ruby", "assets/objects/ruby.png");
+    this.load.image("sapphire", "assets/objects/sapphire.png");
 
+    this.load.audio("background_music", "assets/audio/background_music.mp3");
+    this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
     this.load.audio("door_close", "assets/audio/door_close.mp3");
-    this.load.audio("knock", "assets/audio/knock.mp3");
-    this.load.audio("thump", "assets/audio/thump.mp3");
-    this.load.audio("waterfall", "assets/audio/waterfall.mp3");
-    this.load.audio("background_music", "assets/audio/background_music.mp3");
-    this.load.audio("footsteps", "assets/audio/footsteps.mp3");
     this.load.audio("dragon_roar", "assets/audio/dragon_roar.mp3");
-    this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
+    this.load.audio("footsteps", "assets/audio/footsteps.mp3");
     this.load.audio("hero", "assets/audio/ta_da.mp3");
+    this.load.audio("knock", "assets/audio/knock.mp3");
+    this.load.audio("power_increase", "assets/audio/power_increase.wav");
     this.load.audio("roar", "assets/audio/roar.wav");
     this.load.audio("sword_slice", "assets/audio/sword_slice.wav");
+    this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("unsheath_sword", "assets/audio/unsheath_sword.mp3");
-    this.load.audio("power_increase", "assets/audio/power_increase.wav");
+
+    this.load.audio("awkward", "assets/audio/awkward.mp3");
+    this.load.audio("bounce_powerup", "assets/audio/bounce_powerup.wav");
+    this.load.audio("chimes_powerup", "assets/audio/chimes_powerup.wav");
+    this.load.audio("failed_powerdown", "assets/audio/failed_powerdown.wav");
+    this.load.audio("magical_falling", "assets/audio/magical_falling.mp3");
+    this.load.audio("mrhero_powerup", "assets/audio/mrheropowerup.mp3");
+    this.load.audio("slay_dragon", "assets/audio/slay_dragon.wav");
+    this.load.audio("sonic_powerup", "assets/audio/sonic_powerup.wav");
+    this.load.audio("space_powerup", "assets/audio/space_powerup.wav");
+    this.load.audio("timpani_failure", "assets/audio/timpani_failure.mp3");
+    this.load.audio(
+      "troubled_powerdown",
+      "assets/audio/troubled_powerdown.wav"
+    );
+    this.load.audio("uh-oh", "assets/audio/uh-oh.wav");
+    this.load.audio("waterfall", "assets/audio/waterfall.wav");
   }
 
   create() {
@@ -323,6 +339,9 @@ export class GameScene extends Phaser.Scene {
         ? "You need " + (51 - this.power) + " more power to fight a dragon"
         : "";
     this.updateRoomDescription();
+
+    this.powerupSounds = ["sonic_powerup", "bounce_powerup", "space_powerup", "mrhero_powerup", "chimes_powerup"];
+    this.powerdownSounds = ["awkward", "timpani_failure", "magical_falling", "uh_oh", "troubled_powerdown"];
   }
 
   speak(text) {
@@ -484,6 +503,7 @@ export class GameScene extends Phaser.Scene {
         await this.waitForInput();
       } else {
         await this.delay(settings.delay);
+        await this.simulateClick("button#select");
       }
       this.selectionIndicator.visible = false;
     };
