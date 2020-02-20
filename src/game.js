@@ -345,10 +345,7 @@ export class GameScene extends Phaser.Scene {
 
     this.updatePower();
 
-    this.roomDescription =
-      this.power <= 50
-        ? "You need " + (51 - this.power) + " more power to fight a dragon"
-        : "";
+    this.roomDescription = "";
     this.updateRoomDescription();
 
     this.powerupSounds = ["sonic_powerup", "bounce_powerup", "space_powerup", "mrhero_powerup", "chimes_powerup"];
@@ -659,7 +656,7 @@ export class GameScene extends Phaser.Scene {
       if (dragons.length > 0 && this.power <= 50) {
         // this room has dragons
         this.roomDescription =
-          "You need " + (51 - this.power) + " more power to fight a dragon";
+          "You need more power to fight enemies";
       } else {
         this.roomDescription = "";
       }
@@ -689,9 +686,9 @@ export class GameScene extends Phaser.Scene {
       if (
         this.power <= 50 &&
         object.power + this.power > 50 &&
-        this.roomDescription != "You're powerful enough to fight a dragon"
+        this.roomDescription != "Sufficient power"
       ) {
-        this.roomDescription = "You're powerful enough to fight a dragon";
+        this.roomDescription = "Sufficient power";
         this.updateRoomDescription();
       }
     }

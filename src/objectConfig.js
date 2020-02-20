@@ -15,8 +15,7 @@ export class ObjectConfig {
           "ruby",
           "sapphire",
           "dragon",
-          "cupcake",
-          "ogre"
+          "cupcake"
         ];
          this.heights = {
             Chest1_closed: 0,
@@ -33,8 +32,7 @@ export class ObjectConfig {
             ruby: 0,
             sapphire: 0,
             dragon: 0,
-            cupcake: 0,
-            ogre: 0
+            cupcake: 0
           };
            this.audio = {
             Chest1_closed: "knock",
@@ -51,8 +49,7 @@ export class ObjectConfig {
             ruby: "cha_ching",
             sapphire: "cha_ching",
             dragon: "dragon_roar",
-            cupcake: "knock",
-            ogre: "timpani_failure"
+            cupcake: "knock"
           };
            this.descriptions = {
             Chest1_closed: "red chest",
@@ -69,8 +66,7 @@ export class ObjectConfig {
             ruby: "ruby",
             sapphire: "sapphire",
             dragon: "dragon",
-            cupcake: "cupcake",
-            ogre: "ogre"
+            cupcake: "cupcake"
           };
           this.animations = {
             
@@ -90,8 +86,7 @@ export class ObjectConfig {
             ruby: 5,
             sapphire: 5,
             dragon: -20,
-            cupcake: 30,
-            ogre: -10
+            cupcake: 30
           };
           this.isCollectible = {
             Chest1_closed: false,
@@ -108,8 +103,7 @@ export class ObjectConfig {
             ruby: true,
             sapphire: true,
             dragon: false,
-            cupcake: true,
-            ogre: false
+            cupcake: true
           }
           this.isAnimated = {
             Chest1_closed: false,
@@ -126,8 +120,7 @@ export class ObjectConfig {
             ruby: false,
             sapphire: false,
             dragon: true,
-            cupcake: false,
-            ogre: true
+            cupcake: false
           }
     }
 }
