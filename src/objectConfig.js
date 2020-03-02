@@ -49,7 +49,7 @@ export class ObjectConfig {
             ruby: "cha_ching",
             sapphire: "cha_ching",
             dragon: "dragon_roar",
-            cupcake: "knock"
+            cupcake: "sonic_powerup"
           };
            this.descriptions = {
             Chest1_closed: "red chest",

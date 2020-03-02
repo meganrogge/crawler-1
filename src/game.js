@@ -96,7 +96,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("chimes_powerup", "assets/audio/chimes_powerup.wav");
     this.load.audio("failed_powerdown", "assets/audio/failed_powerdown.wav");
     this.load.audio("magical_falling", "assets/audio/magical_falling.mp3");
-    this.load.audio("mrhero_powerup", "assets/audio/mrheropowerup.mp3");
+    this.load.audio("mrhero_powerup", "assets/audio/mrhero_powerup.mp3");
     this.load.audio("slay_dragon", "assets/audio/slay_dragon.wav");
     this.load.audio("sonic_powerup", "assets/audio/sonic_powerup.wav");
     this.load.audio("space_powerup", "assets/audio/space_powerup.wav");
@@ -105,7 +105,7 @@ export class GameScene extends Phaser.Scene {
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
-    this.load.audio("uh-oh", "assets/audio/uh-oh.wav");
+    this.load.audio("uh-oh", "assets/audio/uh_oh.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.wav");
   }
 
@@ -150,16 +150,13 @@ export class GameScene extends Phaser.Scene {
     let { x: ix, y: iy } = this.map.initial_position;
 
     this.room = this.map.initial_room;
-
+    this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
       let objects = [
         ...Phaser.Math.RND.shuffle(
-          this.RandomlyPlacedObjects,
-          "dragon",
-          "dragon",
-          "cupcake"
+          this.RandomlyPlacedObjects
         )
       ];
       /* I bet this can be done by looking at the height of the images */
@@ -335,7 +332,6 @@ export class GameScene extends Phaser.Scene {
     if (settings.mode != "full") {
       this.autoPlay();
     }
-
     let backgroundMusic = this.sound.add("background_music", { loop: true });
     if (settings.sound && settings.backgroundMusic) {
       backgroundMusic.play();
@@ -376,6 +372,15 @@ export class GameScene extends Phaser.Scene {
   updateRoomDescription() {
     this.setRoomInfo(this.getRoomDescription());
     this.speak(this.roomDescription);
+  }
+
+  dragonsLeft(){
+    let numDragons = 0;
+    this.map.rooms.forEach(r => {
+      numDragons += r.objects.filter(o => o.description == "dragon").length;
+    });
+    console.log(numDragons);
+    return numDragons;
   }
 
   getRoomDescription() {
@@ -600,7 +605,12 @@ export class GameScene extends Phaser.Scene {
       this.roomDescription = this.target.object.description;
       this.updateRoomDescription();
     } else {
-      this.roomDescription = "exit " + this.getExitNumber(targets);
+      if(this.previousExit && this.target.exit.x == this.previousExit.x && this.target.exit.y == this.previousExit.y){
+        // let user know this exit takes them back to where they were so they don't go in circles
+        this.roomDescription = "return to prior room";
+      } else {
+        this.roomDescription = "exit " + this.getExitNumber(targets);
+      }
       this.updateRoomDescription();
     }
     this.selectionIndicator.visible = true;
@@ -638,6 +648,7 @@ export class GameScene extends Phaser.Scene {
 
   async visitChoice(target) {
     if ("exit" in target) {
+      this.previousExit = target.exit;
       let { x, y, nextroom, stepIn } = target.exit;
 
       x += stepIn.x;
@@ -682,7 +693,7 @@ export class GameScene extends Phaser.Scene {
   async interactWithObject(object, x, y) {
     if (object.power > 0) {
       // play score sound
-      this.playSound("power_increase");
+      await this.playSound(Phaser.Math.RND.shuffle(this.powerupSounds)[0]);
       if (
         this.power <= 50 &&
         object.power + this.power > 50 &&
@@ -758,6 +769,7 @@ export class GameScene extends Phaser.Scene {
         // change description to you've already opened that chest?
       }
     }
+    this.dragonsLeft();
     this.power += object.power;
     this.updatePower();
   }
@@ -807,6 +819,7 @@ export class GameScene extends Phaser.Scene {
       };
     });
     sortByDistance(exits, px, py);
+
     targets = [...targets, ...exits];
     return targets;
   }
