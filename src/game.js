@@ -57,6 +57,12 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/ogre/ogre.png",
       "assets/animations/ogre/ogre.json"
     );
+    this.load.atlas(
+      "slime",
+      "assets/animations/slime/slime.png",
+      "assets/animations/slime/slime.json"
+    );
+
 
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
@@ -105,8 +111,9 @@ export class GameScene extends Phaser.Scene {
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
-    this.load.audio("uh-oh", "assets/audio/uh_oh.wav");
+    this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.wav");
+    this.load.audio("slime", "assets/audio/slime.wav");
   }
 
   create() {
@@ -177,7 +184,13 @@ export class GameScene extends Phaser.Scene {
         frames: this.anims.generateFrameNames("ogre"),
         frameRate: 4,
         repeat: -1
-      })
+      });
+      this.anims.create({
+        key: "slime",
+        frames: this.anims.generateFrameNames("slime"),
+        frameRate: 4,
+        repeat: 0
+      });
       let positions = this.generateObjectPositions(room);
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
@@ -345,7 +358,7 @@ export class GameScene extends Phaser.Scene {
     this.updateRoomDescription();
 
     this.powerupSounds = ["sonic_powerup", "bounce_powerup", "space_powerup", "mrhero_powerup", "chimes_powerup"];
-    this.powerdownSounds = ["awkward", "timpani_failure", "magical_falling", "uh_oh", "troubled_powerdown"];
+    this.powerdownSounds = ["awkward", "timpani_failure", "magical_falling", "troubled_powerdown"];
   }
 
   speak(text) {
@@ -702,6 +715,8 @@ export class GameScene extends Phaser.Scene {
         this.roomDescription = "Sufficient power";
         this.updateRoomDescription();
       }
+    } else {
+      await this.playSound(Phaser.Math.RND.shuffle(this.powerdownSounds)[0]);
     }
     if (object.isCollectible) {
       // if object doesn't have a custom animation, upon collection, emit particles
@@ -767,6 +782,17 @@ export class GameScene extends Phaser.Scene {
         }
       } else if (object.description == "Chest2_open") {
         // change description to you've already opened that chest?
+      } else if (object.description == "ogre"){
+        await this.playSound("uh_oh");
+        await this.delay(1000);
+        await this.playSound("slime");
+
+        this.createAnimation("slime", this.player.isoX, this.player.isoY);
+        this.roomDescription =
+          "You got slimed!";
+        this.updateRoomDescription();
+        this.inputEnabled = false;
+        await this.delay(3000);
       }
     }
     this.dragonsLeft();
@@ -795,6 +821,9 @@ export class GameScene extends Phaser.Scene {
   async createAnimation(type, x, y) {
     let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
     a.scale = Math.sqrt(3) / a.width;
+    if(type == "slime"){
+      a.scale /= 100;
+    }
     a.play(type, true);
     await this.delay(1000);
     a.destroy();
