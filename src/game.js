@@ -786,7 +786,7 @@ export class GameScene extends Phaser.Scene {
         await this.playSound("uh_oh");
         await this.delay(1000);
         await this.playSound("slime");
-
+        this.map.removeObject(object, x, y);
         this.createAnimation("slime", this.player.isoX, this.player.isoY);
         this.roomDescription =
           "You got slimed!";

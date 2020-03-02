@@ -91,7 +91,7 @@ export class ObjectConfig {
             sapphire: 5,
             dragon: -20,
             cupcake: 30,
-            ogre: -20
+            ogre: -5
           };
           this.isCollectible = {
             Chest1_closed: false,
