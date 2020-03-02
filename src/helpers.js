@@ -28,14 +28,14 @@ export function sortByDistance(array, x, y) {
     );
 }
 
-export function sortForDragons(array, power) {
-  let non_dragons = array.filter(i => !i.object.description || i.object.description && i.object.description != "dragon");
-  let dragons = array.filter(i => i.object.description == "dragon");
-  let arr = non_dragons.concat(dragons);
-  if(sum_of_object_rewards(non_dragons) + power <= 50){
-    arr = non_dragons;
+export function sortForEnemies(array, power) {
+  let non_enemies = array.filter(i => !i.object.description || i.object.description && (i.object.description != "dragon" && i.object.description != "ogre"));
+  let enemies = array.filter(i => i.object.description == "dragon" || i.object.description == "ogre");
+  let arr = non_enemies.concat(enemies);
+  if(sum_of_object_rewards(non_enemies) + power <= 50){
+    arr = non_enemies;
   }
-  return { nonDragons: arr, dragons: dragons};
+  return { nonEnemies: arr, enemies: enemies};
 }
 
 function sum_of_object_rewards(non_dragons){

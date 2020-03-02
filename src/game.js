@@ -5,7 +5,7 @@ import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
-import { sortForDragons } from "./helpers.js";
+import { sortForEnemies } from "./helpers.js";
 import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
@@ -163,7 +163,9 @@ export class GameScene extends Phaser.Scene {
     this.map.rooms.forEach(room => {
       let objects = [
         ...Phaser.Math.RND.shuffle(
-          this.RandomlyPlacedObjects
+          this.RandomlyPlacedObjects,
+          "cupcake",
+          "dragon"
         )
       ];
       /* I bet this can be done by looking at the height of the images */
@@ -576,8 +578,8 @@ export class GameScene extends Phaser.Scene {
       let numTargets = targets.length;
 
       if (this.power <= 50) {
-        let result = sortForDragons(this.getTargets(), this.power);
-        targets = result.nonDragons;
+        let result = sortForEnemies(this.getTargets(), this.power);
+        targets = result.nonEnemies;
         if (numTargets - targets.length == 0) {
           roomsVisited.push(this.room);
         }
@@ -676,7 +678,7 @@ export class GameScene extends Phaser.Scene {
       // make the sound of a door to indicate room change
       this.playSound("click");
 
-      let dragons = sortForDragons(this.getTargets(), this.power).dragons;
+      let dragons = sortForEnemies(this.getTargets(), this.power);
       if (dragons.length > 0 && this.power <= 50) {
         // this room has dragons
         this.roomDescription =
