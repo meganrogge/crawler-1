@@ -60,6 +60,7 @@ window.onload = () => {
   const delayInput = getInput("#delay");
 
   const dictationInput = getInput("#roomDictation");
+  dictationInput.checked = settings.dictation;
 
   const voiceInput = getInput('#voiceSelect');
 
@@ -68,6 +69,7 @@ window.onload = () => {
   const pitchInput = getInput('#pitch');
 
   const backgroundMusic = getInput('#backgroundMusic');
+  backgroundMusic.checked = settings.backgroundMusic;
 
   document.getElementById("settings").addEventListener("change", e => {
     console.log("change");
@@ -83,5 +85,4 @@ window.onload = () => {
     settings.backgroundMusic = backgroundMusic.checked;
     settings.persist();
   });
-
 };
