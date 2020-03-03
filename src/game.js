@@ -159,9 +159,9 @@ export class GameScene extends Phaser.Scene {
       "x+1y+1"
     ];
     this.RandomlyPlacedObjects = this.objectConfig.objects;
-
+    console.log(this.RandomlyPlacedObjects);
     let { x: ix, y: iy } = this.map.initial_position;
-
+    this.levelCompleted = false;
     this.room = this.map.initial_room;
     this.previousExit = null;
     this.tiles = [];
@@ -169,8 +169,7 @@ export class GameScene extends Phaser.Scene {
     this.map.rooms.forEach(room => {
       let objects = [
         ...Phaser.Math.RND.shuffle(
-          this.RandomlyPlacedObjects,
-          "dragon"
+          this.RandomlyPlacedObjects
         )
       ];
       /* I bet this can be done by looking at the height of the images */
@@ -405,10 +404,10 @@ export class GameScene extends Phaser.Scene {
     this.speak(this.roomDescription);
   }
 
-  dragonsLeft() {
+  numObjects(objectType) {
     let numDragons = 0;
     this.map.rooms.forEach(r => {
-      numDragons += r.objects.filter(o => o.description == "dragon").length;
+      numDragons += r.objects.filter(o => o.description == objectType).length;
     });
     console.log(numDragons);
     return numDragons;
@@ -612,6 +611,7 @@ export class GameScene extends Phaser.Scene {
           }
         } else {
           await simulateSelect(target.object);
+          this.speak(target.object.description);
           await this.visitChoice(target);
         }
       }
@@ -682,6 +682,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async visitChoice(target) {
+    // this.roomDescription = "";
     if ("exit" in target) {
       this.previousExit = target.exit;
       let { x, y, nextroom, stepIn } = target.exit;
@@ -815,7 +816,11 @@ export class GameScene extends Phaser.Scene {
         await this.delay(3000);
       }
     }
-    this.dragonsLeft();
+    if(this.numObjects("dragon") == 0 && !this.levelCompleted){
+      this.roomDescription = "You've slayed the last dragon on this level!";
+      this.updateRoomDescription();
+      this.levelCompleted = true;
+    }
     this.power += object.power;
     this.updatePower();
   }
@@ -868,7 +873,6 @@ export class GameScene extends Phaser.Scene {
       };
     });
     sortByDistance(exits, px, py);
-
     targets = [...targets, ...exits];
     return targets;
   }
