@@ -11,6 +11,8 @@ class Settings {
     this.rate = 1;
     this.pitch = 1;
     this.backgroundMusic = false;
+    this.fixedGame = false;
+    this.includeObstacles = false;
   }
 
   persist() {
@@ -23,7 +25,9 @@ class Settings {
       voice: this.voice,
       rate: this.rate,
       pitch: this.pitch,
-      backgroundMusic: this.backgroundMusic
+      backgroundMusic: this.backgroundMusic,
+      fixedGame: this.fixedGame,
+      includeObstacles: this.includeObstacles
     };
     const json = JSON.stringify(data);
     localStorage.setItem(key, json);
@@ -42,6 +46,8 @@ class Settings {
         this.rate = data.rate;
         this.pitch = data.pitch;
         this.backgroundMusic = data.backgroundMusic;
+        this.fixedGame = data.fixedGame;
+        this.includeObstacles = data.includeObstacles;
       }
     }
   }

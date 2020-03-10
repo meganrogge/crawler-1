@@ -126,6 +126,7 @@ export class GameScene extends Phaser.Scene {
     this.isoGroup = this.add.group();
     this.objectConfig = new ObjectConfig();
     this.map = new Map({
+      seed: settings.fixedGame ? "Abcd" : null,
       size: [100, 100],
       rooms: {
         initial: {
@@ -147,6 +148,7 @@ export class GameScene extends Phaser.Scene {
       max_interconnect_length: 10,
       room_count: 10
     });
+
     this.directions = [
       "x-1y-1",
       "x+0y-1",
@@ -158,8 +160,10 @@ export class GameScene extends Phaser.Scene {
       "x+0y+1",
       "x+1y+1"
     ];
-    this.RandomlyPlacedObjects = this.objectConfig.objects;
-    console.log(this.RandomlyPlacedObjects);
+    this.RandomlyPlacedObjects = !settings.includeObstacles
+      ? this.objectConfig.objects.filter(obj => obj != "ogre")
+      : this.objectConfig.objects;
+
     let { x: ix, y: iy } = this.map.initial_position;
     this.levelCompleted = false;
     this.room = this.map.initial_room;
@@ -167,11 +171,7 @@ export class GameScene extends Phaser.Scene {
     this.tiles = [];
     this.acquiredObjects = [];
     this.map.rooms.forEach(room => {
-      let objects = [
-        ...Phaser.Math.RND.shuffle(
-          this.RandomlyPlacedObjects
-        )
-      ];
+      let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
       this.anims.create({
         key: "coin",
@@ -816,7 +816,7 @@ export class GameScene extends Phaser.Scene {
         await this.delay(3000);
       }
     }
-    if(this.numObjects("dragon") == 0 && !this.levelCompleted){
+    if (this.numObjects("dragon") == 0 && !this.levelCompleted) {
       this.roomDescription = "You've slayed the last dragon on this level!";
       this.updateRoomDescription();
       this.levelCompleted = true;

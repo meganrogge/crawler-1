@@ -71,6 +71,12 @@ window.onload = () => {
   const backgroundMusic = getInput('#backgroundMusic');
   backgroundMusic.checked = settings.backgroundMusic;
 
+  const fixedGame = getInput('#fixedGame');
+  fixedGame.checked = settings.fixedGame;
+
+  const includeObstacles = getInput('#includeObstacles');
+  includeObstacles.checked = settings.includeObstacles;
+
   document.getElementById("settings").addEventListener("change", e => {
     console.log("change");
     const modeInput = getInput("input[name=mode]:checked");
@@ -83,6 +89,8 @@ window.onload = () => {
     settings.rate = Number(rateInput.value);
     settings.pitch = Number(pitchInput.value);
     settings.backgroundMusic = backgroundMusic.checked;
+    settings.fixedGame = fixedGame.checked;
+    settings.includeObstacles = includeObstacles.checked;
     settings.persist();
   });
 };
