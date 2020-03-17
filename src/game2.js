@@ -10,10 +10,10 @@ import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
 
-export class GameScene extends Phaser.Scene {
+export class GameScene2 extends Phaser.Scene {
   constructor() {
     super({
-      key: "GameScene",
+      key: "GameScene2",
       mapAdd: { isoPlugin: "iso" }
     });
     this.canvas = document.querySelector("canvas");
@@ -169,9 +169,7 @@ export class GameScene extends Phaser.Scene {
     this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
-    let numRooms = this.map.rooms.length;
-    let roomIndex = 0;
-    let noDragons = true;
+
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
@@ -208,16 +206,8 @@ export class GameScene extends Phaser.Scene {
         if (!positions.length) {
           break;
         }
-        if(roomIndex == numRooms-1 && noDragons){
-          // make sure each level has at least one dragon
-          objects.pop();
-          objects.push("dragon");
-        }
         /// remove the position of the player
         let o = objects.pop();
-        if(o == "dragon"){
-          noDragons = false;
-        };
         let [ox, oy] = positions.pop();
         let isoObj = new EnhancedIsoSprite({
           scene: this,
@@ -247,7 +237,6 @@ export class GameScene extends Phaser.Scene {
           ([px, py]) => Math.hypot(px - ox, py - oy) > 1
         );
       }
-      roomIndex++;
     });
 
     let { width, height } = this.map.size;
@@ -338,8 +327,6 @@ export class GameScene extends Phaser.Scene {
           await this.makeChoice();
         } else if (e.key == " " || e.key == "ArrowRight") {
           await this.selectNext();
-        } else if(e.key =="b"){
-          this.scene.restart('GameScene2');
         }
         this.inputEnabled = true;
       }
@@ -832,10 +819,6 @@ export class GameScene extends Phaser.Scene {
       this.roomDescription = "You've slayed the last dragon on this level!";
       this.updateRoomDescription();
       this.levelCompleted = true;
-      await this.delay(settings.delay*3);
-      this.roomDescription = "You won! Moving on to the next level!";
-      this.updateRoomDescription();
-      this.scene.restart("GameScene2");
     }
     this.power += object.power;
     this.updatePower();
