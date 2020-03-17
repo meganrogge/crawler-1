@@ -780,9 +780,11 @@ export class GameScene extends Phaser.Scene {
       this.acquiredObjects.push(object);
       object.destroy();
     } else if (object.description == "dragon") {
-      this.interactWithDragon(object);
+      await this.interactWithDragon(object, x, y);
     } else if (object.description == "ogre") {
-      this.interactWithOgre(object);
+      await this.interactWithOgre(object, x, y);
+    } else if(object.description == "ghost"){
+      await this.interactWithGhost(object, x, y);
     }
     if (this.numObjects(this.enemy) == 0) {
       this.levelCompleted = true;
@@ -796,7 +798,7 @@ export class GameScene extends Phaser.Scene {
     this.updatePower();
   }
 
-  interactWithOgre(object){
+  async interactWithOgre(object, x, y){
     await this.playSound("uh_oh");
         await this.delay(1000);
         await this.playSound("slime");
@@ -808,7 +810,42 @@ export class GameScene extends Phaser.Scene {
         await this.delay(3000);
   }
 
-  interactWithDragon(object){
+  async interactWithGhost(object, x, y){
+    if (this.power > 50) {
+      // do kill animation at the dragon's coordinates
+      // do player animation of fight and move to dragon's coordinates
+      //this.createAnimation("kill", x, y);
+      this.playSound("unsheath_sword");
+      await this.delay(settings.delay);
+      this.playSound("sword_slice");
+      await this.delay(settings.delay);
+      this.playSound("roar");
+      this.map.removeObject(object, x, y);
+      object.destroy();
+      await this.delay(1000);
+      this.playSound("hero");
+    } else {
+      // change description to you need a shield to fight and defeat the dragon
+      // do kill animation at the player's coordinates?
+      // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
+      this.playSound("dragon_roar");
+      this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.player.destroy();
+      this.roomDescription =
+        "Insufficient power to fight the ghost - game over!";
+      this.updateRoomDescription();
+      this.inputEnabled = false;
+      await this.delay(3000);
+      if (this.level == 0) {
+        document.getElementById("setup").click();
+      } else {
+        this.level--;
+        this.scene.restart();
+      }
+    }
+  }
+
+  async interactWithDragon(object, x, y){
     if (this.power > 50) {
       // do kill animation at the dragon's coordinates
       // do player animation of fight and move to dragon's coordinates
@@ -847,10 +884,11 @@ export class GameScene extends Phaser.Scene {
       if (this.level == 0) {
         document.getElementById("setup").click();
       } else {
+        this.level--;
+        //update description to say you went down a level
         this.scene.restart();
       }
     }
-  }
   }
 
   updatePower() {
