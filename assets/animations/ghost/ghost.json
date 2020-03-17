@@ -1,0 +1,112 @@
+{
+"frames": [
+	{
+		"filename": "Ghost_Front-Walking_0.png",
+		"frame": {"x":86, "y":129, "w":85, "h":128},
+		"spriteSourceSize": {"x":3,"y":6,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_1.png",
+		"frame": {"x":86, "y":388, "w":85, "h":129},
+		"spriteSourceSize": {"x":3,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_10.png",
+		"frame": {"x":172, "y":130, "w":83, "h":127},
+		"spriteSourceSize": {"x":3,"y":4,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_11.png",
+		"frame": {"x":0, "y":647, "w":85, "h":127},
+		"spriteSourceSize": {"x":2,"y":4,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_12.png",
+		"frame": {"x":172, "y":0, "w":84, "h":129},
+		"spriteSourceSize": {"x":3,"y":4,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_13.png",
+		"frame": {"x":0, "y":389, "w":85, "h":128},
+		"spriteSourceSize": {"x":3,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_14.png",
+		"frame": {"x":0, "y":259, "w":85, "h":129},
+		"spriteSourceSize": {"x":3,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_15.png",
+		"frame": {"x":0, "y":130, "w":85, "h":128},
+		"spriteSourceSize": {"x":3,"y":6,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_16.png",
+		"frame": {"x":0, "y":0, "w":85, "h":129},
+		"spriteSourceSize": {"x":3,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_2.png",
+		"frame": {"x":0, "y":775, "w":85, "h":129},
+		"spriteSourceSize": {"x":3,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_3.png",
+		"frame": {"x":86, "y":258, "w":85, "h":129},
+		"spriteSourceSize": {"x":2,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_4.png",
+		"frame": {"x":86, "y":647, "w":85, "h":128},
+		"spriteSourceSize": {"x":2,"y":5,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_5.png",
+		"frame": {"x":86, "y":518, "w":85, "h":128},
+		"spriteSourceSize": {"x":2,"y":4,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_6.png",
+		"frame": {"x":172, "y":258, "w":83, "h":129},
+		"spriteSourceSize": {"x":3,"y":3,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_7.png",
+		"frame": {"x":86, "y":776, "w":85, "h":128},
+		"spriteSourceSize": {"x":2,"y":3,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_8.png",
+		"frame": {"x":0, "y":518, "w":85, "h":128},
+		"spriteSourceSize": {"x":2,"y":3,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	},
+	{
+		"filename": "Ghost_Front-Walking_9.png",
+		"frame": {"x":86, "y":0, "w":85, "h":128},
+		"spriteSourceSize": {"x":2,"y":3,"w":91,"h":135},
+		"sourceSize": {"w":91,"h":135}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 512, "h": 1024},
+	"scale": "1"
+}
+}

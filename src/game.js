@@ -67,7 +67,11 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/slime/slime.png",
       "assets/animations/slime/slime.json"
     );
-
+    this.load.atlas(
+      "ghost",
+      "assets/animations/ghost/ghost.png",
+      "assets/animations/ghost/ghost.json"
+    );
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
     this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
@@ -203,6 +207,12 @@ export class GameScene extends Phaser.Scene {
         frames: this.anims.generateFrameNames("slime"),
         frameRate: 4,
         repeat: 0
+      });
+      this.anims.create({
+        key: "ghost",
+        frames: this.anims.generateFrameNames("ghost"),
+        frameRate: 4,
+        repeat: -1
       });
       let positions = this.generateObjectPositions(room);
       // remove the player position
@@ -770,72 +780,9 @@ export class GameScene extends Phaser.Scene {
       this.acquiredObjects.push(object);
       object.destroy();
     } else if (object.description == "dragon") {
-      if (this.power > 50) {
-        // do kill animation at the dragon's coordinates
-        // do player animation of fight and move to dragon's coordinates
-        //this.createAnimation("kill", x, y);
-        this.playSound("unsheath_sword");
-        await this.delay(settings.delay);
-        this.playSound("sword_slice");
-        await this.delay(settings.delay);
-        this.playSound("roar");
-        this.map.removeObject(object, x, y);
-        let d = this.add.isoSprite(
-          x,
-          y,
-          0,
-          "dragon_skeleton",
-          this.isoGroup,
-          null
-        );
-        d.scale = Math.sqrt(3) / d.width;
-        object.destroy();
-        await this.delay(1000);
-        d.destroy();
-        this.playSound("hero");
-      } else {
-        // change description to you need a shield to fight and defeat the dragon
-        // do kill animation at the player's coordinates?
-        // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
-        this.playSound("dragon_roar");
-        this.createAnimation("explosion", this.player.isoX, this.player.isoY);
-        this.player.destroy();
-        this.roomDescription =
-          "Insufficient power to fight the dragon - game over!";
-        this.updateRoomDescription();
-        this.inputEnabled = false;
-        await this.delay(3000);
-        if (this.level == 0) {
-          document.getElementById("setup").click();
-        } else {
-          this.scene.restart();
-        }
-      }
-    } else {
-      this.playSound(object.audio);
-      if (object.description == "Chest1_closed") {
-        if (this.hasAcquired("key")) {
-          // unlock the chest (replacing closed with open chest) and
-          // have contents pop out in surrounding area with announcement that
-          // you've found these objects
-        } else {
-          // change description to you need a key to open the chest
-          this.roomDescription = "you need a key to open this chest!";
-          this.updateRoomDescription();
-        }
-      } else if (object.description == "Chest2_open") {
-        // change description to you've already opened that chest?
-      } else if (object.description == "ogre") {
-        await this.playSound("uh_oh");
-        await this.delay(1000);
-        await this.playSound("slime");
-        this.map.removeObject(object, x, y);
-        this.createAnimation("slime", this.player.isoX, this.player.isoY);
-        this.roomDescription = "You got slimed!";
-        this.updateRoomDescription();
-        this.inputEnabled = false;
-        await this.delay(3000);
-      }
+      this.interactWithDragon(object);
+    } else if (object.description == "ogre") {
+      this.interactWithOgre(object);
     }
     if (this.numObjects(this.enemy) == 0) {
       this.levelCompleted = true;
@@ -847,6 +794,63 @@ export class GameScene extends Phaser.Scene {
     }
     this.power += object.power;
     this.updatePower();
+  }
+
+  interactWithOgre(object){
+    await this.playSound("uh_oh");
+        await this.delay(1000);
+        await this.playSound("slime");
+        this.map.removeObject(object, x, y);
+        this.createAnimation("slime", this.player.isoX, this.player.isoY);
+        this.roomDescription = "You got slimed!";
+        this.updateRoomDescription();
+        this.inputEnabled = false;
+        await this.delay(3000);
+  }
+
+  interactWithDragon(object){
+    if (this.power > 50) {
+      // do kill animation at the dragon's coordinates
+      // do player animation of fight and move to dragon's coordinates
+      //this.createAnimation("kill", x, y);
+      this.playSound("unsheath_sword");
+      await this.delay(settings.delay);
+      this.playSound("sword_slice");
+      await this.delay(settings.delay);
+      this.playSound("roar");
+      this.map.removeObject(object, x, y);
+      let d = this.add.isoSprite(
+        x,
+        y,
+        0,
+        "dragon_skeleton",
+        this.isoGroup,
+        null
+      );
+      d.scale = Math.sqrt(3) / d.width;
+      object.destroy();
+      await this.delay(1000);
+      d.destroy();
+      this.playSound("hero");
+    } else {
+      // change description to you need a shield to fight and defeat the dragon
+      // do kill animation at the player's coordinates?
+      // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
+      this.playSound("dragon_roar");
+      this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.player.destroy();
+      this.roomDescription =
+        "Insufficient power to fight the dragon - game over!";
+      this.updateRoomDescription();
+      this.inputEnabled = false;
+      await this.delay(3000);
+      if (this.level == 0) {
+        document.getElementById("setup").click();
+      } else {
+        this.scene.restart();
+      }
+    }
+  }
   }
 
   updatePower() {
