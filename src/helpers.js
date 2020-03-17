@@ -28,9 +28,10 @@ export function sortByDistance(array, x, y) {
     );
 }
 
-export function sortForEnemies(array, power) {
-  let non_enemies = array.filter(i => !i.object.description || i.object.description && (i.object.description != "dragon" && i.object.description != "ogre"));
-  let enemies = array.filter(i => i.object.description == "dragon" || i.object.description == "ogre");
+export function sortForEnemies(enemy, array, power) {
+  console.log(enemy);
+  let non_enemies = array.filter(i => !i.object.description || i.object.description && (i.object.description != enemy && i.object.description != "ogre"));
+  let enemies = array.filter(i => i.object.description == enemy || i.object.description == "ogre");
   let arr = non_enemies.concat(enemies);
   if(sum_of_object_rewards(non_enemies) + power <= 50){
     arr = non_enemies;
@@ -38,8 +39,8 @@ export function sortForEnemies(array, power) {
   return { nonEnemies: arr, enemies: enemies};
 }
 
-function sum_of_object_rewards(non_dragons){
-  let r = non_dragons.filter(i => i.object.power);
+function sum_of_object_rewards(non_enemies){
+  let r = non_enemies.filter(i => i.object.power);
   if(r.length > 0){
     r = r.map(i => i.object.power).reduce((accumulator, currentValue) => accumulator + currentValue);
   } else {

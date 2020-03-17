@@ -1,5 +1,9 @@
 export class ObjectConfig {
     constructor(){
+        this.enemies = [
+          "dragon",
+          "ghost"
+        ],
         this.objects = [
           "Chest1_closed",
           "Chest2_opened",
@@ -14,7 +18,6 @@ export class ObjectConfig {
           "coin",
           "ruby",
           "sapphire",
-          "dragon",
           "cupcake",
           "ogre"
         ];

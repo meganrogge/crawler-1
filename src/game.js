@@ -20,7 +20,8 @@ export class GameScene extends Phaser.Scene {
     this.power = 50;
     this.targetIndex = -1;
     this.speaker = window.speechSynthesis;
-
+    this.levelCompleted = false;
+    this.level = 0;
     // cast this once so I don't have to below
     // shouldn't I be able to just assert this?
     this.sound = /** @type {Phaser.Sound.WebAudioSoundManager} */ (super.sound);
@@ -147,7 +148,7 @@ export class GameScene extends Phaser.Scene {
       max_interconnect_length: 10,
       room_count: 10
     });
-
+    this.enemy = this.objectConfig.enemies[this.level];
     this.directions = [
       "x-1y-1",
       "x+0y-1",
@@ -159,19 +160,23 @@ export class GameScene extends Phaser.Scene {
       "x+0y+1",
       "x+1y+1"
     ];
+
+    this.objectConfig.objects.push(this.enemy);
+
     this.RandomlyPlacedObjects = !settings.includeObstacles
       ? this.objectConfig.objects.filter(obj => obj != "ogre")
       : this.objectConfig.objects;
 
     let { x: ix, y: iy } = this.map.initial_position;
-    this.levelCompleted = false;
+
     this.room = this.map.initial_room;
     this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
-    let noDragons = true;
+    let noEnemies = true;
+    console.log("Level " + this.level);
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
@@ -203,21 +208,21 @@ export class GameScene extends Phaser.Scene {
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
       positions = Phaser.Math.RND.shuffle(positions);
-      const nobjects = Phaser.Math.RND.between(1, 3);
-      for (let i = 0; i < nobjects; i++) {
+      const numObjects = Phaser.Math.RND.between(1, 3);
+      for (let i = 0; i < numObjects; i++) {
         if (!positions.length) {
           break;
         }
-        if(roomIndex == numRooms-1 && noDragons){
-          // make sure each level has at least one dragon
+        if (roomIndex == numRooms - 1 && noEnemies) {
+          // make sure each level has at least one enemy
           objects.pop();
-          objects.push("dragon");
+          objects.push(this.enemy);
         }
         /// remove the position of the player
         let o = objects.pop();
-        if(o == "dragon"){
-          noDragons = false;
-        };
+        if (o == this.enemy) {
+          noEnemies = false;
+        }
         let [ox, oy] = positions.pop();
         let isoObj = new EnhancedIsoSprite({
           scene: this,
@@ -338,8 +343,8 @@ export class GameScene extends Phaser.Scene {
           await this.makeChoice();
         } else if (e.key == " " || e.key == "ArrowRight") {
           await this.selectNext();
-        } else if(e.key =="b"){
-          this.scene.restart('GameScene2');
+        } else if (e.key == "b") {
+          this.scene.restart();
         }
         this.inputEnabled = true;
       }
@@ -417,12 +422,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   numObjects(objectType) {
-    let numDragons = 0;
+    let objectCount = 0;
     this.map.rooms.forEach(r => {
-      numDragons += r.objects.filter(o => o.description == objectType).length;
+      objectCount += r.objects.filter(o => o.description == objectType).length;
     });
-    console.log(numDragons);
-    return numDragons;
+    console.log(objectType + " " + objectCount);
+    return objectCount;
   }
 
   getRoomDescription() {
@@ -605,7 +610,7 @@ export class GameScene extends Phaser.Scene {
       let numTargets = targets.length;
 
       if (this.power <= 50) {
-        let result = sortForEnemies(this.getTargets(), this.power);
+        let result = sortForEnemies(this.enemy, this.getTargets(), this.power);
         targets = result.nonEnemies;
         if (numTargets - targets.length == 0) {
           roomsVisited.push(this.room);
@@ -711,10 +716,10 @@ export class GameScene extends Phaser.Scene {
       // make the sound of a door to indicate room change
       this.playSound("click");
 
-      let dragons = sortForEnemies(this.getTargets(), this.power);
-      if (dragons.length > 0 && this.power <= 50) {
-        // this room has dragons
-        this.roomDescription = "You need more power to fight enemies";
+      let enemies = sortForEnemies(this.enemy, this.getTargets(), this.power);
+      if (enemies.length > 0 && this.power <= 50) {
+        // this room has no enemies
+        this.roomDescription = "You need more power to fight "+this.enemy+"s";
       } else {
         this.roomDescription = "";
       }
@@ -800,7 +805,11 @@ export class GameScene extends Phaser.Scene {
         this.updateRoomDescription();
         this.inputEnabled = false;
         await this.delay(3000);
-        document.getElementById("setup").click();
+        if (this.level == 0) {
+          document.getElementById("setup").click();
+        } else {
+          this.scene.restart();
+        }
       }
     } else {
       this.playSound(object.audio);
@@ -828,14 +837,13 @@ export class GameScene extends Phaser.Scene {
         await this.delay(3000);
       }
     }
-    if (this.numObjects("dragon") == 0 && !this.levelCompleted) {
-      this.roomDescription = "You've slayed the last dragon on this level!";
-      this.updateRoomDescription();
+    if (this.numObjects(this.enemy) == 0) {
       this.levelCompleted = true;
-      await this.delay(settings.delay*3);
       this.roomDescription = "You won! Moving on to the next level!";
       this.updateRoomDescription();
-      this.scene.restart("GameScene2");
+      await this.delay(3000);
+      this.level++;
+      this.scene.restart();
     }
     this.power += object.power;
     this.updatePower();
