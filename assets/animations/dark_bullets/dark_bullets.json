@@ -1,0 +1,136 @@
+{
+"frames": [
+	{
+		"filename": "Dark_Bullets-animation_0.png",
+		"frame": {"x":0, "y":401, "w":159, "h":159},
+		"spriteSourceSize": {"x":14,"y":14,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_1.png",
+		"frame": {"x":0, "y":863, "w":158, "h":155},
+		"spriteSourceSize": {"x":14,"y":16,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_10.png",
+		"frame": {"x":0, "y":703, "w":158, "h":159},
+		"spriteSourceSize": {"x":15,"y":14,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_11.png",
+		"frame": {"x":160, "y":269, "w":151, "h":155},
+		"spriteSourceSize": {"x":18,"y":16,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_12.png",
+		"frame": {"x":159, "y":682, "w":154, "h":123},
+		"spriteSourceSize": {"x":16,"y":32,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_13.png",
+		"frame": {"x":0, "y":265, "w":159, "h":135},
+		"spriteSourceSize": {"x":14,"y":26,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_14.png",
+		"frame": {"x":314, "y":682, "w":142, "h":153},
+		"spriteSourceSize": {"x":23,"y":17,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_15.png",
+		"frame": {"x":437, "y":411, "w":110, "h":159},
+		"spriteSourceSize": {"x":38,"y":14,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_16.png",
+		"frame": {"x":315, "y":0, "w":121, "h":156},
+		"spriteSourceSize": {"x":33,"y":16,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_17.png",
+		"frame": {"x":160, "y":125, "w":154, "h":143},
+		"spriteSourceSize": {"x":16,"y":22,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_18.png",
+		"frame": {"x":159, "y":561, "w":157, "h":120},
+		"spriteSourceSize": {"x":15,"y":33,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_19.png",
+		"frame": {"x":0, "y":561, "w":158, "h":141},
+		"spriteSourceSize": {"x":14,"y":23,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_2.png",
+		"frame": {"x":160, "y":0, "w":154, "h":124},
+		"spriteSourceSize": {"x":16,"y":32,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_20.png",
+		"frame": {"x":0, "y":401, "w":159, "h":159},
+		"spriteSourceSize": {"x":14,"y":14,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_3.png",
+		"frame": {"x":0, "y":121, "w":159, "h":143},
+		"spriteSourceSize": {"x":14,"y":23,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_4.png",
+		"frame": {"x":314, "y":836, "w":142, "h":156},
+		"spriteSourceSize": {"x":23,"y":16,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_5.png",
+		"frame": {"x":437, "y":0, "w":110, "h":159},
+		"spriteSourceSize": {"x":38,"y":14,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_6.png",
+		"frame": {"x":317, "y":411, "w":119, "h":153},
+		"spriteSourceSize": {"x":34,"y":18,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_7.png",
+		"frame": {"x":159, "y":806, "w":154, "h":136},
+		"spriteSourceSize": {"x":16,"y":26,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_8.png",
+		"frame": {"x":0, "y":0, "w":159, "h":120},
+		"spriteSourceSize": {"x":14,"y":34,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	},
+	{
+		"filename": "Dark_Bullets-animation_9.png",
+		"frame": {"x":312, "y":269, "w":151, "h":141},
+		"spriteSourceSize": {"x":18,"y":23,"w":187,"h":187},
+		"sourceSize": {"w":187,"h":187}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 1024, "h": 1024},
+	"scale": "1"
+}
+}

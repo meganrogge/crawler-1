@@ -1,0 +1,106 @@
+{
+"frames": [
+	{
+		"filename": "Meduza_Front-Walking_0.png",
+		"frame": {"x":257, "y":380, "w":84, "h":126},
+		"spriteSourceSize": {"x":2,"y":5,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_1.png",
+		"frame": {"x":86, "y":379, "w":85, "h":125},
+		"spriteSourceSize": {"x":1,"y":5,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_10.png",
+		"frame": {"x":86, "y":126, "w":85, "h":125},
+		"spriteSourceSize": {"x":2,"y":3,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_11.png",
+		"frame": {"x":86, "y":0, "w":85, "h":125},
+		"spriteSourceSize": {"x":2,"y":3,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_12.png",
+		"frame": {"x":172, "y":254, "w":84, "h":126},
+		"spriteSourceSize": {"x":3,"y":3,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_13.png",
+		"frame": {"x":257, "y":254, "w":84, "h":125},
+		"spriteSourceSize": {"x":3,"y":4,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_14.png",
+		"frame": {"x":258, "y":0, "w":83, "h":124},
+		"spriteSourceSize": {"x":4,"y":5,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_15.png",
+		"frame": {"x":258, "y":125, "w":81, "h":125},
+		"spriteSourceSize": {"x":5,"y":5,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_2.png",
+		"frame": {"x":0, "y":253, "w":85, "h":126},
+		"spriteSourceSize": {"x":0,"y":4,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_3.png",
+		"frame": {"x":0, "y":380, "w":85, "h":126},
+		"spriteSourceSize": {"x":0,"y":3,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_4.png",
+		"frame": {"x":172, "y":381, "w":84, "h":126},
+		"spriteSourceSize": {"x":0,"y":3,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_5.png",
+		"frame": {"x":172, "y":0, "w":85, "h":126},
+		"spriteSourceSize": {"x":0,"y":2,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_6.png",
+		"frame": {"x":172, "y":127, "w":85, "h":126},
+		"spriteSourceSize": {"x":0,"y":2,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_7.png",
+		"frame": {"x":0, "y":126, "w":85, "h":126},
+		"spriteSourceSize": {"x":0,"y":1,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_8.png",
+		"frame": {"x":0, "y":0, "w":85, "h":125},
+		"spriteSourceSize": {"x":1,"y":2,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	},
+	{
+		"filename": "Meduza_Front-Walking_9.png",
+		"frame": {"x":86, "y":252, "w":85, "h":126},
+		"spriteSourceSize": {"x":1,"y":2,"w":89,"h":131},
+		"sourceSize": {"w":89,"h":131}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 512, "h": 512},
+	"scale": "1"
+}
+}

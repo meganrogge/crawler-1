@@ -1,0 +1,106 @@
+{
+"frames": [
+	{
+		"filename": "Troll_Front-Walking_0.png",
+		"frame": {"x":228, "y":346, "w":109, "h":174},
+		"spriteSourceSize": {"x":3,"y":7,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_1.png",
+		"frame": {"x":116, "y":174, "w":111, "h":173},
+		"spriteSourceSize": {"x":2,"y":7,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_10.png",
+		"frame": {"x":115, "y":352, "w":112, "h":172},
+		"spriteSourceSize": {"x":3,"y":3,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_11.png",
+		"frame": {"x":228, "y":174, "w":110, "h":171},
+		"spriteSourceSize": {"x":4,"y":4,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_12.png",
+		"frame": {"x":228, "y":521, "w":109, "h":169},
+		"spriteSourceSize": {"x":5,"y":5,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_13.png",
+		"frame": {"x":228, "y":691, "w":106, "h":168},
+		"spriteSourceSize": {"x":7,"y":6,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_14.png",
+		"frame": {"x":229, "y":0, "w":104, "h":166},
+		"spriteSourceSize": {"x":9,"y":7,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_15.png",
+		"frame": {"x":334, "y":0, "w":101, "h":165},
+		"spriteSourceSize": {"x":11,"y":7,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_2.png",
+		"frame": {"x":116, "y":0, "w":112, "h":173},
+		"spriteSourceSize": {"x":1,"y":6,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_3.png",
+		"frame": {"x":0, "y":529, "w":114, "h":174},
+		"spriteSourceSize": {"x":0,"y":4,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_4.png",
+		"frame": {"x":0, "y":352, "w":114, "h":176},
+		"spriteSourceSize": {"x":0,"y":3,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_5.png",
+		"frame": {"x":0, "y":0, "w":115, "h":175},
+		"spriteSourceSize": {"x":0,"y":3,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_6.png",
+		"frame": {"x":0, "y":176, "w":115, "h":175},
+		"spriteSourceSize": {"x":0,"y":2,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_7.png",
+		"frame": {"x":0, "y":704, "w":114, "h":175},
+		"spriteSourceSize": {"x":1,"y":1,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_8.png",
+		"frame": {"x":115, "y":698, "w":112, "h":173},
+		"spriteSourceSize": {"x":2,"y":2,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	},
+	{
+		"filename": "Troll_Front-Walking_9.png",
+		"frame": {"x":115, "y":525, "w":112, "h":172},
+		"spriteSourceSize": {"x":3,"y":3,"w":118,"h":182},
+		"sourceSize": {"w":118,"h":182}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 512, "h": 1024},
+	"scale": "1"
+}
+}

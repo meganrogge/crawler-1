@@ -1,0 +1,196 @@
+{
+"frames": [
+	{
+		"filename": "GreenGel-animation_0.png",
+		"frame": {"x":0, "y":979, "w":1, "h":1},
+		"spriteSourceSize": {"x":-2,"y":-2,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_1.png",
+		"frame": {"x":223, "y":951, "w":99, "h":71},
+		"spriteSourceSize": {"x":84,"y":72,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_10.png",
+		"frame": {"x":445, "y":627, "w":190, "h":128},
+		"spriteSourceSize": {"x":42,"y":48,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_11.png",
+		"frame": {"x":444, "y":316, "w":197, "h":138},
+		"spriteSourceSize": {"x":36,"y":42,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_12.png",
+		"frame": {"x":442, "y":810, "w":205, "h":148},
+		"spriteSourceSize": {"x":30,"y":36,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_13.png",
+		"frame": {"x":235, "y":0, "w":213, "h":158},
+		"spriteSourceSize": {"x":24,"y":30,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_14.png",
+		"frame": {"x":0, "y":498, "w":223, "h":168},
+		"spriteSourceSize": {"x":18,"y":24,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_15.png",
+		"frame": {"x":0, "y":0, "w":234, "h":178},
+		"spriteSourceSize": {"x":12,"y":17,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_16.png",
+		"frame": {"x":0, "y":667, "w":222, "h":169},
+		"spriteSourceSize": {"x":20,"y":11,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_17.png",
+		"frame": {"x":0, "y":179, "w":231, "h":173},
+		"spriteSourceSize": {"x":13,"y":5,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_18.png",
+		"frame": {"x":224, "y":498, "w":216, "h":141},
+		"spriteSourceSize": {"x":30,"y":39,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_19.png",
+		"frame": {"x":0, "y":837, "w":222, "h":141},
+		"spriteSourceSize": {"x":26,"y":40,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_2.png",
+		"frame": {"x":652, "y":489, "w":107, "h":76},
+		"spriteSourceSize": {"x":82,"y":70,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_20.png",
+		"frame": {"x":0, "y":353, "w":226, "h":144},
+		"spriteSourceSize": {"x":23,"y":39,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_21.png",
+		"frame": {"x":223, "y":667, "w":221, "h":142},
+		"spriteSourceSize": {"x":21,"y":42,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_22.png",
+		"frame": {"x":223, "y":810, "w":218, "h":140},
+		"spriteSourceSize": {"x":17,"y":46,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_23.png",
+		"frame": {"x":227, "y":353, "w":216, "h":138},
+		"spriteSourceSize": {"x":12,"y":49,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_24.png",
+		"frame": {"x":232, "y":179, "w":213, "h":136},
+		"spriteSourceSize": {"x":8,"y":53,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_25.png",
+		"frame": {"x":441, "y":492, "w":210, "h":134},
+		"spriteSourceSize": {"x":4,"y":56,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_26.png",
+		"frame": {"x":446, "y":159, "w":187, "h":120},
+		"spriteSourceSize": {"x":20,"y":60,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_27.png",
+		"frame": {"x":628, "y":0, "w":163, "h":108},
+		"spriteSourceSize": {"x":36,"y":63,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_28.png",
+		"frame": {"x":636, "y":627, "w":139, "h":94},
+		"spriteSourceSize": {"x":53,"y":67,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_29.png",
+		"frame": {"x":642, "y":407, "w":116, "h":81},
+		"spriteSourceSize": {"x":69,"y":70,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_3.png",
+		"frame": {"x":648, "y":898, "w":115, "h":81},
+		"spriteSourceSize": {"x":79,"y":68,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_30.png",
+		"frame": {"x":0, "y":979, "w":1, "h":1},
+		"spriteSourceSize": {"x":-2,"y":-2,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_4.png",
+		"frame": {"x":648, "y":812, "w":122, "h":85},
+		"spriteSourceSize": {"x":77,"y":66,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_5.png",
+		"frame": {"x":648, "y":722, "w":130, "h":89},
+		"spriteSourceSize": {"x":75,"y":65,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_6.png",
+		"frame": {"x":642, "y":312, "w":137, "h":94},
+		"spriteSourceSize": {"x":73,"y":63,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_7.png",
+		"frame": {"x":634, "y":213, "w":145, "h":98},
+		"spriteSourceSize": {"x":71,"y":61,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_8.png",
+		"frame": {"x":634, "y":109, "w":158, "h":103},
+		"spriteSourceSize": {"x":63,"y":59,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	},
+	{
+		"filename": "GreenGel-animation_9.png",
+		"frame": {"x":449, "y":0, "w":178, "h":118},
+		"spriteSourceSize": {"x":48,"y":54,"w":253,"h":199},
+		"sourceSize": {"w":253,"h":199}
+	}
+
+],
+"meta": {
+	"image": "slime.png",
+	"size": {"w": 1024, "h": 1024},
+	"scale": "1"
+}
+}

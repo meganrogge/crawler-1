@@ -22,8 +22,6 @@ export class GameScene extends Phaser.Scene {
     this.speaker = window.speechSynthesis;
     this.levelCompleted = false;
     this.level = 0;
-    // cast this once so I don't have to below
-    // shouldn't I be able to just assert this?
     this.sound = /** @type {Phaser.Sound.WebAudioSoundManager} */ (super.sound);
 
     // used in one switch
@@ -72,7 +70,33 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/ghost/ghost.png",
       "assets/animations/ghost/ghost.json"
     );
+    this.load.atlas(
+      "meduza",
+      "assets/animations/meduza/meduza.png",
+      "assets/animations/meduza/meduza.json"
+    );
+    this.load.atlas(
+      "lava_monster",
+      "assets/animations/lava_monster/lava_monster.png",
+      "assets/animations/lava_monster/lava_monster.json"
+    );
+    this.load.atlas(
+      "troll",
+      "assets/animations/troll/troll.png",
+      "assets/animations/troll/troll.json"
+    );
+    this.load.atlas(
+      "ice_bullets",
+      "assets/animations/ice_bullets/ice_bullets.png",
+      "assets/animations/ice_bullets/ice_bullets.json"
+    );
+    this.load.atlas(
+      "dark_bullets",
+      "assets/animations/dark_bullets/dark_bullets.png",
+      "assets/animations/dark_bullets/dark_bullets.json"
+    );
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
+    this.load.image("Chest1_opened", "assets/objects/Chest1_opened.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
     this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
     this.load.image("door", "assets/game_pieces/door.png");
@@ -83,6 +107,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("jewel", "assets/kenny-isometric/jewel_NE.png");
     this.load.image("key", "assets/kenny-isometric/key_SW.png");
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
+    this.load.image("mushrooms", "assets/objects/mushrooms.png");
+    this.load.image("arrow", "assets/objects/arrow.png");
     this.load.image(
       "over_grass_flower1",
       "assets/objects/over_grass_flower1.png"
@@ -165,11 +191,11 @@ export class GameScene extends Phaser.Scene {
       "x+1y+1"
     ];
 
-    this.objectConfig.objects.push(this.enemy);
+    this.objectConfig.objects[this.level].push(this.enemy);
 
     this.RandomlyPlacedObjects = !settings.includeObstacles
-      ? this.objectConfig.objects.filter(obj => obj != "ogre")
-      : this.objectConfig.objects;
+      ? this.objectConfig.objects[this.level].filter(obj => obj != "ogre")
+      : this.objectConfig.objects[this.level];
 
     let { x: ix, y: iy } = this.map.initial_position;
 
@@ -180,7 +206,6 @@ export class GameScene extends Phaser.Scene {
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
     let noEnemies = true;
-    console.log("Level " + this.level);
     this.map.rooms.forEach(room => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
@@ -211,6 +236,36 @@ export class GameScene extends Phaser.Scene {
       this.anims.create({
         key: "ghost",
         frames: this.anims.generateFrameNames("ghost"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "meduza",
+        frames: this.anims.generateFrameNames("meduza"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "troll",
+        frames: this.anims.generateFrameNames("troll"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "lava_monster",
+        frames: this.anims.generateFrameNames("lava_monster"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "ice_bullets",
+        frames: this.anims.generateFrameNames("ice_bullets"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "dark_bullets",
+        frames: this.anims.generateFrameNames("dark_bullets"),
         frameRate: 4,
         repeat: -1
       });
@@ -353,7 +408,8 @@ export class GameScene extends Phaser.Scene {
           await this.makeChoice();
         } else if (e.key == " " || e.key == "ArrowRight") {
           await this.selectNext();
-        } else if (e.key == "b") {
+        } else if (e.key == "l") {
+          this.level++;
           this.scene.restart();
         }
         this.inputEnabled = true;
@@ -777,7 +833,7 @@ export class GameScene extends Phaser.Scene {
       this.playSound(object.audio);
       this.map.removeObject(object, x, y);
       // collect object before it's destroyed
-      this.acquiredObjects.push(object);
+      this.acquiredObjects.push(object.description);
       object.destroy();
     } else if (object.description == "dragon") {
       await this.interactWithDragon(object, x, y);
@@ -785,14 +841,51 @@ export class GameScene extends Phaser.Scene {
       await this.interactWithOgre(object, x, y);
     } else if(object.description == "ghost"){
       await this.interactWithGhost(object, x, y);
+    } else if(object.description == "meduza"){
+      await this.interactWithMeduza(object, x, y);
+    } else if(object.description == "troll"){
+      await this.interactWithTroll(object, x, y);
+    } else if(object.description == "lava monster"){
+      await this.interactWithLavaMonster(object, x, y);
+    } else if(object.description ==  "red chest"){
+      console.log(this.acquiredObjects.indexOf("key"));
+      if(this.hasAcquired("key")){
+        console.log("key");
+        this.playSound("knock");
+        this.map.removeObject(object, x, y);
+        let d = this.add.isoSprite(
+          x,
+          y,
+          0,
+          "Chest1_opened",
+          this.isoGroup,
+          null
+      );
+        d.scale = Math.sqrt(3) / d.width;
+        object.destroy();
+        await this.delay(1000);
+        // d.destroy();
+        this.map.addObject(object, x, y);
+      } else {
+        this.roomDescription =  "Find the key to open the chest";
+        this.updateRoomDescription();
+        await this.delay(2000);
+      }
     }
     if (this.numObjects(this.enemy) == 0) {
-      this.levelCompleted = true;
-      this.roomDescription = "You won! Moving on to the next level!";
-      this.updateRoomDescription();
-      await this.delay(3000);
-      this.level++;
-      this.scene.restart();
+      if(this.level == 4){
+        this.roomDescription = "You won the game!";
+        this.updateRoomDescription();
+        await this.delay(3000); 
+        document.getElementById("setup").click();
+      } else {
+        this.levelCompleted = true;
+        this.roomDescription = "You won! Moving on to the next level!";
+        this.updateRoomDescription();
+        await this.delay(3000);
+        this.level++;
+        this.scene.restart();
+      }
     }
     this.power += object.power;
     this.updatePower();
@@ -800,42 +893,36 @@ export class GameScene extends Phaser.Scene {
 
   async interactWithOgre(object, x, y){
     await this.playSound("uh_oh");
-        await this.delay(1000);
-        await this.playSound("slime");
-        this.map.removeObject(object, x, y);
-        this.createAnimation("slime", this.player.isoX, this.player.isoY);
-        this.roomDescription = "You got slimed!";
-        this.updateRoomDescription();
-        this.inputEnabled = false;
-        await this.delay(3000);
+    await this.delay(1000);
+    await this.playSound("slime");
+    this.map.removeObject(object, x, y);
+    this.createAnimation("slime", this.player.isoX, this.player.isoY);
+    this.roomDescription = "You got slimed!";
+    this.updateRoomDescription();
+    this.inputEnabled = false;
+    await this.delay(2000);
   }
 
   async interactWithGhost(object, x, y){
     if (this.power > 50) {
-      // do kill animation at the dragon's coordinates
-      // do player animation of fight and move to dragon's coordinates
-      //this.createAnimation("kill", x, y);
-      this.playSound("unsheath_sword");
+      // do poisin animation at the ghost's coordinates
+      // this.playSound("hissing gas");
+      this.createAnimation("slime", x, y);
       await this.delay(settings.delay);
-      this.playSound("sword_slice");
-      await this.delay(settings.delay);
-      this.playSound("roar");
+      // this.playSound("haunted shreek");
       this.map.removeObject(object, x, y);
       object.destroy();
       await this.delay(1000);
       this.playSound("hero");
     } else {
-      // change description to you need a shield to fight and defeat the dragon
-      // do kill animation at the player's coordinates?
-      // this.setRoomInfo("you need to be stronger to fight and slay the dragon!");
-      this.playSound("dragon_roar");
-      this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.playSound("ghost shreek");
+      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
       this.player.destroy();
       this.roomDescription =
         "Insufficient power to fight the ghost - game over!";
       this.updateRoomDescription();
       this.inputEnabled = false;
-      await this.delay(3000);
+      await this.delay(2000);
       if (this.level == 0) {
         document.getElementById("setup").click();
       } else {
@@ -886,6 +973,95 @@ export class GameScene extends Phaser.Scene {
       } else {
         this.level--;
         //update description to say you went down a level
+        this.scene.restart();
+      }
+    }
+  }
+
+  async interactWithMeduza(object, x, y){
+    if (this.power > 50) {
+      // do poisin animation at the ghost's coordinates
+      // this.playSound("hissing gas");
+      this.createAnimation("slime", x, y);
+      await this.delay(settings.delay);
+      // this.playSound("haunted shreek");
+      this.map.removeObject(object, x, y);
+      object.destroy();
+      await this.delay(1000);
+      this.playSound("hero");
+    } else {
+      //this.playSound("meduza shreek");
+      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.player.destroy();
+      this.roomDescription =
+        "Insufficient power to fight the meduza - game over!";
+      this.updateRoomDescription();
+      this.inputEnabled = false;
+      await this.delay(2000);
+      if (this.level == 0) {
+        document.getElementById("setup").click();
+      } else {
+        this.level--;
+        this.scene.restart();
+      }
+    }
+  }
+
+  async interactWithTroll(object, x, y){
+    // dark bullets
+    if (this.power > 50) {
+      // do poisin animation at the ghost's coordinates
+      // this.playSound("hissing gas");
+      this.createAnimation("dark_bullets", x, y);
+      await this.delay(settings.delay);
+      // this.playSound("haunted shreek");
+      this.map.removeObject(object, x, y);
+      object.destroy();
+      await this.delay(1000);
+      this.playSound("hero");
+    } else {
+      this.playSound("troll shreek");
+      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.player.destroy();
+      this.roomDescription =
+        "Insufficient power to fight the troll - game over!";
+      this.updateRoomDescription();
+      this.inputEnabled = false;
+      await this.delay(2000);
+      if (this.level == 0) {
+        document.getElementById("setup").click();
+      } else {
+        this.level--;
+        this.scene.restart();
+      }
+    }
+  }
+
+  async interactWithLavaMonster(object, x, y){
+    // ice bullets
+    if (this.power > 50) {
+      // do poisin animation at the ghost's coordinates
+      // this.playSound("hissing gas");
+      this.createAnimation("ice_bullets", x, y);
+      await this.delay(settings.delay);
+      // this.playSound("haunted shreek");
+      this.map.removeObject(object, x, y);
+      object.destroy();
+      await this.delay(1000);
+      this.playSound("hero");
+    } else {
+      this.playSound("lava monster");
+      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.player.destroy();
+      this.roomDescription =
+        "Insufficient power to fight the lava monster - game over!";
+      this.updateRoomDescription();
+      this.inputEnabled = false;
+      await this.delay(2000);
+      if (this.level == 0) {
+        document.getElementById("setup").click();
+      } else {
+        this.level--;
         this.scene.restart();
       }
     }

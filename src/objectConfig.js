@@ -1,25 +1,18 @@
 export class ObjectConfig {
     constructor(){
         this.enemies = [
-          "dragon",
-          "ghost"
+          "ghost",
+          "meduza",
+          "troll",
+          "lava_monster",
+          "dragon"
         ],
         this.objects = [
-          "Chest1_closed",
-          "Chest2_opened",
-          "fountain",
-          "Rock_1",
-          "Rock_2",
-          "over_grass_flower1",
-          "flag",
-          "lever",
-          "jewel",
-          "key",
-          "coin",
-          "ruby",
-          "sapphire",
-          "cupcake",
-          "ogre"
+          ["mushrooms", "Chest2_opened", "fountain", "over_grass_flower1", "ogre"],
+          ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
+          ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
+          ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
+          ["flower", "Chest1_closed", "key", "coin", "ogre"]
         ];
          this.heights = {
             Chest1_closed: 0,
@@ -35,10 +28,15 @@ export class ObjectConfig {
             coin: 0,
             ruby: 0,
             sapphire: 0,
-            dragon: 0,
             cupcake: 0,
             ogre : 0,
-            ghost : 0
+            ghost : 0,
+            meduza : 0,
+            troll : 0,
+            lava_monster : 1/4,
+            dragon: 0,
+            mushrooms: 0,
+            arrow: 0
           };
            this.audio = {
             Chest1_closed: "knock",
@@ -57,7 +55,12 @@ export class ObjectConfig {
             dragon: "dragon_roar",
             cupcake: "sonic_powerup",
             ogre: "timpani_failure",
-            ghost: "timpani_failure"
+            ghost: "timpani_failure",
+            meduza : "timpani_failure",
+            troll : "timpani_failure",
+            lava_monster : "timpani_failure",
+            mushrooms: "chimes_powerup",
+            arrow: "bounce_powerup"
           };
            this.descriptions = {
             Chest1_closed: "red chest",
@@ -76,7 +79,12 @@ export class ObjectConfig {
             dragon: "dragon",
             cupcake: "cupcake",
             ogre: "ogre",
-            ghost: "ghost"
+            ghost: "ghost",
+            meduza : "meduza",
+            troll : "troll",
+            lava_monster : "lava_monster",
+            mushrooms: "magical mushrooms",
+            arrow: "powerful arrow"
           };
           this.animations = {
             
@@ -95,10 +103,15 @@ export class ObjectConfig {
             coin: 10,
             ruby: 5,
             sapphire: 5,
-            dragon: -20,
+            dragon: -40,
             cupcake: 30,
             ogre: -5,
-            ghost: -30
+            ghost: -30,
+            meduza: -30,
+            troll: -30,
+            lava_monster: -40,
+            mushrooms: 30,
+            arrow: 20
           };
           this.isCollectible = {
             Chest1_closed: false,
@@ -117,7 +130,12 @@ export class ObjectConfig {
             dragon: false,
             cupcake: true,
             ogre: false,
-            ghost: false
+            ghost: false,
+            meduza: false,
+            troll: false,
+            lava_monster: false,
+            mushrooms: true,
+            arrow: true
           }
           this.isAnimated = {
             Chest1_closed: false,
@@ -136,7 +154,12 @@ export class ObjectConfig {
             dragon: true,
             cupcake: false,
             ogre: true,
-            ghost: true
+            ghost: true,
+            lava_monster: true,
+            meduza: true,
+            troll: true,
+            mushrooms: false,
+            arrow: false
           }
     }
 }
