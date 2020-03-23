@@ -933,19 +933,10 @@ export class GameScene extends Phaser.Scene {
         Phaser.Math.RND.shuffle(["Insufficient power to fight the ghost!", "You've been taken to the afterlife", "The ghost has stolen your soul", "The ghost has overpowered you"])[0];
         this.updateRoomDescription();
         await this.delay(3000);
-      if (this.level == 0) {
         this.roomDescription = "Game over!";
         this.updateRoomDescription();
         this.delay(3000);
-        document.getElementById("setup").click();
-      } else {
-        this.roomDescription =
-        "Returning to level "+(this.level-1);
-        this.updateRoomDescription();
-        await this.delay(2000);
-        this.level--;
-        this.scene.restart();
-      }
+        document.getElementById("setup").click();    
     }
   }
 
@@ -985,13 +976,7 @@ export class GameScene extends Phaser.Scene {
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(3000);
-      if (this.level == 0) {
-        document.getElementById("setup").click();
-      } else {
-        this.level--;
-        //update description to say you went down a level
-        this.scene.restart();
-      }
+      this.levelDown();
     }
   }
 
@@ -1015,12 +1000,7 @@ export class GameScene extends Phaser.Scene {
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(2000);
-      if (this.level == 0) {
-        document.getElementById("setup").click();
-      } else {
-        this.level--;
-        this.scene.restart();
-      }
+      this.levelDown();
     }
   }
 
@@ -1045,12 +1025,7 @@ export class GameScene extends Phaser.Scene {
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(2000);
-      if (this.level == 0) {
-        document.getElementById("setup").click();
-      } else {
-        this.level--;
-        this.scene.restart();
-      }
+      this.levelDown();
     }
   }
 
@@ -1075,13 +1050,17 @@ export class GameScene extends Phaser.Scene {
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(2000);
-      if (this.level == 0) {
-        document.getElementById("setup").click();
-      } else {
-        this.level--;
-        this.scene.restart();
-      }
+      this.levelDown();
     }
+  }
+
+  levelDown () {
+    this.roomDescription =
+    "Returning to level "+(this.level-1);
+    this.updateRoomDescription();
+    await this.delay(2000);
+    this.level--;
+    this.scene.restart();
   }
 
   updatePower() {
