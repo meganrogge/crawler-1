@@ -119,6 +119,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("ruby", "assets/objects/ruby.png");
     this.load.image("sapphire", "assets/objects/sapphire.png");
 
+    this.load.audio("ghost", "assets/audio/ghost.wav");
+    this.load.audio("ghost_scream", "assets/audio/ghost_scream.mp3");
     this.load.audio("background_music", "assets/audio/background_music.mp3");
     this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
     this.load.audio("click", "assets/audio/click.mp3");
@@ -178,6 +180,7 @@ export class GameScene extends Phaser.Scene {
       max_interconnect_length: 10,
       room_count: 10
     });
+    this.objectsOnLevel = [];
     this.enemy = this.objectConfig.enemies[this.level];
     this.directions = [
       "x-1y-1",
@@ -273,7 +276,7 @@ export class GameScene extends Phaser.Scene {
       // remove the player position
       positions = positions.filter(([px, py]) => px != ix || py != iy);
       positions = Phaser.Math.RND.shuffle(positions);
-      const numObjects = Phaser.Math.RND.between(1, 3);
+      const numObjects = Phaser.Math.RND.between(1, 2);
       for (let i = 0; i < numObjects; i++) {
         if (!positions.length) {
           break;
@@ -285,6 +288,12 @@ export class GameScene extends Phaser.Scene {
         }
         /// remove the position of the player
         let o = objects.pop();
+        
+        let maxCountOfObject = this.objectConfig.frequencies[o];
+        if (this.objectsOnLevel.filter(obj => obj == o).length >= maxCountOfObject){
+          // pick a new one
+          o = objects.pop();
+        }
         if (o == this.enemy) {
           noEnemies = false;
         }
@@ -304,13 +313,12 @@ export class GameScene extends Phaser.Scene {
           isCollectible: this.objectConfig.isCollectible[o],
           isAnimated: this.objectConfig.isAnimated[o]
         });
-
+        this.objectsOnLevel.push(o);
         isoObj.scale = Math.sqrt(3) / isoObj.width;
 
         if (isoObj.isAnimated) {
           isoObj.play(isoObj.description, true);
         }
-
         this.map.addObject(isoObj, ox, oy);
         // eliminate this position and its neighbors
         positions = positions.filter(
@@ -459,6 +467,8 @@ export class GameScene extends Phaser.Scene {
       "magical_falling",
       "troubled_powerdown"
     ];
+
+    this.numObjects(this.enemy);
   }
 
   speak(text) {
@@ -811,7 +821,7 @@ export class GameScene extends Phaser.Scene {
   async interactWithObject(object, x, y) {
     if (object.power > 0) {
       // play score sound
-      await this.playSound(Phaser.Math.RND.shuffle(this.powerupSounds)[0]);
+     // await this.playSound(Phaser.Math.RND.shuffle(this.powerupSounds)[0]);
       if (
         this.power <= 50 &&
         object.power + this.power > 50 &&
@@ -821,7 +831,7 @@ export class GameScene extends Phaser.Scene {
         this.updateRoomDescription();
       }
     } else {
-      await this.playSound(Phaser.Math.RND.shuffle(this.powerdownSounds)[0]);
+      //await this.playSound(Phaser.Math.RND.shuffle(this.powerdownSounds)[0]);
     }
     if (object.isCollectible) {
       // if object doesn't have a custom animation, upon collection, emit particles
@@ -907,25 +917,32 @@ export class GameScene extends Phaser.Scene {
     if (this.power > 50) {
       // do poisin animation at the ghost's coordinates
       // this.playSound("hissing gas");
+      this.playSound("ghost_scream");
       this.createAnimation("slime", x, y);
-      await this.delay(settings.delay);
-      // this.playSound("haunted shreek");
+      await this.delay(2000);
       this.map.removeObject(object, x, y);
       object.destroy();
       await this.delay(1000);
       this.playSound("hero");
     } else {
-      this.playSound("ghost shreek");
-      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.playSound("ghost");
+      await this.delay(3000);
       this.player.destroy();
-      this.roomDescription =
-        "Insufficient power to fight the ghost - game over!";
-      this.updateRoomDescription();
       this.inputEnabled = false;
-      await this.delay(2000);
+      this.roomDescription =
+        Phaser.Math.RND.shuffle(["Insufficient power to fight the ghost!", "You've been taken to the afterlife", "The ghost has stolen your soul", "The ghost has overpowered you"])[0];
+        this.updateRoomDescription();
+        await this.delay(3000);
       if (this.level == 0) {
+        this.roomDescription = "Game over!";
+        this.updateRoomDescription();
+        this.delay(3000);
         document.getElementById("setup").click();
       } else {
+        this.roomDescription =
+        "Returning to level "+(this.level-1);
+        this.updateRoomDescription();
+        await this.delay(2000);
         this.level--;
         this.scene.restart();
       }

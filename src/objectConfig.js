@@ -14,6 +14,15 @@ export class ObjectConfig {
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["flower", "Chest1_closed", "key", "coin", "ogre"]
         ];
+        // the max number of objects w index 0 corresponding to the number of enemies
+        this.frequencies = {
+           key: 1,
+           ghost: 3,
+           meduza: 4,
+           troll: 4,
+           lava_monster: 3,
+           dragon: 3
+        }
          this.heights = {
             Chest1_closed: 0,
             Chest2_opened: 0,
@@ -55,7 +64,7 @@ export class ObjectConfig {
             dragon: "dragon_roar",
             cupcake: "sonic_powerup",
             ogre: "timpani_failure",
-            ghost: "timpani_failure",
+            ghost: "ghost",
             meduza : "timpani_failure",
             troll : "timpani_failure",
             lava_monster : "timpani_failure",

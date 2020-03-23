@@ -1,5 +1,6 @@
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
-
+import { ObjectConfig } from "./objectConfig.js";
+let objectConfig = new ObjectConfig();
 export default class EnhancedIsoSprite extends IsoSprite {
   constructor(config) {
     super(
@@ -43,7 +44,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
    */
   path(path, health) {
     if(!this.isCollectible){
-      if(this.description == "dragon" && health < 50){
+      if(health <= 50 && !(objectConfig.enemies.indexOf[this.description] < 0)){
         return [];
       }
       if(path.length > 2){
