@@ -14,6 +14,13 @@ export class ObjectConfig {
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["flower", "Chest1_closed", "key", "coin", "ogre"]
         ];
+        this.objectsNoLimit = [
+          ["mushrooms", "Chest2_opened", "fountain", "over_grass_flower1"],
+          ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake"],
+          ["jewel", "coin", "ruby", "sapphire", "cupcake"],
+          ["jewel", "coin", "ruby", "sapphire", "cupcake"],
+          ["flower", "Chest1_closed", "coin"]
+        ];
         // the max number of objects w index 0 corresponding to the number of enemies
         this.frequencies = {
            key: 1,
@@ -91,9 +98,9 @@ export class ObjectConfig {
             ghost: "ghost",
             meduza : "meduza",
             troll : "troll",
-            lava_monster : "lava_monster",
-            mushrooms: "magical mushrooms",
-            arrow: "powerful arrow"
+            lava_monster : "lava monster",
+            mushrooms: "mushrooms",
+            arrow: "arrow"
           };
           this.animations = {
             

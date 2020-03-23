@@ -292,7 +292,7 @@ export class GameScene extends Phaser.Scene {
         let maxCountOfObject = this.objectConfig.frequencies[o];
         if (this.objectsOnLevel.filter(obj => obj == o).length >= maxCountOfObject){
           // pick a new one
-          o = objects.pop();
+          o = Phaser.Math.RND.shuffle(this.objectConfig.objectsNoLimit[this.level])[0];
         }
         if (o == this.enemy) {
           noEnemies = false;
@@ -467,7 +467,6 @@ export class GameScene extends Phaser.Scene {
       "magical_falling",
       "troubled_powerdown"
     ];
-
     this.numObjects(this.enemy);
   }
 
@@ -819,6 +818,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithObject(object, x, y) {
+    console.log(object.description);
     if (object.power > 0) {
       // play score sound
      // await this.playSound(Phaser.Math.RND.shuffle(this.powerupSounds)[0]);
