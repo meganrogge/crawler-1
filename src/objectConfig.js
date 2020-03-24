@@ -79,7 +79,7 @@ export class ObjectConfig {
             arrow: "bounce_powerup"
           };
            this.descriptions = {
-            Chest1_closed: "red chest",
+            Chest1_closed: "closed red chest",
             Chest2_opened: "open green chest",
             fountain: "fountain",
             over_grass_flower1: "flower",
