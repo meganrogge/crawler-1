@@ -135,7 +135,10 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("sword_slice", "assets/audio/sword_slice.wav");
     this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("unsheath_sword", "assets/audio/unsheath_sword.mp3");
-
+    this.load.audio("scream", "assets/audio/scream.mp3");
+    this.load.audio("meduza", "assets/audio/meduza.wav");
+    this.load.audio("arrow", "assets/audio/arrow.wav");
+    this.load.audio("sonic_bullets", "assets/audio/sonic_bullets.wav");
     this.load.audio("awkward", "assets/audio/awkward.mp3");
     this.load.audio("bounce_powerup", "assets/audio/bounce_powerup.wav");
     this.load.audio("chimes_powerup", "assets/audio/chimes_powerup.wav");
@@ -149,6 +152,7 @@ export class GameScene extends Phaser.Scene {
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
+    this.load.audio("stomping", "assets/audio/stomping.wav");
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.wav");
     this.load.audio("slime", "assets/audio/slime.wav");
@@ -866,34 +870,27 @@ export class GameScene extends Phaser.Scene {
       if (this.level == 4) {
         this.roomDescription = "You won the game!";
         this.updateRoomDescription();
-        await this.delay(settings.delay*4);
+        await this.delay(settings.delay * 4);
         document.getElementById("setup").click();
       } else {
         this.levelCompleted = true;
         this.roomDescription = "You won! Moving on to the next level!";
         this.updateRoomDescription();
-        await this.delay(settings.delay*4);
+        await this.delay(settings.delay * 4);
         this.level++;
         this.scene.restart();
       }
-    } 
+    }
     this.power += object.power;
     this.updatePower();
   }
 
-  async interactWithChest(object, x, y){
+  async interactWithChest(object, x, y) {
     if (this.hasAcquired("key")) {
       // unlock/unlatch sound
       this.playSound("knock");
       this.map.removeObject(object, x, y);
-      let d = this.add.isoSprite(
-        x,
-        y,
-        0,
-        "Chest1_opened",
-        this.isoGroup,
-        null
-      );
+      let d = this.add.isoSprite(x, y, 0, "Chest1_opened", this.isoGroup, null);
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
       await this.delay(settings.delay);
@@ -922,17 +919,17 @@ export class GameScene extends Phaser.Scene {
     if (this.power > 50) {
       // do poisin animation at the ghost's coordinates
       // this.playSound("hissing gas");
-      console.log("settings "+settings.delay);
+      console.log("settings " + settings.delay);
       this.playSound("ghost_scream");
       this.createAnimation("slime", x, y);
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.map.removeObject(object, x, y);
       object.destroy();
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.playSound("hero");
     } else {
       this.playSound("ghost");
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.player.destroy();
       this.inputEnabled = false;
       this.roomDescription = Phaser.Math.RND.shuffle([
@@ -942,10 +939,10 @@ export class GameScene extends Phaser.Scene {
         "The ghost has overpowered you"
       ])[0];
       this.updateRoomDescription();
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.roomDescription = "Game over!";
       this.updateRoomDescription();
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       document.getElementById("setup").click();
     }
   }
@@ -956,9 +953,9 @@ export class GameScene extends Phaser.Scene {
       // do player animation of fight and move to dragon's coordinates
       //this.createAnimation("kill", x, y);
       this.playSound("unsheath_sword");
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.playSound("sword_slice");
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.playSound("roar");
       this.map.removeObject(object, x, y);
       let d = this.add.isoSprite(
@@ -971,7 +968,7 @@ export class GameScene extends Phaser.Scene {
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       d.destroy();
       this.playSound("hero");
     } else {
@@ -995,17 +992,16 @@ export class GameScene extends Phaser.Scene {
 
   async interactWithMeduza(object, x, y) {
     if (this.power > 50) {
-      // do poisin animation at the ghost's coordinates
-      // this.playSound("hissing gas");
-      this.createAnimation("slime", x, y);
-      await this.delay(settings.delay);
-      // this.playSound("haunted shreek");
+      // throw arrow from player's position to object's x and y
+      this.playSound("arrow");
+      await this.delay(settings.delay*3);
+      this.playSound("scream");
       this.map.removeObject(object, x, y);
       object.destroy();
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       this.playSound("hero");
     } else {
-      //this.playSound("meduza shreek");
+      this.playSound("meduza");
       // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
@@ -1016,7 +1012,7 @@ export class GameScene extends Phaser.Scene {
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
-      await this.delay(settings.delay);
+      await this.delay(settings.delay*3);
       await this.levelDown();
     }
   }
@@ -1024,9 +1020,7 @@ export class GameScene extends Phaser.Scene {
   async interactWithTroll(object, x, y) {
     // dark bullets
     if (this.power > 50) {
-      // do poisin animation at the ghost's coordinates
-      // this.playSound("hissing gas");
-      this.playSound("troll shreek");
+      this.playSound("sonic_bullets");
       this.createAnimation("dark_bullets", x, y);
       await this.delay(settings.delay);
       // this.playSound("haunted shreek");
@@ -1035,7 +1029,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
-      this.playSound("scary stomping");
+      this.playSound("stomping");
       // move troll to player's position
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
@@ -1057,11 +1051,11 @@ export class GameScene extends Phaser.Scene {
       // do poisin animation at the ghost's coordinates
       // this.playSound("hissing gas");
       this.createAnimation("ice_bullets", x, y);
-      await this.delay(2*settings.delay);
+      await this.delay(2 * settings.delay);
       // this.playSound("haunted shreek");
       this.map.removeObject(object, x, y);
       object.destroy();
-      await this.delay(2*settings.delay);
+      await this.delay(2 * settings.delay);
       this.playSound("hero");
     } else {
       this.playSound("lava monster");
@@ -1075,7 +1069,7 @@ export class GameScene extends Phaser.Scene {
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
-      await this.delay(2*settings.delay);
+      await this.delay(2 * settings.delay);
       await this.levelDown();
     }
   }
@@ -1083,8 +1077,9 @@ export class GameScene extends Phaser.Scene {
   async levelDown() {
     this.roomDescription = "Returning to level " + (this.level - 1);
     this.updateRoomDescription();
-    await this.delay(3*settings.delay);
+    await this.delay(3 * settings.delay);
     this.level--;
+    this.scene.stop();
     this.scene.restart();
   }
 
@@ -1113,7 +1108,7 @@ export class GameScene extends Phaser.Scene {
       a.scale /= 100;
     }
     a.play(type, true);
-    await this.delay(2*settings.delay);
+    await this.delay(2 * settings.delay);
     a.destroy();
   }
 
