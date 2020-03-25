@@ -46,6 +46,8 @@ export default class EnhancedIsoSprite extends IsoSprite {
     if(!this.isCollectible){
       if(health <= 50 && !(objectConfig.enemies.indexOf[this.description] < 0)){
         return [];
+      } else if(this.description == "medusa" || this.description == "troll"){
+        return [];
       }
       if(path.length > 2){
         return path.slice(0, -1);

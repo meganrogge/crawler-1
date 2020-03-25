@@ -2,7 +2,7 @@ export class ObjectConfig {
     constructor(){
         this.enemies = [
           "ghost",
-          "meduza",
+          "medusa",
           "troll",
           "lava_monster",
           "dragon"
@@ -25,7 +25,7 @@ export class ObjectConfig {
         this.frequencies = {
            key: 1,
            ghost: 3,
-           meduza: 4,
+           medusa: 4,
            troll: 4,
            lava_monster: 3,
            dragon: 3
@@ -47,7 +47,7 @@ export class ObjectConfig {
             cupcake: 0,
             ogre : 0,
             ghost : 0,
-            meduza : 0,
+            medusa : 0,
             troll : 0,
             lava_monster : 1/4,
             dragon: 0,
@@ -72,7 +72,7 @@ export class ObjectConfig {
             cupcake: "sonic_powerup",
             ogre: "timpani_failure",
             ghost: "ghost",
-            meduza : "timpani_failure",
+            medusa : "timpani_failure",
             troll : "timpani_failure",
             lava_monster : "timpani_failure",
             mushrooms: "chimes_powerup",
@@ -96,7 +96,7 @@ export class ObjectConfig {
             cupcake: "cupcake",
             ogre: "ogre",
             ghost: "ghost",
-            meduza : "meduza",
+            medusa : "medusa",
             troll : "troll",
             lava_monster : "lava monster",
             mushrooms: "mushrooms",
@@ -123,7 +123,7 @@ export class ObjectConfig {
             cupcake: 30,
             ogre: -5,
             ghost: -30,
-            meduza: -30,
+            medusa: -30,
             troll: -30,
             lava_monster: -40,
             mushrooms: 30,
@@ -147,7 +147,7 @@ export class ObjectConfig {
             cupcake: true,
             ogre: false,
             ghost: false,
-            meduza: false,
+            medusa: false,
             troll: false,
             lava_monster: false,
             mushrooms: true,
@@ -172,7 +172,7 @@ export class ObjectConfig {
             ogre: true,
             ghost: true,
             lava_monster: true,
-            meduza: true,
+            medusa: true,
             troll: true,
             mushrooms: false,
             arrow: false

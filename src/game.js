@@ -71,9 +71,9 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/ghost/ghost.json"
     );
     this.load.atlas(
-      "meduza",
-      "assets/animations/meduza/meduza.png",
-      "assets/animations/meduza/meduza.json"
+      "medusa",
+      "assets/animations/medusa/medusa.png",
+      "assets/animations/medusa/medusa.json"
     );
     this.load.atlas(
       "lava_monster",
@@ -136,7 +136,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("thump", "assets/audio/thump.mp3");
     this.load.audio("unsheath_sword", "assets/audio/unsheath_sword.mp3");
     this.load.audio("scream", "assets/audio/scream.mp3");
-    this.load.audio("meduza", "assets/audio/meduza.wav");
+    this.load.audio("medusa", "assets/audio/medusa.wav");
     this.load.audio("arrow", "assets/audio/arrow.wav");
     this.load.audio("sonic_bullets", "assets/audio/sonic_bullets.wav");
     this.load.audio("awkward", "assets/audio/awkward.mp3");
@@ -152,6 +152,7 @@ export class GameScene extends Phaser.Scene {
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
+    this.load.audio("deep_scream", "assets/audio/deep_scream.wav");
     this.load.audio("stomping", "assets/audio/stomping.wav");
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.wav");
@@ -247,8 +248,8 @@ export class GameScene extends Phaser.Scene {
         repeat: -1
       });
       this.anims.create({
-        key: "meduza",
-        frames: this.anims.generateFrameNames("meduza"),
+        key: "medusa",
+        frames: this.anims.generateFrameNames("medusa"),
         frameRate: 4,
         repeat: -1
       });
@@ -855,8 +856,8 @@ export class GameScene extends Phaser.Scene {
       await this.interactWithOgre(object, x, y);
     } else if (object.description == "ghost") {
       await this.interactWithGhost(object, x, y);
-    } else if (object.description == "meduza") {
-      await this.interactWithMeduza(object, x, y);
+    } else if (object.description == "medusa") {
+      await this.interactWithMedusa(object, x, y);
     } else if (object.description == "troll") {
       await this.interactWithTroll(object, x, y);
     } else if (object.description == "lava monster") {
@@ -917,19 +918,16 @@ export class GameScene extends Phaser.Scene {
 
   async interactWithGhost(object, x, y) {
     if (this.power > 50) {
-      // do poisin animation at the ghost's coordinates
-      // this.playSound("hissing gas");
-      console.log("settings " + settings.delay);
       this.playSound("ghost_scream");
       this.createAnimation("slime", x, y);
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.map.removeObject(object, x, y);
       object.destroy();
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.playSound("hero");
     } else {
       this.playSound("ghost");
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.player.destroy();
       this.inputEnabled = false;
       this.roomDescription = Phaser.Math.RND.shuffle([
@@ -939,10 +937,10 @@ export class GameScene extends Phaser.Scene {
         "The ghost has overpowered you"
       ])[0];
       this.updateRoomDescription();
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.roomDescription = "Game over!";
       this.updateRoomDescription();
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       document.getElementById("setup").click();
     }
   }
@@ -953,9 +951,9 @@ export class GameScene extends Phaser.Scene {
       // do player animation of fight and move to dragon's coordinates
       //this.createAnimation("kill", x, y);
       this.playSound("unsheath_sword");
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.playSound("sword_slice");
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.playSound("roar");
       this.map.removeObject(object, x, y);
       let d = this.add.isoSprite(
@@ -968,7 +966,7 @@ export class GameScene extends Phaser.Scene {
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       d.destroy();
       this.playSound("hero");
     } else {
@@ -990,29 +988,58 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  async interactWithMeduza(object, x, y) {
+  async interactWithMedusa(object, x, y) {
     if (this.power > 50) {
       // throw arrow from player's position to object's x and y
+      let arrow = this.add.isoSprite(
+        this.player.isoX,
+        this.player.isoY,
+        0,
+        "arrow",
+        this.isoGroup,
+        null
+      );
+      arrow.scale = Math.sqrt(3) / arrow.width;
+      let tween = {
+        targets: [arrow, object],
+        isoX: x,
+        isoY: y,
+        duration: 2000
+      };
+      let arrowSound = this.playSound("arrow");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+            arrowSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            arrowSound.stop();
+          }
+        }
+      });
       this.playSound("arrow");
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.playSound("scream");
       this.map.removeObject(object, x, y);
       object.destroy();
-      await this.delay(settings.delay*3);
+      arrow.destroy();
+      await this.delay(settings.delay * 3);
       this.playSound("hero");
     } else {
-      this.playSound("meduza");
-      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      this.playSound("medusa");
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
-        "You've been frozen by meduza's stare",
-        "Don't mess with meduza without enough power",
-        "You enraged meduza and she killed you",
-        "Score: meduza one you zero"
+        "You've been frozen by medusa's stare",
+        "Don't mess with medusa without enough power",
+        "You enraged medusa and she killed you",
+        "Score: medusa one you zero"
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       await this.levelDown();
     }
   }
@@ -1020,12 +1047,39 @@ export class GameScene extends Phaser.Scene {
   async interactWithTroll(object, x, y) {
     // dark bullets
     if (this.power > 50) {
-      this.playSound("sonic_bullets");
-      this.createAnimation("dark_bullets", x, y);
-      await this.delay(settings.delay);
-      // this.playSound("haunted shreek");
+      let bullet = this.add.isoSprite(
+        this.player.isoX,
+        this.player.isoY,
+        0,
+        "dark_bullets",
+        this.isoGroup,
+        null
+      );
+      bullet.scale = Math.sqrt(3) / bullet.width;
+      let tween = {
+        targets: [bullet],
+        isoX: x,
+        isoY: y,
+        duration: 1000
+      };
+      let bulletSound = this.playSound("sonic_bullets");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+            bulletSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            bulletSound.stop();
+            this.playSound("deep_scream");
+            object.destroy();
+            bullet.destroy();
+          }
+        }
+      });
       this.map.removeObject(object, x, y);
-      object.destroy();
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
@@ -1046,16 +1100,41 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithLavaMonster(object, x, y) {
-    // ice bullets
     if (this.power > 50) {
-      // do poisin animation at the ghost's coordinates
-      // this.playSound("hissing gas");
-      this.createAnimation("ice_bullets", x, y);
-      await this.delay(2 * settings.delay);
-      // this.playSound("haunted shreek");
+      let bullet = this.add.isoSprite(
+        this.player.isoX,
+        this.player.isoY,
+        0,
+        "ice_bullets",
+        this.isoGroup,
+        null
+      );
+      bullet.scale = Math.sqrt(3) / bullet.width;
+      let tween = {
+        targets: [bullet],
+        isoX: x,
+        isoY: y,
+        duration: 1000
+      };
+      let bulletSound = this.playSound("sonic_bullets");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+            bulletSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            bulletSound.stop();
+            this.playSound("deep_scream");
+            object.destroy();
+            bullet.destroy();
+          }
+        }
+      });
       this.map.removeObject(object, x, y);
-      object.destroy();
-      await this.delay(2 * settings.delay);
+      await this.delay(settings.delay);
       this.playSound("hero");
     } else {
       this.playSound("lava monster");
