@@ -157,6 +157,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.wav");
     this.load.audio("slime", "assets/audio/slime.wav");
+    this.load.audio("open_door", "assets/audio/open_door.wav");
   }
 
   create() {
@@ -798,7 +799,7 @@ export class GameScene extends Phaser.Scene {
       // it is now the current room
       this.room = nextroom;
       // make the sound of a door to indicate room change
-      this.playSound("click");
+      this.playSound("open_door");
 
       let enemies = sortForEnemies(this.enemy, this.getTargets(), this.power);
       if (enemies.length > 0 && this.power <= 50) {
