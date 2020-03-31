@@ -12,14 +12,14 @@ export class ObjectConfig {
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
-          ["flower", "Chest1_closed", "key", "coin", "ogre"]
+          ["over_grass_flower1", "Chest1_closed", "key", "coin", "ogre"]
         ];
         this.objectsNoLimit = [
           ["mushrooms", "Chest2_opened", "fountain", "over_grass_flower1"],
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake"],
-          ["flower", "Chest1_closed", "coin"]
+          ["over_grass_flower1", "Chest1_closed", "coin"]
         ];
         // the max number of objects w index 0 corresponding to the number of enemies
         this.frequencies = {
@@ -98,7 +98,7 @@ export class ObjectConfig {
             ghost: "ghost",
             medusa : "medusa",
             troll : "troll",
-            lava_monster : "lava monster",
+            lava_monster : "lava_monster",
             mushrooms: "mushrooms",
             arrow: "arrow"
           };
@@ -119,13 +119,13 @@ export class ObjectConfig {
             coin: 10,
             ruby: 5,
             sapphire: 5,
-            dragon: -40,
+            dragon: -60,
             cupcake: 30,
             ogre: -5,
-            ghost: -30,
+            ghost: -20,
             medusa: -30,
-            troll: -30,
-            lava_monster: -40,
+            troll: -40,
+            lava_monster: -50,
             mushrooms: 30,
             arrow: 20
           };
