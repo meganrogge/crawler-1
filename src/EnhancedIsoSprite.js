@@ -46,7 +46,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
     if(!this.isCollectible){
       if(health <= objectConfig.power[this.description] && !(objectConfig.enemies.indexOf[this.description] < 0)){
         return [];
-      } else if(this.description == "medusa" || this.description == "troll" || this.description == "lava_monster"){
+      } else if(this.description == "medusa" || this.description == "troll" || this.description == "lava_monster" || this.description == "dragon"){
         return [];
       }
       if(path.length > 2){

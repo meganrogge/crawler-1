@@ -105,7 +105,10 @@ export class GameScene extends Phaser.Scene {
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
     this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
     this.load.image("door", "assets/game_pieces/door.png");
-    this.load.image("stone_player", "assets/animations/Knight/stone_player.png");
+    this.load.image(
+      "stone_player",
+      "assets/animations/Knight/stone_player.png"
+    );
     this.load.image("dragon_skeleton", "assets/objects/dragon_skeleton.png");
     this.load.image("flag", "assets/kenny-isometric/flag_NE.png");
     this.load.image("fountain", "assets/objects/fountain.png");
@@ -709,7 +712,7 @@ export class GameScene extends Phaser.Scene {
       let targets = this.getTargets();
       let numTargets = targets.length;
 
-      if (this.power <= -1*this.objectConfig.power[this.enemy]) {
+      if (this.power <= -1 * this.objectConfig.power[this.enemy]) {
         let result = sortForEnemies(this.enemy, this.getTargets(), this.power);
         targets = result.nonEnemies;
         if (numTargets - targets.length == 0) {
@@ -817,13 +820,13 @@ export class GameScene extends Phaser.Scene {
       //this.playSound("open_door");
 
       let enemies = sortForEnemies(this.enemy, this.getTargets(), this.power);
-      if (enemies.length > 0 && this.power <= -1*this.objectConfig.power[this.enemy]) {
+      if (
+        enemies.length > 0 &&
+        this.power <= -1 * this.objectConfig.power[this.enemy]
+      ) {
         // this room has enemies and is too weak to fight them
-        this.roomDescription =
-          Phaser.Math.RND.shuffle(["You need more power to fight " + this.enemy + "s", 
-                                  "Too weak",
-                                  "Low power"
-                                ])[0];
+        console.log("enemies");
+        this.roomDescription = "You need more power to fight " + this.enemy + "s";
       } else {
         this.roomDescription = "";
       }
@@ -849,8 +852,8 @@ export class GameScene extends Phaser.Scene {
   async interactWithObject(object, x, y) {
     if (object.power > 0) {
       if (
-        this.power <= -1*this.objectConfig.power[this.enemy] &&
-        object.power + this.power > -1*this.objectConfig.power[this.enemy] &&
+        this.power <= -1 * this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
         this.roomDescription != "Sufficient power"
       ) {
         this.roomDescription = "Sufficient power";
@@ -892,7 +895,7 @@ export class GameScene extends Phaser.Scene {
         this.updateRoomDescription();
         await this.delay(settings.delay * 4);
         document.getElementById("setup").click();
-      } else {
+      } else if(this.acquiredObjects.length > 0){
         this.levelCompleted = true;
         this.roomDescription = "You won! Moving on to the next level!";
         this.updateRoomDescription();
@@ -992,14 +995,7 @@ export class GameScene extends Phaser.Scene {
       // change description to you need a shield to fight and defeat the dragon
       // do kill animation at the player's coordinates?
       this.playSound("dragon_roar");
-      let fire = this.add.isoSprite(
-        x,
-        y,
-        0,
-        "explosion",
-        this.isoGroup,
-        null
-      );
+      let fire = this.add.isoSprite(x, y, 0, "explosion", this.isoGroup, null);
       fire.scale = Math.sqrt(3) / fire.width;
       let tween = {
         targets: [fire],
@@ -1012,7 +1008,7 @@ export class GameScene extends Phaser.Scene {
         tweens: tween,
         onStart: () => {
           if (settings.sound) {
-           // bulletSound.play();
+            // bulletSound.play();
           }
         },
         onComplete: () => {
@@ -1144,7 +1140,6 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
-      
       // move troll to player's position
       let tween = {
         targets: [object],
@@ -1222,14 +1217,7 @@ export class GameScene extends Phaser.Scene {
       this.playSound("hero");
     } else {
       // this.playSound("lava monster");
-      let lava = this.add.isoSprite(
-        x,
-        y,
-        0,
-        "lava_ball",
-        this.isoGroup,
-        null
-      );
+      let lava = this.add.isoSprite(x, y, 0, "lava_ball", this.isoGroup, null);
       lava.scale = Math.sqrt(3) / lava.width;
       let tween = {
         targets: [lava],
@@ -1242,7 +1230,7 @@ export class GameScene extends Phaser.Scene {
         tweens: tween,
         onStart: () => {
           if (settings.sound) {
-           // bulletSound.play();
+            // bulletSound.play();
           }
         },
         onComplete: () => {
@@ -1271,7 +1259,7 @@ export class GameScene extends Phaser.Scene {
   async levelDown() {
     // since level starts at 0
     this.roomDescription = "Returning to level " + this.level;
-    this.enemy = this.objectConfig.enemies[this.level-1];
+    this.enemy = this.objectConfig.enemies[this.level - 1];
     this.updateRoomDescription();
     await this.delay(3 * settings.delay);
     this.level--;
