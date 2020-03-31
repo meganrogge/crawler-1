@@ -105,6 +105,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
     this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
     this.load.image("door", "assets/game_pieces/door.png");
+    this.load.image("stone_player", "assets/animations/Knight/stone_player.png");
     this.load.image("dragon_skeleton", "assets/objects/dragon_skeleton.png");
     this.load.image("flag", "assets/kenny-isometric/flag_NE.png");
     this.load.image("fountain", "assets/objects/fountain.png");
@@ -1074,7 +1075,18 @@ export class GameScene extends Phaser.Scene {
     } else {
       // add a tween that manages this
       this.playSound("medusa");
+      this.map.removeObject(object, x, y);
+      let stone_player = this.add.isoSprite(
+        this.player.isoX,
+        this.player.isoY,
+        0,
+        "stone_player",
+        this.isoGroup,
+        null
+      );
       this.player.destroy();
+      stone_player.scale = Math.sqrt(3) / stone_player.width;
+      await this.delay(settings.delay * 3);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "You've been frozen by medusa's stare",
         "Don't mess with medusa without enough power",
@@ -1253,6 +1265,7 @@ export class GameScene extends Phaser.Scene {
   async levelDown() {
     // since level starts at 0
     this.roomDescription = "Returning to level " + this.level;
+    this.enemy = this.objectConfig.enemies[this.level-1];
     this.updateRoomDescription();
     await this.delay(3 * settings.delay);
     this.level--;
