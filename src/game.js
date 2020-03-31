@@ -477,6 +477,9 @@ export class GameScene extends Phaser.Scene {
     this.roomDescription = "";
     this.updateRoomDescription();
 
+    // TODO if you're in a room with an enemy and have insufficient power
+    // to fight it, announce so and update room description
+
     this.powerupSounds = [
       "sonic_powerup",
       "bounce_powerup",
@@ -706,7 +709,7 @@ export class GameScene extends Phaser.Scene {
       let targets = this.getTargets();
       let numTargets = targets.length;
 
-      if (this.power <= 50) {
+      if (this.power <= -1*this.objectConfig.power[this.enemy]) {
         let result = sortForEnemies(this.enemy, this.getTargets(), this.power);
         targets = result.nonEnemies;
         if (numTargets - targets.length == 0) {
@@ -814,10 +817,13 @@ export class GameScene extends Phaser.Scene {
       //this.playSound("open_door");
 
       let enemies = sortForEnemies(this.enemy, this.getTargets(), this.power);
-      if (enemies.length > 0 && this.power <= 50) {
-        // this room has no enemies
+      if (enemies.length > 0 && this.power <= -1*this.objectConfig.power[this.enemy]) {
+        // this room has enemies and is too weak to fight them
         this.roomDescription =
-          "You need more power to fight " + this.enemy + "s";
+          Phaser.Math.RND.shuffle(["You need more power to fight " + this.enemy + "s", 
+                                  "Too weak",
+                                  "Low power"
+                                ])[0];
       } else {
         this.roomDescription = "";
       }
@@ -843,8 +849,8 @@ export class GameScene extends Phaser.Scene {
   async interactWithObject(object, x, y) {
     if (object.power > 0) {
       if (
-        this.power <= this.objectConfig.power[this.enemy] &&
-        object.power + this.power > this.objectConfig.power[this.enemy] &&
+        this.power <= -1*this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1*this.objectConfig.power[this.enemy] &&
         this.roomDescription != "Sufficient power"
       ) {
         this.roomDescription = "Sufficient power";
