@@ -95,6 +95,11 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/dark_bullets/dark_bullets.png",
       "assets/animations/dark_bullets/dark_bullets.json"
     );
+    this.load.atlas(
+      "lava_ball",
+      "assets/animations/lava_ball/lava_ball.png",
+      "assets/animations/lava_ball/lava_ball.json"
+    );
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
     this.load.image("Chest1_opened", "assets/objects/Chest1_opened.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
@@ -275,6 +280,12 @@ export class GameScene extends Phaser.Scene {
       this.anims.create({
         key: "dark_bullets",
         frames: this.anims.generateFrameNames("dark_bullets"),
+        frameRate: 4,
+        repeat: -1
+      });
+      this.anims.create({
+        key: "lava_ball",
+        frames: this.anims.generateFrameNames("lava_ball"),
         frameRate: 4,
         repeat: -1
       });
@@ -744,7 +755,7 @@ export class GameScene extends Phaser.Scene {
         this.target.exit.y == this.previousExit.y
       ) {
         // let user know this exit takes them back to where they were so they don't go in circles
-        this.roomDescription = "return to prior room";
+        this.roomDescription = "back";
       } else {
         this.roomDescription = "exit " + this.getExitNumber(targets);
       }
@@ -799,7 +810,7 @@ export class GameScene extends Phaser.Scene {
       // it is now the current room
       this.room = nextroom;
       // make the sound of a door to indicate room change
-      this.playSound("open_door");
+      //this.playSound("open_door");
 
       let enemies = sortForEnemies(this.enemy, this.getTargets(), this.power);
       if (enemies.length > 0 && this.power <= 50) {
@@ -831,8 +842,8 @@ export class GameScene extends Phaser.Scene {
   async interactWithObject(object, x, y) {
     if (object.power > 0) {
       if (
-        this.power <= 50 &&
-        object.power + this.power > 50 &&
+        this.power <= this.objectConfig.power[this.enemy] &&
+        object.power + this.power > this.objectConfig.power[this.enemy] &&
         this.roomDescription != "Sufficient power"
       ) {
         this.roomDescription = "Sufficient power";
@@ -861,7 +872,7 @@ export class GameScene extends Phaser.Scene {
       await this.interactWithMedusa(object, x, y);
     } else if (object.description == "troll") {
       await this.interactWithTroll(object, x, y);
-    } else if (object.description == "lava monster") {
+    } else if (object.description == "lava_monster") {
       await this.interactWithLavaMonster(object, x, y);
     } else if (object.description == "closed red chest") {
       await this.interactWithChest(object, x, y);
@@ -918,7 +929,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithGhost(object, x, y) {
-    if (this.power > 50) {
+    if (this.power > 20) {
       this.playSound("ghost_scream");
       this.createAnimation("slime", x, y);
       await this.delay(settings.delay * 3);
@@ -947,7 +958,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithDragon(object, x, y) {
-    if (this.power > 50) {
+    if (this.power > 60) {
       // do kill animation at the dragon's coordinates
       // do player animation of fight and move to dragon's coordinates
       //this.createAnimation("kill", x, y);
@@ -974,7 +985,38 @@ export class GameScene extends Phaser.Scene {
       // change description to you need a shield to fight and defeat the dragon
       // do kill animation at the player's coordinates?
       this.playSound("dragon_roar");
-      this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      let fire = this.add.isoSprite(
+        x,
+        y,
+        0,
+        "explosion",
+        this.isoGroup,
+        null
+      );
+      fire.scale = Math.sqrt(3) / fire.width;
+      let tween = {
+        targets: [fire],
+        isoX: this.player.isoX,
+        isoY: this.player.isoY,
+        duration: 2000
+      };
+      //let bulletSound = this.playSound("lava");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+           // bulletSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            //bulletSound.stop();
+            // this.playSound("deep_scream");
+            fire.destroy();
+          }
+        }
+      });
+      await this.delay(2000);
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Insufficient power to fight the dragon!",
@@ -990,7 +1032,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithMedusa(object, x, y) {
-    if (this.power > 50) {
+    if (this.power > 30) {
       // throw arrow from player's position to object's x and y
       let arrow = this.add.isoSprite(
         this.player.isoX,
@@ -1030,6 +1072,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       this.playSound("hero");
     } else {
+      // add a tween that manages this
       this.playSound("medusa");
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
@@ -1046,8 +1089,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithTroll(object, x, y) {
-    // dark bullets
-    if (this.power > 50) {
+    if (this.power > 40) {
       let bullet = this.add.isoSprite(
         this.player.isoX,
         this.player.isoY,
@@ -1084,9 +1126,32 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
-      this.playSound("stomping");
+      
       // move troll to player's position
-      this.player.destroy();
+      let tween = {
+        targets: [object],
+        isoX: this.player.isoX,
+        isoY: this.player.isoY,
+        duration: 2000
+      };
+      let stompingSound = this.playSound("stomping");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+            stompingSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            stompingSound.stop();
+            this.playSound("deep_scream");
+            object.destroy();
+            this.player.destroy();
+          }
+        }
+      });
+      await this.delay(2000);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "The troll has stomped on you!",
         "Without enough power, you're no match for the troll",
@@ -1138,14 +1203,45 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
-      this.playSound("lava monster");
-      // this.createAnimation("explosion", this.player.isoX, this.player.isoY);
+      // this.playSound("lava monster");
+      let lava = this.add.isoSprite(
+        x,
+        y,
+        0,
+        "lava_ball",
+        this.isoGroup,
+        null
+      );
+      lava.scale = Math.sqrt(3) / lava.width;
+      let tween = {
+        targets: [lava],
+        isoX: this.player.isoX,
+        isoY: this.player.isoY,
+        duration: 2000
+      };
+      //let bulletSound = this.playSound("lava");
+      this.tweens.timeline({
+        tweens: tween,
+        onStart: () => {
+          if (settings.sound) {
+           // bulletSound.play();
+          }
+        },
+        onComplete: () => {
+          if (settings.sound) {
+            //bulletSound.stop();
+            this.playSound("deep_scream");
+            lava.destroy();
+          }
+        }
+      });
+      await this.delay(2000);
       this.player.destroy();
       this.roomDescription = Phaser.Math.RND.shuffle([
         "You've been melted into a puddle",
         "Without enough power, you couldn't bear the heat of the lava monster",
         "You've ignited in a burst of flames",
-        "Wah Wahhh Wahhhhh"
+        "NOOOOOOOOOOOO"
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
@@ -1155,7 +1251,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   async levelDown() {
-    this.roomDescription = "Returning to level " + (this.level - 1);
+    // since level starts at 0
+    this.roomDescription = "Returning to level " + this.level;
     this.updateRoomDescription();
     await this.delay(3 * settings.delay);
     this.level--;

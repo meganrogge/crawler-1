@@ -1,0 +1,112 @@
+{
+"frames": [
+	{
+		"filename": "Lava_Ball_Right-animation_0.png",
+		"frame": {"x":145, "y":565, "w":140, "h":139},
+		"spriteSourceSize": {"x":11,"y":6,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_1.png",
+		"frame": {"x":145, "y":422, "w":140, "h":142},
+		"spriteSourceSize": {"x":9,"y":8,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_10.png",
+		"frame": {"x":0, "y":0, "w":148, "h":138},
+		"spriteSourceSize": {"x":3,"y":10,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_11.png",
+		"frame": {"x":143, "y":716, "w":142, "h":140},
+		"spriteSourceSize": {"x":5,"y":9,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_12.png",
+		"frame": {"x":0, "y":859, "w":142, "h":144},
+		"spriteSourceSize": {"x":8,"y":6,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_13.png",
+		"frame": {"x":143, "y":857, "w":141, "h":137},
+		"spriteSourceSize": {"x":8,"y":11,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_14.png",
+		"frame": {"x":0, "y":282, "w":144, "h":144},
+		"spriteSourceSize": {"x":6,"y":5,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_15.png",
+		"frame": {"x":286, "y":142, "w":136, "h":145},
+		"spriteSourceSize": {"x":13,"y":5,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_16.png",
+		"frame": {"x":0, "y":716, "w":142, "h":142},
+		"spriteSourceSize": {"x":7,"y":4,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_2.png",
+		"frame": {"x":286, "y":288, "w":136, "h":142},
+		"spriteSourceSize": {"x":8,"y":7,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_3.png",
+		"frame": {"x":0, "y":139, "w":145, "h":142},
+		"spriteSourceSize": {"x":7,"y":5,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_4.png",
+		"frame": {"x":0, "y":569, "w":144, "h":146},
+		"spriteSourceSize": {"x":7,"y":5,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_5.png",
+		"frame": {"x":145, "y":282, "w":140, "h":139},
+		"spriteSourceSize": {"x":6,"y":7,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_6.png",
+		"frame": {"x":0, "y":427, "w":144, "h":141},
+		"spriteSourceSize": {"x":6,"y":7,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_7.png",
+		"frame": {"x":285, "y":857, "w":138, "h":143},
+		"spriteSourceSize": {"x":9,"y":6,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_8.png",
+		"frame": {"x":146, "y":139, "w":139, "h":134},
+		"spriteSourceSize": {"x":9,"y":9,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	},
+	{
+		"filename": "Lava_Ball_Right-animation_9.png",
+		"frame": {"x":286, "y":0, "w":136, "h":141},
+		"spriteSourceSize": {"x":4,"y":8,"w":157,"h":154},
+		"sourceSize": {"w":157,"h":154}
+	}
+
+],
+"meta": {
+	"image": "main.png",
+	"size": {"w": 512, "h": 1024},
+	"scale": "1"
+}
+}

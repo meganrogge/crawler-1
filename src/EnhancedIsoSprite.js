@@ -44,12 +44,13 @@ export default class EnhancedIsoSprite extends IsoSprite {
    */
   path(path, health) {
     if(!this.isCollectible){
-      if(health <= 50 && !(objectConfig.enemies.indexOf[this.description] < 0)){
+      if(health <= objectConfig.power[this.description] && !(objectConfig.enemies.indexOf[this.description] < 0)){
         return [];
-      } else if(this.description == "medusa" || this.description == "troll"){
+      } else if(this.description == "medusa" || this.description == "troll" || this.description == "lava_monster"){
         return [];
       }
       if(path.length > 2){
+        console.log(path+ " "+ path.slice(0,-1));
         return path.slice(0, -1);
       } else {
         // don't move because you're already 1 square away
