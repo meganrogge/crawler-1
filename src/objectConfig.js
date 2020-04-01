@@ -25,8 +25,8 @@ export class ObjectConfig {
         this.frequencies = {
            key: 1,
            ghost: 3,
-           medusa: 4,
-           troll: 4,
+           medusa: 3,
+           troll: 3,
            lava_monster: 3,
            dragon: 3
         }

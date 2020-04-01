@@ -44,7 +44,12 @@ export class Map {
       room.exits = droom.exits.map(([xy, rot, nextroom]) => {
         xy = droom.global_pos(xy);
         const ndx = this.dungeon.children.indexOf(nextroom);
-        const [sx, sy] = [[0, 1], [-1, 0], [0, -1], [1, 0]][rot / 90];
+        const [sx, sy] = [
+          [0, 1],
+          [-1, 0],
+          [0, -1],
+          [1, 0]
+        ][rot / 90];
         return new Exit(xy[0], xy[1], this.rooms[ndx], { x: sx, y: sy });
       });
     }
@@ -96,7 +101,7 @@ export class Map {
     this.finder.setAdditionalPointCost(x, y, 1000);
   }
 
-  removeObject(object, x, y) {
+  removeObject(object, x, y, removedFromGame) {
     const room = this.roomFromXY(x, y);
     const ndx = room.objects.indexOf(object);
     if (ndx >= 0) {
@@ -104,7 +109,11 @@ export class Map {
     } else {
       console.log("object not found", object, room, x, y);
     }
-    this.finder.setAdditionalPointCost(x, y, 0);
+    if (removedFromGame) {
+      this.finder.setAdditionalPointCost(x, y, 0);
+    } else {
+      this.finder.setAdditionalPointCost(x, y, 1000);
+    }
   }
 
   walkable(x, y) {

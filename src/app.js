@@ -48,7 +48,7 @@ window.onload = () => {
     game = new MyGame(config);
   }
   // setup menu should be initially open
-  document.getElementById('setup').click();
+  document.getElementById("setup").click();
 
   getInputAll("input[name=mode]").map(
     node => (node.checked = node.value == settings.mode)
@@ -62,19 +62,19 @@ window.onload = () => {
   const dictationInput = getInput("#roomDictation");
   dictationInput.checked = settings.dictation;
 
-  const voiceInput = getInput('#voiceSelect');
+  const voiceInput = getInput("#voiceSelect");
 
-  const rateInput = getInput('#rate');
+  const rateInput = getInput("#rate");
 
-  const pitchInput = getInput('#pitch');
+  const pitchInput = getInput("#pitch");
 
-  const backgroundMusic = getInput('#backgroundMusic');
+  const backgroundMusic = getInput("#backgroundMusic");
   backgroundMusic.checked = settings.backgroundMusic;
 
-  const fixedGame = getInput('#fixedGame');
+  const fixedGame = getInput("#fixedGame");
   fixedGame.checked = settings.fixedGame;
 
-  const includeObstacles = getInput('#includeObstacles');
+  const includeObstacles = getInput("#includeObstacles");
   includeObstacles.checked = settings.includeObstacles;
 
   document.getElementById("settings").addEventListener("change", e => {

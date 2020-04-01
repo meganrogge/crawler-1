@@ -43,14 +43,20 @@ export default class EnhancedIsoSprite extends IsoSprite {
    * The idea is to give the object an opportunity to edit the path
    */
   path(path, health) {
-    if(!this.isCollectible){
-      if(health <= objectConfig.power[this.description] && !(objectConfig.enemies.indexOf[this.description] < 0)){
+    if (!this.isCollectible) {
+      if (
+        health <= objectConfig.power[this.description] &&
+        !(objectConfig.enemies.indexOf[this.description] < 0)
+      ) {
         return [];
-      } else if(this.description == "medusa" || this.description == "troll" || this.description == "lava_monster" || this.description == "dragon"){
+      } else if (
+        this.description == "medusa" ||
+        this.description == "troll" ||
+        this.description == "lava_monster"
+      ) {
         return [];
-      }
-      if(path.length > 2){
-        console.log(path+ " "+ path.slice(0,-1));
+      } else if (path.length > 1) {
+        console.log(path + " " + path.slice(0, -1));
         return path.slice(0, -1);
       } else {
         // don't move because you're already 1 square away
@@ -64,9 +70,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
   /*
    * Interact with the object
    */
-  async interact(player, room) {
-    
-  }
+  async interact(player, room) {}
 
   getDescription() {
     return this.description;
