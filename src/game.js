@@ -1267,10 +1267,10 @@ export class GameScene extends Phaser.Scene {
     powerBar.style.width = this.power;
     powerBar.innerHTML = "Power " + this.power;
     powerBar.setAttribute(
-      "style",
-      "width: " + (this.power > 100 ? 100 : this.power) + "%"
-    );
-    if (this.power <= -1 * this.objectConfig.power[this.enemy]) {
+        "style",
+        "width: " + (this.power > 100 ? 100 : this.power) + "%"
+      );
+    if(this.power <= -1*this.objectConfig.power[this.enemy]){
       powerBar.classList.remove("progress-bar-success");
       powerBar.classList.add("progress-bar-danger");
     } else {
