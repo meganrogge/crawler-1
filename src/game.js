@@ -1265,14 +1265,18 @@ export class GameScene extends Phaser.Scene {
     let powerBar = document.getElementById("power_bar");
     this.power = this.power < 0 ? 0 : this.power;
     powerBar.style.width = this.power;
-    powerBar.innerHTML = this.power;
-    document.getElementById("power_bar").innerHTML = "Power " + this.power;
-    document
-      .getElementById("power_bar")
-      .setAttribute(
+    powerBar.innerHTML = "Power " + this.power;
+    powerBar.setAttribute(
         "style",
         "width: " + (this.power > 100 ? 100 : this.power) + "%"
       );
+    if(this.power <= -1*this.objectConfig.power[this.enemy]){
+      powerBar.classList.remove("progress-bar-success");
+      powerBar.classList.add("progress-bar-danger");
+    } else {
+      powerBar.classList.remove("progress-bar-danger");
+      powerBar.classList.add("progress-bar-success");
+    }
   }
 
   hasAcquired = item => {

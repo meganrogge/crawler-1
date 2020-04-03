@@ -30,6 +30,10 @@ h1#settings-menu {
   text-align: left;
 }
 
+#power-bar {
+  background-color: red;
+}
+
 label {
   color: white;
 }
