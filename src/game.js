@@ -114,6 +114,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("mushrooms", "assets/objects/mushrooms.png");
     this.load.image("arrow", "assets/objects/arrow.png");
+    this.load.image("arrow_left", "assets/objects/arrow_left.png");
+    this.load.image("arrow_right", "assets/objects/arrow_right.png");
     this.load.image(
       "over_grass_flower1",
       "assets/objects/over_grass_flower1.png"
@@ -157,6 +159,7 @@ export class GameScene extends Phaser.Scene {
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
+    this.load.audio("fireball", "assets/audio/fireball.wav");
     this.load.audio("deep_scream", "assets/audio/deep_scream.wav");
     this.load.audio("stomping", "assets/audio/stomping.wav");
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
@@ -527,9 +530,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   getRoomDescription() {
-    if (this.room.objects.length == 0) {
-      return "This room is empty!";
-    }
+    // if (this.room.objects.length == 0) {
+    //   return "This room is empty!";
+    // }
     return this.roomDescription;
   }
 
@@ -836,13 +839,13 @@ export class GameScene extends Phaser.Scene {
       items.enemies.length > 0 &&
       this.power <= -1 * this.objectConfig.power[this.enemy] &&
       this.roomDescription != "Low power" &&
-      this.roomDescription != "Get objects before challenging an enemy" &&
+      this.roomDescription != "Get objects before challenging "+this.enemy+"s" &&
       this.roomDescription != "Insufficient power"
     ) {
       // this room has enemies and is too weak to fight them
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Low power",
-        "Get objects before challenging an enemy",
+        "Get objects before challenging "+this.enemy+"s",
         "Insufficient power"
       ])[0];
     } else {
@@ -894,6 +897,7 @@ export class GameScene extends Phaser.Scene {
       // needs a high path weight
       this.map.removeObject(object, x, y, false);
     }
+    await this.delay(1000);
     if (this.numObjects(this.enemy) == 0) {
       if (this.level == 4) {
         this.roomDescription = "You won the game!";
@@ -950,6 +954,13 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       this.map.removeObject(object, x, y, true);
       object.destroy();
+      this.roomDescription = Phaser.Math.RND.shuffle([
+        "You've vaporized the ghost",
+        this.numObjects(this.enemy) > 0 ? "One "+this.enemy+" down," +this.numObjects(this.enemy)+ " to go": "Last "+this.enemy+" defeated",
+        "You barely defeated the ghost",
+        "Enemies take note of your decisive victory"
+      ])[0];
+      this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.playSound("hero");
     } else {
@@ -1027,7 +1038,7 @@ export class GameScene extends Phaser.Scene {
         "Insufficient power to fight the dragon!",
         "You poked the dragon without enough power",
         "You're on fire",
-        "The dragon through flames at you"
+        "The dragon threw flames at you"
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
@@ -1043,7 +1054,7 @@ export class GameScene extends Phaser.Scene {
         this.player.isoX,
         this.player.isoY,
         0,
-        "arrow",
+        this.player.isoX < x ? "arrow_right" : "arrow_left",
         this.isoGroup,
         null
       );
@@ -1086,7 +1097,7 @@ export class GameScene extends Phaser.Scene {
         "You've turned to stone by medusa's stare",
         "Don't mess with medusa without enough power",
         "You enraged medusa and she killed you",
-        "Score: medusa one you zero"
+        "Score: medusa one - you zero"
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
@@ -1209,7 +1220,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       this.playSound("hero");
     } else {
-      // this.playSound("lava monster");
+      let fireSound = this.playSound("fireball");
       let lava = this.add.isoSprite(x, y, 0, "lava_ball", this.isoGroup, null);
       lava.scale = Math.sqrt(3) / lava.width;
       let tween = {
@@ -1218,18 +1229,17 @@ export class GameScene extends Phaser.Scene {
         isoY: this.player.isoY,
         duration: 2000
       };
-      //let bulletSound = this.playSound("lava");
       this.tweens.timeline({
         tweens: tween,
         onStart: () => {
           if (settings.sound) {
-            // bulletSound.play();
+            fireSound.play();
           }
         },
         onComplete: () => {
           if (settings.sound) {
-            //bulletSound.stop();
-            this.playSound("deep_scream");
+            fireSound.stop();
+            this.playSound("uh_oh");
             lava.destroy();
           }
         }
