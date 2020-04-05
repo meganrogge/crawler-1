@@ -8,17 +8,17 @@ export class ObjectConfig {
           "dragon"
         ],
         this.objects = [
-          ["mushrooms", "Chest2_opened", "fountain", "over_grass_flower1", "ogre"],
+          ["mushrooms", "fountain", "over_grass_flower1", "ogre"],
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
-          ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
+          ["jewel", "Chest2_closed", "coin", "key", "sapphire", "cupcake", "ogre"],
           ["over_grass_flower1", "Chest1_closed", "key", "coin", "ogre"]
         ];
         this.objectsNoLimit = [
-          ["mushrooms", "Chest2_opened", "fountain", "over_grass_flower1"],
+          ["mushrooms", "fountain", "over_grass_flower1"],
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake"],
-          ["jewel", "coin", "ruby", "sapphire", "cupcake"],
+          ["jewel", "coin", "sapphire", "cupcake"],
           ["over_grass_flower1", "Chest1_closed", "coin"]
         ];
         // the max number of objects w index 0 corresponding to the number of enemies
@@ -28,11 +28,12 @@ export class ObjectConfig {
            medusa: 4,
            troll: 3,
            lava_monster: 3,
-           dragon: 3
+           dragon: 3, 
+           ogre: 3
         }
          this.heights = {
             Chest1_closed: 0,
-            Chest2_opened: 0,
+            Chest2_closed: 0,
             fountain: 0,
             over_grass_flower1: -1 / 2,
             Rock_1: -1 / 2,
@@ -56,31 +57,31 @@ export class ObjectConfig {
           };
            this.audio = {
             Chest1_closed: "knock",
-            Chest2_opened: "door_close",
+            Chest2_closed: "knock",
             fountain: "waterfall",
             over_grass_flower1: "ding",
             Rock_1: "thump",
             Rock_2: "thump",
             flag: "thump",
             lever: "thump",
-            jewel: "cha_ching",
+            jewel: "jewel",
             key: "ding",
             coin: "cha_ching",
-            ruby: "cha_ching",
-            sapphire: "cha_ching",
+            ruby: "jewel",
+            sapphire: "jewel",
             dragon: "dragon_roar",
-            cupcake: "sonic_powerup",
+            cupcake: "yum",
             ogre: "timpani_failure",
             ghost: "ghost",
             medusa : "timpani_failure",
             troll : "timpani_failure",
             lava_monster : "timpani_failure",
-            mushrooms: "chimes_powerup",
-            arrow: "bounce_powerup"
+            mushrooms: "slurp",
+            arrow: "timpani_failure"
           };
            this.descriptions = {
-            Chest1_closed: "closed red chest",
-            Chest2_opened: "open green chest",
+            Chest1_closed: "locked red chest",
+            Chest2_closed: "locked green chest",
             fountain: "fountain",
             over_grass_flower1: "flower",
             Rock_1: "rock",
@@ -107,7 +108,7 @@ export class ObjectConfig {
           };
           this.power = {
             Chest1_closed: 2,
-            Chest2_opened: 3,
+            Chest2_closed: 3,
             fountain: 10,
             over_grass_flower1: 2,
             Rock_1: 1,
@@ -131,7 +132,7 @@ export class ObjectConfig {
           };
           this.isCollectible = {
             Chest1_closed: false,
-            Chest2_opened: false,
+            Chest2_closed: false,
             fountain: false,
             over_grass_flower1: true,
             Rock_1: false,
@@ -155,7 +156,7 @@ export class ObjectConfig {
           }
           this.isAnimated = {
             Chest1_closed: false,
-            Chest2_opened: false,
+            Chest2_closed: false,
             fountain: false,
             over_grass_flower1: false,
             Rock_1: false,

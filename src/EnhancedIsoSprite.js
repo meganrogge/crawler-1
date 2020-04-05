@@ -55,9 +55,10 @@ export default class EnhancedIsoSprite extends IsoSprite {
         this.description == "lava_monster"
       ) {
         return [];
-      } else if (path.length > 1) {
-        console.log(path + " " + path.slice(0, -1));
-        return path.slice(0, -1);
+      } else if (path.length > 2) {
+        console.log(path.length);
+        console.log(path);
+        return path.slice(0, path.length-1);
       } else {
         // don't move because you're already 1 square away
         return [];
