@@ -56,8 +56,6 @@ export default class EnhancedIsoSprite extends IsoSprite {
       ) {
         return [];
       } else if (path.length > 2) {
-        console.log(path.length);
-        console.log(path);
         return path.slice(0, path.length-1);
       } else {
         // don't move because you're already 1 square away

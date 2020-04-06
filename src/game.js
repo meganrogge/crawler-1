@@ -66,6 +66,11 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/slime/slime.json"
     );
     this.load.atlas(
+      "poisin",
+      "assets/animations/poisin/poisin.png",
+      "assets/animations/poisin/poisin.json"
+    );
+    this.load.atlas(
       "ghost",
       "assets/animations/ghost/ghost.png",
       "assets/animations/ghost/ghost.json"
@@ -118,6 +123,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("arrow", "assets/objects/arrow.png");
     this.load.image("arrow_left", "assets/objects/arrow_left.png");
     this.load.image("arrow_right", "assets/objects/arrow_right.png");
+    this.load.image("arrow_up", "assets/objects/arrow_up.png");
+    this.load.image("arrow_down", "assets/objects/arrow_down.png");
     this.load.image(
       "over_grass_flower1",
       "assets/objects/over_grass_flower1.png"
@@ -253,6 +260,12 @@ export class GameScene extends Phaser.Scene {
       this.anims.create({
         key: "slime",
         frames: this.anims.generateFrameNames("slime"),
+        frameRate: 4,
+        repeat: 0,
+      });
+      this.anims.create({
+        key: "poisin",
+        frames: this.anims.generateFrameNames("poisin"),
         frameRate: 4,
         repeat: 0,
       });
@@ -917,7 +930,17 @@ export class GameScene extends Phaser.Scene {
         await this.delay(settings.delay * 4);
         document.getElementById("setup").click();
       } else if (!this.levelJustStarted) {
-        this.roomDescription = "You won! Moving on to the next level!";
+        if(this.level == 0){
+          this.roomDescription = "You won! Next up: the mansion of medusa";
+        } else if(this.level == 1){
+          this.roomDescription = "You won! Going on a troll hunt";
+        } else if(this.level == 2){
+          this.roomDescription = "You won! Headed to the land of lava monsters";
+        } else if(this.level == 3){
+          this.roomDescription = "You won! Finally, the dreaded dragon dungeon";
+        } else {
+          console.log(this.level);
+        }
         this.updateRoomDescription();
         await this.delay(settings.delay * 4);
         this.playSound("hero");
@@ -940,14 +963,14 @@ export class GameScene extends Phaser.Scene {
         x,
         y,
         0,
-        object.description.contains("red") ? "Chest1_opened" : "Chest2_opened",
+        object.description == "locked red chest" ? "Chest1_opened" : "Chest2_opened",
         this.isoGroup,
         null
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
       await this.delay(settings.delay);
-      this.map.addObject(object, x, y);
+      this.map.removeObject(d, x, y, false);
     } else {
       this.playSound("knock");
       this.roomDescription = "Find the key to open the chest";
@@ -971,16 +994,17 @@ export class GameScene extends Phaser.Scene {
   async interactWithGhost(object, x, y) {
     if (this.power > 20) {
       this.playSound("ghost_scream");
-      this.createAnimation("slime", x, y);
-      await this.delay(settings.delay * 3);
+      this.createAnimation("poisin", x, y);
+      await this.delay(settings.delay * 2);
       this.map.removeObject(object, x, y, true);
       object.destroy();
+      this.delay(settings.delay);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "You've vaporized the ghost",
         this.numObjects(this.enemy) > 0
           ? "One " +
             this.enemy +
-            " down," +
+            " down, " +
             this.numObjects(this.enemy) +
             " to go"
           : "Last " + this.enemy + " defeated",
@@ -1028,12 +1052,13 @@ export class GameScene extends Phaser.Scene {
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
+      this.delay(settings.delay);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Only the dragon's skeleton remains",
         this.numObjects(this.enemy) > 0
           ? "One " +
             this.enemy +
-            " down," +
+            " down, " +
             this.numObjects(this.enemy) +
             " to go"
           : "Last " + this.enemy + " defeated",
@@ -1087,18 +1112,40 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  correctOrientation(playerX, playerY, objectX, objectY){
+    if(Math.abs(playerX-objectX) > Math.abs(playerY-objectY)){
+      if(playerX < objectX){
+        return "arrow_right";
+      } else {
+        return "arrow_left";
+      }
+    } else if(Math.abs(playerX-objectX) < Math.abs(playerY-objectY)) {
+      if(playerY < objectY){
+        return "arrow_down";
+      } else {
+        return "arrow_up";
+      }
+    } else {
+      if(playerX < objectX){
+        return "arrow_up";
+      } else {
+        return "arrow_down";
+      }
+    }
+  }
+
   async interactWithMedusa(object, x, y) {
     if (this.power > 30) {
-      // throw arrow from player's position to object's x and y
+      let oriented = this.correctOrientation(this.player.isoX, this.player.isoY, x, y);
       let arrow = this.add.isoSprite(
         this.player.isoX,
         this.player.isoY,
         0,
-        this.player.isoX < x ? "arrow_right" : "arrow_left",
+        oriented,
         this.isoGroup,
         null
       );
-      arrow.scale = Math.sqrt(3) / arrow.width;
+      arrow.scale = oriented == "arrow_down" || oriented == "arrow_up" ? Math.sqrt(3) / arrow.height : Math.sqrt(3) / arrow.width;
       let tween = {
         targets: [arrow, object],
         isoX: x,
@@ -1125,12 +1172,13 @@ export class GameScene extends Phaser.Scene {
       this.map.removeObject(object, x, y, true);
       object.destroy();
       arrow.destroy();
+      this.delay(settings.delay);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Speared Medusa in the heart",
         this.numObjects(this.enemy) > 0
           ? "One " +
             this.enemy +
-            " down," +
+            " down, " +
             this.numObjects(this.enemy) +
             " to go"
           : "Last " + this.enemy + " defeated",
@@ -1193,17 +1241,18 @@ export class GameScene extends Phaser.Scene {
           }
         },
       });
+      this.delay(settings.delay);
       this.map.removeObject(object, x, y, true);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Bolted the troll with dark magic",
         this.numObjects(this.enemy) > 0
           ? "One " +
             this.enemy +
-            " down," +
+            " down, " +
             this.numObjects(this.enemy) +
             " to go"
           : "Last " + this.enemy + " defeated",
-        "Close call, but you won",
+        "Close call, you succeeded",
         "That was impressive",
       ])[0];
       this.updateRoomDescription();
@@ -1282,21 +1331,22 @@ export class GameScene extends Phaser.Scene {
           }
         },
       });
+      this.delay(settings.delay);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "Ice beats fire",
         this.numObjects(this.enemy) > 0
           ? "One " +
             this.enemy +
-            " down," +
+            " down, " +
             this.numObjects(this.enemy) +
             " to go"
           : "Last " + this.enemy + " defeated",
         "Lava is no match for ice bullets",
-        "You won, but barely!",
+        "Barely made it out alive!",
       ])[0];
       this.updateRoomDescription();
       this.map.removeObject(object, x, y, true);
-      await this.delay(settings.delay*3);
+      await this.delay(settings.delay * 3);
       this.playSound("chimes_powerup");
     } else {
       let fireSound = this.playSound("fireball");
@@ -1375,7 +1425,7 @@ export class GameScene extends Phaser.Scene {
   async createAnimation(type, x, y) {
     let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
     a.scale = Math.sqrt(3) / a.width;
-    if (type == "slime") {
+    if (type == "slime" || type == "poisin") {
       a.scale /= 100;
     }
     a.play(type, true);
