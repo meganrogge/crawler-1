@@ -5,6 +5,7 @@ import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
 import { sortByDistance } from "./helpers.js";
+import { sortByVisited } from "./helpers.js";
 import { sortForEnemies } from "./helpers.js";
 import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
@@ -233,6 +234,7 @@ export class GameScene extends Phaser.Scene {
     this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
+    this.visitedRooms = [this.room];
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
     let noEnemies = true;
@@ -833,6 +835,7 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // it is now the current room
       this.room = nextroom;
+      this.visitedRooms.push(this.room);
       // make the sound of a door to indicate room change
       //this.playSound("open_door");
       this.updateOnEnemies();
@@ -1396,6 +1399,7 @@ export class GameScene extends Phaser.Scene {
     await this.delay(3 * settings.delay);
     this.level--;
     this.acquiredObjects = [];
+    this.visitedRooms = [];
     this.scene.stop();
     this.scene.restart();
   }
@@ -1451,7 +1455,11 @@ export class GameScene extends Phaser.Scene {
         y,
       };
     });
-    sortByDistance(exits, px, py);
+    if(settings.mode == "full") {
+      exits = sortByVisited(exits, this.visitedRooms);
+    } else {
+      sortByDistance(exits, px, py);
+    }
     targets = [...targets, ...exits];
     return targets;
   }
