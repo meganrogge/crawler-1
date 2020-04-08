@@ -915,8 +915,8 @@ export class GameScene extends Phaser.Scene {
     } else if (object.description == "lava_monster") {
       await this.interactWithLavaMonster(object, x, y);
     } else if (
-      object.description == "locked red chest" ||
-      object.description == "locked green chest"
+      object.description == "red chest" ||
+      object.description == "green chest"
     ) {
       await this.interactWithChest(object, x, y);
     } else {
@@ -966,7 +966,7 @@ export class GameScene extends Phaser.Scene {
         x,
         y,
         0,
-        object.description == "locked red chest" ? "Chest1_opened" : "Chest2_opened",
+        object.description == "red chest" ? "Chest1_opened" : "Chest2_opened",
         this.isoGroup,
         null
       );

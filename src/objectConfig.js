@@ -80,8 +80,8 @@ export class ObjectConfig {
             arrow: "timpani_failure"
           };
            this.descriptions = {
-            Chest1_closed: "locked red chest",
-            Chest2_closed: "locked green chest",
+            Chest1_closed: "red chest",
+            Chest2_closed: "green chest",
             fountain: "fountain",
             over_grass_flower1: "flower",
             Rock_1: "rock",

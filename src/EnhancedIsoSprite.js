@@ -45,8 +45,8 @@ export default class EnhancedIsoSprite extends IsoSprite {
   path(path, health) {
     if (!this.isCollectible) {
       if (
-        health <= objectConfig.power[this.description] &&
-        !(objectConfig.enemies.indexOf[this.description] < 0)
+        health <= -1*objectConfig.power[this.description] &&
+        this.description == "dragon"
       ) {
         return [];
       } else if (
