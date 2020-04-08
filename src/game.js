@@ -222,6 +222,13 @@ export class GameScene extends Phaser.Scene {
       "x+1y+1",
     ];
 
+    this.lowPowerIndex = 0;
+    this.lowPowerDescriptions = [
+        "Low power",
+        "Get objects before challenging " + this.enemy + "s",
+        "Insufficient power"
+      ];
+
     this.objectConfig.objects[this.level].push(this.enemy);
 
     this.RandomlyPlacedObjects = !settings.includeObstacles
@@ -234,6 +241,7 @@ export class GameScene extends Phaser.Scene {
     this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
+    this.enemiesDealtWith = 0;
     this.visitedRooms = [this.room];
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
@@ -868,11 +876,10 @@ export class GameScene extends Phaser.Scene {
       this.roomDescription != "Insufficient power"
     ) {
       // this room has enemies and is too weak to fight them
-      this.roomDescription = Phaser.Math.RND.shuffle([
-        "Low power",
-        "Get objects before challenging " + this.enemy + "s",
-        "Insufficient power",
-      ])[0];
+      console.log(this.lowPowerDescriptions);
+      console.log(this.lowPowerIndex);
+      this.roomDescription = this.lowPowerDescriptions[this.lowPowerIndex%this.lowPowerDescriptions.length];
+      this.lowPowerIndex++;
     } else {
       this.roomDescription = "";
     }
@@ -925,7 +932,7 @@ export class GameScene extends Phaser.Scene {
       // needs a high path weight
       this.map.removeObject(object, x, y, false);
     }
-    await this.delay(1000);
+    await this.delay(2000);
     if (this.numObjects(this.enemy) == 0) {
       if (this.level == 4) {
         this.roomDescription = "You won the game!";
@@ -945,7 +952,7 @@ export class GameScene extends Phaser.Scene {
           console.log(this.level);
         }
         this.updateRoomDescription();
-        await this.delay(settings.delay * 4);
+        await this.delay(settings.delay * 8);
         this.playSound("hero");
         await this.delay(settings.delay * 2);
         this.level++;
@@ -1001,8 +1008,8 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 2);
       this.map.removeObject(object, x, y, true);
       object.destroy();
-      this.delay(settings.delay);
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      await this.delay(2000);
+      this.roomDescription = [
         "You've vaporized the ghost",
         this.numObjects(this.enemy) > 0
           ? "One " +
@@ -1013,7 +1020,7 @@ export class GameScene extends Phaser.Scene {
           : "Last " + this.enemy + " defeated",
         "You barely defeated the ghost",
         "The crowd goes wild!",
-      ])[0];
+      ][this.enemiesDealtWith];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.playSound("applause");
@@ -1022,12 +1029,12 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       this.player.destroy();
       this.inputEnabled = false;
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      this.roomDescription = [
         "Insufficient power to fight the ghost!",
         "You've been taken to the afterlife",
         "The ghost has stolen your soul",
         "The ghost has overpowered you",
-      ])[0];
+      ][0];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.roomDescription = "Game over!";
@@ -1035,6 +1042,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       document.getElementById("setup").click();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithDragon(object, x, y) {
@@ -1055,8 +1063,8 @@ export class GameScene extends Phaser.Scene {
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
-      this.delay(settings.delay);
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      await this.delay(2000);
+      this.roomDescription = [
         "Only the dragon's skeleton remains",
         this.numObjects(this.enemy) > 0
           ? "One " +
@@ -1067,7 +1075,7 @@ export class GameScene extends Phaser.Scene {
           : "Last " + this.enemy + " defeated",
         "Narrowly defeated the dragon",
         "Well fought battle!",
-      ])[0];
+      ][this.enemiesDealtWith];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       d.destroy();
@@ -1113,6 +1121,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(3000);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   correctOrientation(playerX, playerY, objectX, objectY){
@@ -1175,8 +1184,8 @@ export class GameScene extends Phaser.Scene {
       this.map.removeObject(object, x, y, true);
       object.destroy();
       arrow.destroy();
-      this.delay(settings.delay);
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      await this.delay(2000);
+      this.roomDescription = [
         "Speared Medusa in the heart",
         this.numObjects(this.enemy) > 0
           ? "One " +
@@ -1187,7 +1196,7 @@ export class GameScene extends Phaser.Scene {
           : "Last " + this.enemy + " defeated",
         "Medusa had you in her grip till the very end",
         "Score: you 1 Medusa 0",
-      ])[0];
+      ][this.enemiesDealtWith];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.playSound("bounce_powerup");
@@ -1208,6 +1217,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithTroll(object, x, y) {
@@ -1244,9 +1254,9 @@ export class GameScene extends Phaser.Scene {
           }
         },
       });
-      this.delay(settings.delay);
+      await this.delay(2000);
       this.map.removeObject(object, x, y, true);
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      this.roomDescription = [
         "Bolted the troll with dark magic",
         this.numObjects(this.enemy) > 0
           ? "One " +
@@ -1257,7 +1267,7 @@ export class GameScene extends Phaser.Scene {
           : "Last " + this.enemy + " defeated",
         "Close call, you succeeded",
         "That was impressive",
-      ])[0];
+      ][this.enemiesDealtWith];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.playSound("space_powerup");
@@ -1298,6 +1308,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithLavaMonster(object, x, y) {
@@ -1334,8 +1345,8 @@ export class GameScene extends Phaser.Scene {
           }
         },
       });
-      this.delay(settings.delay);
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      await this.delay(2000);
+      this.roomDescription = [
         "Ice beats fire",
         this.numObjects(this.enemy) > 0
           ? "One " +
@@ -1346,7 +1357,7 @@ export class GameScene extends Phaser.Scene {
           : "Last " + this.enemy + " defeated",
         "Lava is no match for ice bullets",
         "Barely made it out alive!",
-      ])[0];
+      ][this.enemiesDealtWith];
       this.updateRoomDescription();
       this.map.removeObject(object, x, y, true);
       await this.delay(settings.delay * 3);
@@ -1389,6 +1400,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(2 * settings.delay);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async levelDown() {
@@ -1399,6 +1411,7 @@ export class GameScene extends Phaser.Scene {
     await this.delay(3 * settings.delay);
     this.level--;
     this.acquiredObjects = [];
+    this.enemiesDealtWith = 0;
     this.visitedRooms = [];
     this.scene.stop();
     this.scene.restart();
