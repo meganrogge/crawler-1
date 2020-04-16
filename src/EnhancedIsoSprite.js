@@ -45,7 +45,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
   path(path, health) {
     if (!this.isCollectible) {
       if (
-        health <= -1*objectConfig.power[this.description] &&
+        health <= -1 * objectConfig.power[this.description] &&
         this.description == "dragon"
       ) {
         return [];
@@ -56,7 +56,7 @@ export default class EnhancedIsoSprite extends IsoSprite {
       ) {
         return [];
       } else if (path.length > 2) {
-        return path.slice(0, path.length-1);
+        return path.slice(0, path.length - 1);
       } else {
         // don't move because you're already 1 square away
         return [];

@@ -4,9 +4,10 @@ import { Map } from "./map.js";
 import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
-import { sortByDistance } from "./helpers.js";
 import { sortByVisited } from "./helpers.js";
 import { sortForEnemies } from "./helpers.js";
+import { sortOutChests } from "./helpers.js";
+import { sortByDistance } from "./helpers.js";
 import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
@@ -224,10 +225,10 @@ export class GameScene extends Phaser.Scene {
 
     this.lowPowerIndex = 0;
     this.lowPowerDescriptions = [
-        "Low power",
-        "Get objects before challenging " + this.enemy + "s",
-        "Insufficient power"
-      ];
+      "Low power",
+      "Get objects before challenging " + this.enemy + "s",
+      "Insufficient power",
+    ];
 
     this.objectConfig.objects[this.level].push(this.enemy);
 
@@ -246,6 +247,7 @@ export class GameScene extends Phaser.Scene {
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
     let noEnemies = true;
+    let noKey = true;
     this.map.rooms.forEach((room) => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
@@ -336,6 +338,10 @@ export class GameScene extends Phaser.Scene {
           objects.pop();
           objects.push(this.enemy);
         }
+        if (this.level >= 3 && roomIndex == numRooms -2 && noKey){
+          objects.pop();
+          objects.push("key");
+        }
         /// remove the position of the player
         let o = objects.pop();
 
@@ -351,6 +357,8 @@ export class GameScene extends Phaser.Scene {
         }
         if (o == this.enemy) {
           noEnemies = false;
+        } else if(o.description == "key"){
+          noKey = false;
         }
         let [ox, oy] = positions.pop();
         let isoObj = new EnhancedIsoSprite({
@@ -670,7 +678,6 @@ export class GameScene extends Phaser.Scene {
     // list of places yet to visit
     // I'm faking up the initial one to get things started
     // later ones will be targets as returned by getTargets
-
     const targetsToVisit = [
       {
         x: this.player.isoX,
@@ -738,14 +745,29 @@ export class GameScene extends Phaser.Scene {
       // get the local targets
       let targets = this.getTargets();
       let numTargets = targets.length;
-
+      let enemiesToRevisit = false;
+      let chestsToRevisit = false;
       if (this.power <= -1 * this.objectConfig.power[this.enemy]) {
-        let result = sortForEnemies(this.enemy, this.getTargets(), this.power);
+        let result = sortForEnemies(this.enemy, targets, this.power);
         targets = result.nonEnemies;
-        if (numTargets - targets.length == 0) {
-          roomsVisited.push(this.room);
+        if (numTargets - targets.length > 0) {
+          enemiesToRevisit = true;
         }
-      } else {
+      } 
+      if (this.level >= 3 && !this.hasAcquired("key")) {
+        // sort so that key is gotten before any chests
+        let items = sortOutChests(targets);
+        targets = items;
+        if (items.length != numTargets) {
+          // revisit this room later with the key to open the chest
+          chestsToRevisit = true;
+        }
+      }
+      console.log("remaining enemies "+enemiesToRevisit);
+      console.log("chests to revisit "+chestsToRevisit);
+      
+      if (!enemiesToRevisit && !chestsToRevisit) {
+        // no need to visit this room later
         roomsVisited.push(this.room);
       }
 
@@ -786,11 +808,12 @@ export class GameScene extends Phaser.Scene {
       if (
         this.previousExit &&
         this.target.exit.x == this.previousExit.x &&
-        this.target.exit.y == this.previousExit.y
+        this.target.exit.y == this.previousExit.y && 
+        this.roomDescription != "back"
       ) {
         // let user know this exit takes them back to where they were so they don't go in circles
         this.roomDescription = "back";
-      } else {
+      } else if(this.roomDescription != "exit "+this.getExitNumber(targets)) {
         this.roomDescription = "exit " + this.getExitNumber(targets);
       }
       this.updateRoomDescription();
@@ -876,9 +899,9 @@ export class GameScene extends Phaser.Scene {
       this.roomDescription != "Insufficient power"
     ) {
       // this room has enemies and is too weak to fight them
-      console.log(this.lowPowerDescriptions);
-      console.log(this.lowPowerIndex);
-      this.roomDescription = this.lowPowerDescriptions[this.lowPowerIndex%this.lowPowerDescriptions.length];
+      this.roomDescription = this.lowPowerDescriptions[
+        this.lowPowerIndex % this.lowPowerDescriptions.length
+      ];
       this.lowPowerIndex++;
     } else {
       this.roomDescription = "";
@@ -887,7 +910,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithObject(object, x, y) {
-    if (object.power > 0) {
+    // since the chests are only worth something once you've obtained a key
+    if (
+      object.power > 0 &&
+      object.description != "red chest" &&
+      object.description != "green chest"
+    ) {
       if (
         this.power <= -1 * this.objectConfig.power[this.enemy] &&
         object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
@@ -940,14 +968,14 @@ export class GameScene extends Phaser.Scene {
         await this.delay(settings.delay * 4);
         document.getElementById("setup").click();
       } else if (!this.levelJustStarted) {
-        if(this.level == 0){
-          this.roomDescription = "You won! Next up: the mansion of medusa";
-        } else if(this.level == 1){
-          this.roomDescription = "You won! Going on a troll hunt";
-        } else if(this.level == 2){
-          this.roomDescription = "You won! Headed to the land of lava monsters";
-        } else if(this.level == 3){
-          this.roomDescription = "You won! Finally, the dreaded dragon dungeon";
+        if (this.level == 0) {
+          this.roomDescription = "Next up: the mansion of medusa";
+        } else if (this.level == 1) {
+          this.roomDescription = "Going on a troll hunt";
+        } else if (this.level == 2) {
+          this.roomDescription = "Headed to the land of lava monsters";
+        } else if (this.level == 3) {
+          this.roomDescription = "Finally, the dreaded dragon dungeon";
         } else {
           console.log(this.level);
         }
@@ -959,7 +987,12 @@ export class GameScene extends Phaser.Scene {
         this.scene.restart();
       }
     }
-    this.power += object.power;
+    if (
+      object.description != "red chest" &&
+      object.description != "green chest"
+    ) {
+      this.power += object.power;
+    }
     this.updatePower();
     this.levelJustStarted = false;
   }
@@ -977,6 +1010,16 @@ export class GameScene extends Phaser.Scene {
         this.isoGroup,
         null
       );
+      if (
+        this.power <= -1 * this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
+        this.roomDescription != "Sufficient power"
+      ) {
+        this.roomDescription = "Sufficient power";
+        this.updateRoomDescription();
+      }
+      this.power += object.power;
+      this.updatePower();
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
       await this.delay(settings.delay);
@@ -1011,13 +1054,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(2000);
       this.roomDescription = [
         "You've vaporized the ghost",
-        this.numObjects(this.enemy) > 0
-          ? "One " +
-            this.enemy +
-            " down, " +
-            this.numObjects(this.enemy) +
-            " to go"
-          : "Last " + this.enemy + " defeated",
+        "another " + this.enemy + " down" ,
         "You barely defeated the ghost",
         "The crowd goes wild!",
       ][this.enemiesDealtWith];
@@ -1066,13 +1103,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(2000);
       this.roomDescription = [
         "Only the dragon's skeleton remains",
-        this.numObjects(this.enemy) > 0
-          ? "One " +
-            this.enemy +
-            " down, " +
-            this.numObjects(this.enemy) +
-            " to go"
-          : "Last " + this.enemy + " defeated",
+         "another " + this.enemy + " down" ,
         "Narrowly defeated the dragon",
         "Well fought battle!",
       ][this.enemiesDealtWith];
@@ -1124,21 +1155,21 @@ export class GameScene extends Phaser.Scene {
     this.enemiesDealtWith++;
   }
 
-  correctOrientation(playerX, playerY, objectX, objectY){
-    if(Math.abs(playerX-objectX) > Math.abs(playerY-objectY)){
-      if(playerX < objectX){
+  correctOrientation(playerX, playerY, objectX, objectY) {
+    if (Math.abs(playerX - objectX) > Math.abs(playerY - objectY)) {
+      if (playerX < objectX) {
         return "arrow_right";
       } else {
         return "arrow_left";
       }
-    } else if(Math.abs(playerX-objectX) < Math.abs(playerY-objectY)) {
-      if(playerY < objectY){
+    } else if (Math.abs(playerX - objectX) < Math.abs(playerY - objectY)) {
+      if (playerY < objectY) {
         return "arrow_down";
       } else {
         return "arrow_up";
       }
     } else {
-      if(playerX < objectX){
+      if (playerX < objectX) {
         return "arrow_up";
       } else {
         return "arrow_down";
@@ -1148,7 +1179,12 @@ export class GameScene extends Phaser.Scene {
 
   async interactWithMedusa(object, x, y) {
     if (this.power > 30) {
-      let oriented = this.correctOrientation(this.player.isoX, this.player.isoY, x, y);
+      let oriented = this.correctOrientation(
+        this.player.isoX,
+        this.player.isoY,
+        x,
+        y
+      );
       let arrow = this.add.isoSprite(
         this.player.isoX,
         this.player.isoY,
@@ -1157,7 +1193,10 @@ export class GameScene extends Phaser.Scene {
         this.isoGroup,
         null
       );
-      arrow.scale = oriented == "arrow_down" || oriented == "arrow_up" ? Math.sqrt(3) / arrow.height : Math.sqrt(3) / arrow.width;
+      arrow.scale =
+        oriented == "arrow_down" || oriented == "arrow_up"
+          ? Math.sqrt(3) / arrow.height
+          : Math.sqrt(3) / arrow.width;
       let tween = {
         targets: [arrow, object],
         isoX: x,
@@ -1187,13 +1226,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(2000);
       this.roomDescription = [
         "Speared Medusa in the heart",
-        this.numObjects(this.enemy) > 0
-          ? "One " +
-            this.enemy +
-            " down, " +
-            this.numObjects(this.enemy) +
-            " to go"
-          : "Last " + this.enemy + " defeated",
+         "another " + this.enemy + " down" ,
         "Medusa had you in her grip till the very end",
         "Score: you 1 Medusa 0",
       ][this.enemiesDealtWith];
@@ -1258,13 +1291,7 @@ export class GameScene extends Phaser.Scene {
       this.map.removeObject(object, x, y, true);
       this.roomDescription = [
         "Bolted the troll with dark magic",
-        this.numObjects(this.enemy) > 0
-          ? "One " +
-            this.enemy +
-            " down, " +
-            this.numObjects(this.enemy) +
-            " to go"
-          : "Last " + this.enemy + " defeated",
+       "another " + this.enemy + " down" ,
         "Close call, you succeeded",
         "That was impressive",
       ][this.enemiesDealtWith];
@@ -1348,13 +1375,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(2000);
       this.roomDescription = [
         "Ice beats fire",
-        this.numObjects(this.enemy) > 0
-          ? "One " +
-            this.enemy +
-            " down, " +
-            this.numObjects(this.enemy) +
-            " to go"
-          : "Last " + this.enemy + " defeated",
+         "another " + this.enemy + " down" ,
         "Lava is no match for ice bullets",
         "Barely made it out alive!",
       ][this.enemiesDealtWith];
@@ -1468,7 +1489,7 @@ export class GameScene extends Phaser.Scene {
         y,
       };
     });
-    if(settings.mode == "full") {
+    if (settings.mode == "full") {
       exits = sortByVisited(exits, this.visitedRooms);
     } else {
       sortByDistance(exits, px, py);

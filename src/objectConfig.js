@@ -12,24 +12,26 @@ export class ObjectConfig {
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
           ["jewel", "Chest2_closed", "coin", "key", "sapphire", "cupcake", "ogre"],
-          ["over_grass_flower1", "Chest1_closed", "key", "coin", "ogre"]
+          ["over_grass_flower1", "Chest1_closed", "key", "coin", "ogre", "ruby"]
         ];
         this.objectsNoLimit = [
           ["mushrooms", "fountain", "over_grass_flower1"],
           ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake"],
           ["jewel", "coin", "ruby", "sapphire", "cupcake"],
           ["jewel", "coin", "sapphire", "cupcake"],
-          ["over_grass_flower1", "Chest1_closed", "coin"]
+          ["over_grass_flower1", "coin", "ruby"]
         ];
         // the max number of objects w index 0 corresponding to the number of enemies
         this.frequencies = {
-           key: 1,
+           key: 2,
            ghost: 3,
            medusa: 4,
            troll: 3,
            lava_monster: 3,
            dragon: 3, 
-           ogre: 3
+           ogre: 3,
+           Chest1_closed: 4,
+           Chest2_closed: 4
         }
          this.heights = {
             Chest1_closed: 0,
@@ -107,8 +109,8 @@ export class ObjectConfig {
             
           };
           this.power = {
-            Chest1_closed: 2,
-            Chest2_closed: 3,
+            Chest1_closed: 15,
+            Chest2_closed: 15,
             fountain: 10,
             over_grass_flower1: 2,
             Rock_1: 1,
@@ -121,13 +123,13 @@ export class ObjectConfig {
             ruby: 10,
             sapphire: 10,
             dragon: -60,
-            cupcake: 30,
+            cupcake: 10,
             ogre: -5,
             ghost: -20,
             medusa: -30,
             troll: -40,
             lava_monster: -50,
-            mushrooms: 30,
+            mushrooms: 15,
             arrow: 20
           };
           this.isCollectible = {
