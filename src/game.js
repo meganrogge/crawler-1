@@ -123,6 +123,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("mushrooms", "assets/objects/mushrooms.png");
     this.load.image("arrow", "assets/objects/arrow.png");
+    this.load.image("apple", "assets/objects/apple.png");
+    this.load.image("bittenApple", "assets/objects/bittenApple.png");
     this.load.image("arrow_left", "assets/objects/arrow_left.png");
     this.load.image("arrow_right", "assets/objects/arrow_right.png");
     this.load.image("arrow_up", "assets/objects/arrow_up.png");
@@ -136,6 +138,19 @@ export class GameScene extends Phaser.Scene {
     this.load.image("Rock_2", "assets/objects/Rock_2.png");
     this.load.image("ruby", "assets/objects/ruby.png");
     this.load.image("sapphire", "assets/objects/sapphire.png");
+this.load.image("banana", "assets/objects/banana.png");
+this.load.image("lollypop", "assets/objects/lollypop.png");
+this.load.image("burger", "assets/objects/burger.png");
+this.load.image("cake", "assets/objects/cake.png");
+this.load.image("cherries", "assets/objects/cherries.png");
+this.load.image("milk", "assets/objects/milk.png");
+this.load.image("cookie", "assets/objects/cookie.png");
+this.load.image("donut", "assets/objects/donut.png");
+this.load.image("popsicle", "assets/objects/popsicle.png");
+this.load.image("sundae", "assets/objects/sundae.png");
+this.load.image("grapes", "assets/objects/grapes.png");
+this.load.image("icecream", "assets/objects/icecream.png");
+this.load.image("pizza", "assets/objects/pizza.png");
 
     this.load.audio("ghost", "assets/audio/ghost.wav");
     this.load.audio("ghost_scream", "assets/audio/ghost_scream.mp3");
@@ -143,6 +158,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
+    this.load.audio("bite", "assets/audio/bite.wav");
     this.load.audio("door_close", "assets/audio/door_close.mp3");
     this.load.audio("dragon_roar", "assets/audio/dragon_roar.mp3");
     this.load.audio("footsteps", "assets/audio/footsteps.mp3");
@@ -170,12 +186,14 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("jewel", "assets/audio/jewel.wav");
     this.load.audio("waterfall", "assets/audio/waterfall.m4a");
     this.load.audio("slurp", "assets/audio/slurp.m4a");
+     this.load.audio("lick", "assets/audio/lick.m4a");
     this.load.audio("yum", "assets/audio/yum.wav");
     this.load.audio(
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
     this.load.audio("fireball", "assets/audio/fireball.wav");
+     this.load.audio("drink", "assets/audio/drink.wav");
     this.load.audio("deep_scream", "assets/audio/deep_scream.wav");
     this.load.audio("stomping", "assets/audio/stomping.wav");
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
@@ -377,6 +395,7 @@ export class GameScene extends Phaser.Scene {
           isAnimated: this.objectConfig.isAnimated[o],
         });
         this.objectsOnLevel.push(o);
+        
         isoObj.scale = Math.sqrt(3) / isoObj.width;
 
         if (isoObj.isAnimated) {
@@ -949,6 +968,8 @@ export class GameScene extends Phaser.Scene {
       await this.interactWithTroll(object, x, y);
     } else if (object.description == "lava_monster") {
       await this.interactWithLavaMonster(object, x, y);
+    } else if(object.description == "apple"){
+      await this.interactWithApple(object, x, y);
     } else if (
       object.description == "red chest" ||
       object.description == "green chest"
@@ -1030,6 +1051,33 @@ export class GameScene extends Phaser.Scene {
       this.updateRoomDescription();
       await this.delay(settings.delay);
     }
+  }
+
+   async interactWithApple(object, x, y) {
+      this.playSound("bite");
+      this.map.removeObject(object, x, y, false);
+      let d = this.add.isoSprite(
+        x,
+        y,
+        0,
+        "bittenApple",
+        this.isoGroup,
+        null
+      );
+      if (
+        this.power <= -1 * this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
+        this.roomDescription != "Sufficient power"
+      ) {
+        this.roomDescription = "Sufficient power";
+        this.updateRoomDescription();
+      }
+      this.power += object.power;
+      this.updatePower();
+      d.scale = Math.sqrt(3) / d.width;
+      object.destroy();
+      await this.delay(settings.delay);
+      this.map.removeObject(d, x, y, false);
   }
 
   async interactWithOgre(object, x, y) {

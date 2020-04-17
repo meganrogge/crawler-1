@@ -8,24 +8,25 @@ export class ObjectConfig {
           "dragon"
         ],
         this.objects = [
-          ["mushrooms", "fountain", "over_grass_flower1", "ogre"],
-          ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
-          ["jewel", "coin", "ruby", "sapphire", "cupcake", "ogre"],
-          ["jewel", "Chest2_closed", "coin", "key", "sapphire", "cupcake", "ogre"],
-          ["over_grass_flower1", "Chest1_closed", "key", "coin", "ogre", "ruby"]
+          ["mushrooms", "fountain", "over_grass_flower1", "banana", "lollypop", "ogre"],
+          ["arrow", "ruby", "apple", "burger", "cupcake", "ogre"],
+          ["jewel", "sapphire", "cake", "cherries", "milk", "ogre"],
+          ["Chest2_closed", "key", "cookie", "donut", "popsicle", "sundae"],
+          ["Chest1_closed", "key", "grapes", "icecream", "pizza"]
         ];
         this.objectsNoLimit = [
-          ["mushrooms", "fountain", "over_grass_flower1"],
-          ["arrow", "jewel", "coin", "ruby", "sapphire", "cupcake"],
-          ["jewel", "coin", "ruby", "sapphire", "cupcake"],
-          ["jewel", "coin", "sapphire", "cupcake"],
-          ["over_grass_flower1", "coin", "ruby"]
+          ["mushrooms", "over_grass_flower1", "banana", "lollypop"],
+          ["arrow", "ruby", "apple", "burger", "cupcake"],
+          ["jewel", "sapphire", "cake", "cherries", "milk"],
+          ["cookie", "donut", "popsicle", "sundae"],
+          ["grapes", "icecream", "pizza"]
         ];
         // the max number of objects w index 0 corresponding to the number of enemies
         this.frequencies = {
            key: 2,
            ghost: 3,
            medusa: 4,
+           fountain: 4,
            troll: 3,
            lava_monster: 3,
            dragon: 3, 
@@ -46,6 +47,7 @@ export class ObjectConfig {
             key: 0,
             coin: 0,
             ruby: 0,
+            apple: 0,
             sapphire: 0,
             cupcake: 0,
             ogre : 0,
@@ -55,7 +57,20 @@ export class ObjectConfig {
             lava_monster : 1/4,
             dragon: 0,
             mushrooms: 0,
-            arrow: 0
+            arrow: 0,
+            banana: 0,
+            lollypop: 0,
+            burger: 0,
+            cake: 0,
+            cherries: 0, 
+            milk: 0, 
+            cookie: 0, 
+            donut: 0, 
+            popsicle: 0,
+            sundae: 0,
+            grapes: 0,
+            icecream: 0,
+            pizza: 0
           };
            this.audio = {
             Chest1_closed: "knock",
@@ -73,13 +88,27 @@ export class ObjectConfig {
             sapphire: "jewel",
             dragon: "dragon_roar",
             cupcake: "yum",
+            apple: "bite",
             ogre: "timpani_failure",
             ghost: "ghost",
             medusa : "timpani_failure",
             troll : "timpani_failure",
             lava_monster : "timpani_failure",
             mushrooms: "slurp",
-            arrow: "timpani_failure"
+            arrow: "timpani_failure",
+            banana: "drink",
+            lollypop: "lick",
+            burger: "bite",
+            cake: "bite",
+            cherries: "bite", 
+            milk: "drink", 
+            cookie: "bite", 
+            donut: "bite", 
+            popsicle: "lick",
+            sundae: "lick",
+            grapes: "bite",
+            icecream: "lick",
+            pizza: "bite"
           };
            this.descriptions = {
             Chest1_closed: "red chest",
@@ -93,6 +122,7 @@ export class ObjectConfig {
             jewel: "jewel",
             key: "key",
             coin: "coin",
+            apple: "apple",
             ruby: "ruby",
             sapphire: "sapphire",
             dragon: "dragon",
@@ -103,7 +133,20 @@ export class ObjectConfig {
             troll : "troll",
             lava_monster : "lava_monster",
             mushrooms: "mushrooms",
-            arrow: "arrow"
+            arrow: "arrow",
+            banana: "banana",
+            lollypop: "lollypop",
+            burger: "burger",
+            cake: "cake",
+            cherries: "cherries", 
+            milk: "milk", 
+            cookie: "cookie", 
+            donut: "donut", 
+            popsicle: "popsicle",
+            sundae: "sundae",
+            grapes: "grapes",
+            icecream: "icecream",
+            pizza: "pizza"
           };
           this.animations = {
             
@@ -111,7 +154,7 @@ export class ObjectConfig {
           this.power = {
             Chest1_closed: 15,
             Chest2_closed: 15,
-            fountain: 10,
+            fountain: 15,
             over_grass_flower1: 2,
             Rock_1: 1,
             Rock_2: 1,
@@ -122,15 +165,29 @@ export class ObjectConfig {
             coin: 15,
             ruby: 10,
             sapphire: 10,
+            apple: 10,
             dragon: -60,
-            cupcake: 10,
+            cupcake: 12,
             ogre: -5,
             ghost: -20,
             medusa: -30,
             troll: -40,
             lava_monster: -50,
             mushrooms: 15,
-            arrow: 20
+            arrow: 20,
+            banana: 10,
+            lollypop: 5,
+            burger: 15,
+            cake: 10,
+            cherries: 15, 
+            milk: 20, 
+            cookie: 20, 
+            donut: 25, 
+            popsicle: 30,
+            sundae: 30,
+            grapes: 15,
+            icecream: 30,
+            pizza: 25
           };
           this.isCollectible = {
             Chest1_closed: false,
@@ -147,6 +204,7 @@ export class ObjectConfig {
             ruby: true,
             sapphire: true,
             dragon: false,
+            apple: false,
             cupcake: true,
             ogre: false,
             ghost: false,
@@ -154,7 +212,20 @@ export class ObjectConfig {
             troll: false,
             lava_monster: false,
             mushrooms: true,
-            arrow: true
+            arrow: true,
+            banana: true,
+lollypop: true,
+burger: true,
+cake: true,
+cherries: true, 
+milk: true, 
+cookie: true, 
+donut: true, 
+popsicle: true,
+sundae: true,
+grapes: true,
+icecream: true,
+pizza: true
           }
           this.isAnimated = {
             Chest1_closed: false,
@@ -175,10 +246,24 @@ export class ObjectConfig {
             ogre: true,
             ghost: true,
             lava_monster: true,
+            apple: false,
             medusa: true,
             troll: true,
             mushrooms: false,
-            arrow: false
+            arrow: false,
+            banana: false,
+lollypop: false,
+burger: false,
+cake: false,
+cherries: false, 
+milk: false, 
+cookie: false, 
+donut: false, 
+popsicle: false,
+sundae: false,
+grapes: false,
+icecream: false,
+pizza: false
           }
     }
 }
