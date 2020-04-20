@@ -1,13 +1,4 @@
 # Dungeon crawler
 
-A simple accessible dungeon crawler game
+View game instructions and play at this link: https://meganrogge.github.io/crawler-1
 
-https://meganrogge.github.io/crawler-1
-
-```
-git clone
-npm install
-npm start
-```
-
-Art credits:
