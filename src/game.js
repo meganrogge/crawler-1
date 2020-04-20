@@ -4,8 +4,10 @@ import { Map } from "./map.js";
 import IsoPlugin from "./phaser3-plugin-isometric/IsoPlugin.js";
 import IsoSprite from "./phaser3-plugin-isometric/IsoSprite.js";
 import EnhancedIsoSprite from "./EnhancedIsoSprite.js";
-import { sortByDistance } from "./helpers.js";
+import { sortByVisited } from "./helpers.js";
 import { sortForEnemies } from "./helpers.js";
+import { sortOutChests } from "./helpers.js";
+import { sortByDistance } from "./helpers.js";
 import { ObjectConfig } from "./objectConfig.js";
 /* +x is down to right, +y is down to left */
 // @ts-ignore
@@ -14,7 +16,7 @@ export class GameScene extends Phaser.Scene {
   constructor() {
     super({
       key: "GameScene",
-      mapAdd: { isoPlugin: "iso" }
+      mapAdd: { isoPlugin: "iso" },
     });
     this.canvas = document.querySelector("canvas");
     this.power = 50;
@@ -32,7 +34,7 @@ export class GameScene extends Phaser.Scene {
     this.load.scenePlugin({
       key: "IsoPlugin",
       url: IsoPlugin,
-      sceneKey: "iso"
+      sceneKey: "iso",
     });
 
     this.load.atlas(
@@ -64,6 +66,11 @@ export class GameScene extends Phaser.Scene {
       "slime",
       "assets/animations/slime/slime.png",
       "assets/animations/slime/slime.json"
+    );
+    this.load.atlas(
+      "poisin",
+      "assets/animations/poisin/poisin.png",
+      "assets/animations/poisin/poisin.json"
     );
     this.load.atlas(
       "ghost",
@@ -100,7 +107,9 @@ export class GameScene extends Phaser.Scene {
       "assets/animations/lava_ball/lava_ball.png",
       "assets/animations/lava_ball/lava_ball.json"
     );
+
     this.load.image("Chest1_closed", "assets/objects/Chest1_closed.png");
+    this.load.image("Chest2_closed", "assets/objects/Chest2_closed.png");
     this.load.image("Chest1_opened", "assets/objects/Chest1_opened.png");
     this.load.image("Chest2_opened", "assets/objects/Chest2_opened.png");
     this.load.image("cupcake", "assets/isometric-food/cupcake_NE.png");
@@ -114,6 +123,12 @@ export class GameScene extends Phaser.Scene {
     this.load.image("lever", "assets/kenny-isometric/lever_NW.png");
     this.load.image("mushrooms", "assets/objects/mushrooms.png");
     this.load.image("arrow", "assets/objects/arrow.png");
+    this.load.image("apple", "assets/objects/apple.png");
+    this.load.image("bittenApple", "assets/objects/bittenApple.png");
+    this.load.image("arrow_left", "assets/objects/arrow_left.png");
+    this.load.image("arrow_right", "assets/objects/arrow_right.png");
+    this.load.image("arrow_up", "assets/objects/arrow_up.png");
+    this.load.image("arrow_down", "assets/objects/arrow_down.png");
     this.load.image(
       "over_grass_flower1",
       "assets/objects/over_grass_flower1.png"
@@ -123,6 +138,19 @@ export class GameScene extends Phaser.Scene {
     this.load.image("Rock_2", "assets/objects/Rock_2.png");
     this.load.image("ruby", "assets/objects/ruby.png");
     this.load.image("sapphire", "assets/objects/sapphire.png");
+this.load.image("banana", "assets/objects/banana.png");
+this.load.image("lollypop", "assets/objects/lollypop.png");
+this.load.image("burger", "assets/objects/burger.png");
+this.load.image("cake", "assets/objects/cake.png");
+this.load.image("cherries", "assets/objects/cherries.png");
+this.load.image("milk", "assets/objects/milk.png");
+this.load.image("cookie", "assets/objects/cookie.png");
+this.load.image("donut", "assets/objects/donut.png");
+this.load.image("popsicle", "assets/objects/popsicle.png");
+this.load.image("sundae", "assets/objects/sundae.png");
+this.load.image("grapes", "assets/objects/grapes.png");
+this.load.image("icecream", "assets/objects/icecream.png");
+this.load.image("pizza", "assets/objects/pizza.png");
 
     this.load.audio("ghost", "assets/audio/ghost.wav");
     this.load.audio("ghost_scream", "assets/audio/ghost_scream.mp3");
@@ -130,6 +158,7 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("cha_ching", "assets/audio/cha_ching.mp3");
     this.load.audio("click", "assets/audio/click.mp3");
     this.load.audio("ding", "assets/audio/ding.mp3");
+    this.load.audio("bite", "assets/audio/bite.wav");
     this.load.audio("door_close", "assets/audio/door_close.mp3");
     this.load.audio("dragon_roar", "assets/audio/dragon_roar.mp3");
     this.load.audio("footsteps", "assets/audio/footsteps.mp3");
@@ -153,14 +182,21 @@ export class GameScene extends Phaser.Scene {
     this.load.audio("sonic_powerup", "assets/audio/sonic_powerup.wav");
     this.load.audio("space_powerup", "assets/audio/space_powerup.wav");
     this.load.audio("timpani_failure", "assets/audio/timpani_failure.mp3");
+    this.load.audio("applause", "assets/audio/applause.wav");
+    this.load.audio("jewel", "assets/audio/jewel.wav");
+    this.load.audio("waterfall", "assets/audio/waterfall.m4a");
+    this.load.audio("slurp", "assets/audio/slurp.m4a");
+     this.load.audio("lick", "assets/audio/lick.m4a");
+    this.load.audio("yum", "assets/audio/yum.wav");
     this.load.audio(
       "troubled_powerdown",
       "assets/audio/troubled_powerdown.wav"
     );
+    this.load.audio("fireball", "assets/audio/fireball.wav");
+     this.load.audio("drink", "assets/audio/drink.wav");
     this.load.audio("deep_scream", "assets/audio/deep_scream.wav");
     this.load.audio("stomping", "assets/audio/stomping.wav");
     this.load.audio("uh_oh", "assets/audio/uh_oh.wav");
-    this.load.audio("waterfall", "assets/audio/waterfall.wav");
     this.load.audio("slime", "assets/audio/slime.wav");
     this.load.audio("open_door", "assets/audio/open_door.wav");
   }
@@ -175,13 +211,13 @@ export class GameScene extends Phaser.Scene {
         initial: {
           min_size: [4, 4],
           max_size: [6, 6],
-          max_exits: 2
+          max_exits: 2,
         },
         any: {
           min_size: [4, 4],
           max_size: [10, 10],
-          max_exits: 3
-        }
+          max_exits: 3,
+        },
       },
       max_corridor_length: 0,
       min_corridor_length: 0,
@@ -189,7 +225,7 @@ export class GameScene extends Phaser.Scene {
       symmetric_rooms: false, // exits must be in the center of a wall if true
       interconnects: 0, //extra corridors to connect rooms and make circular paths. not 100% guaranteed
       max_interconnect_length: 10,
-      room_count: 10
+      room_count: 10,
     });
     this.objectsOnLevel = [];
     this.enemy = this.objectConfig.enemies[this.level];
@@ -202,13 +238,20 @@ export class GameScene extends Phaser.Scene {
       "x+1y+0",
       "x-1y+1",
       "x+0y+1",
-      "x+1y+1"
+      "x+1y+1",
+    ];
+
+    this.lowPowerIndex = 0;
+    this.lowPowerDescriptions = [
+      "Low power",
+      "Get objects before challenging " + this.enemy + "s",
+      "Insufficient power",
     ];
 
     this.objectConfig.objects[this.level].push(this.enemy);
 
     this.RandomlyPlacedObjects = !settings.includeObstacles
-      ? this.objectConfig.objects[this.level].filter(obj => obj != "ogre")
+      ? this.objectConfig.objects[this.level].filter((obj) => obj != "ogre")
       : this.objectConfig.objects[this.level];
 
     let { x: ix, y: iy } = this.map.initial_position;
@@ -217,77 +260,86 @@ export class GameScene extends Phaser.Scene {
     this.previousExit = null;
     this.tiles = [];
     this.acquiredObjects = [];
+    this.enemiesDealtWith = 0;
+    this.visitedRooms = [this.room];
     let numRooms = this.map.rooms.length;
     let roomIndex = 0;
     let noEnemies = true;
-    this.map.rooms.forEach(room => {
+    let noKey = true;
+    this.map.rooms.forEach((room) => {
       let objects = [...Phaser.Math.RND.shuffle(this.RandomlyPlacedObjects)];
       /* I bet this can be done by looking at the height of the images */
       this.anims.create({
         key: "coin",
         frames: this.anims.generateFrameNames("coin"),
         frameRate: 2,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "dragon",
         frames: this.anims.generateFrameNames("dragon"),
         frameRate: 2,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "ogre",
         frames: this.anims.generateFrameNames("ogre"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "slime",
         frames: this.anims.generateFrameNames("slime"),
         frameRate: 4,
-        repeat: 0
+        repeat: 0,
+      });
+      this.anims.create({
+        key: "poisin",
+        frames: this.anims.generateFrameNames("poisin"),
+        frameRate: 4,
+        repeat: 0,
       });
       this.anims.create({
         key: "ghost",
         frames: this.anims.generateFrameNames("ghost"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "medusa",
         frames: this.anims.generateFrameNames("medusa"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "troll",
         frames: this.anims.generateFrameNames("troll"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "lava_monster",
         frames: this.anims.generateFrameNames("lava_monster"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "ice_bullets",
         frames: this.anims.generateFrameNames("ice_bullets"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "dark_bullets",
         frames: this.anims.generateFrameNames("dark_bullets"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.anims.create({
         key: "lava_ball",
         frames: this.anims.generateFrameNames("lava_ball"),
         frameRate: 4,
-        repeat: -1
+        repeat: -1,
       });
       this.levelJustStarted = true;
       let positions = this.generateObjectPositions(room);
@@ -304,12 +356,17 @@ export class GameScene extends Phaser.Scene {
           objects.pop();
           objects.push(this.enemy);
         }
+        if (this.level >= 3 && roomIndex == numRooms -2 && noKey){
+          objects.pop();
+          objects.push("key");
+        }
         /// remove the position of the player
         let o = objects.pop();
 
         let maxCountOfObject = this.objectConfig.frequencies[o];
         if (
-          this.objectsOnLevel.filter(obj => obj == o).length >= maxCountOfObject
+          this.objectsOnLevel.filter((obj) => obj == o).length >=
+          maxCountOfObject
         ) {
           // pick a new one
           o = Phaser.Math.RND.shuffle(
@@ -318,6 +375,8 @@ export class GameScene extends Phaser.Scene {
         }
         if (o == this.enemy) {
           noEnemies = false;
+        } else if(o.description == "key"){
+          noKey = false;
         }
         let [ox, oy] = positions.pop();
         let isoObj = new EnhancedIsoSprite({
@@ -333,9 +392,10 @@ export class GameScene extends Phaser.Scene {
           audio: this.objectConfig.audio[o],
           animation: this.objectConfig.animations[o],
           isCollectible: this.objectConfig.isCollectible[o],
-          isAnimated: this.objectConfig.isAnimated[o]
+          isAnimated: this.objectConfig.isAnimated[o],
         });
         this.objectsOnLevel.push(o);
+        
         isoObj.scale = Math.sqrt(3) / isoObj.width;
 
         if (isoObj.isAnimated) {
@@ -370,10 +430,10 @@ export class GameScene extends Phaser.Scene {
         frames: this.anims.generateFrameNames("hero", {
           prefix: direction + "_",
           end: 9,
-          zeroPad: 2
+          zeroPad: 2,
         }),
         frameRate: 20,
-        repeat: -1
+        repeat: -1,
       });
     }
     this.player = hero;
@@ -384,10 +444,10 @@ export class GameScene extends Phaser.Scene {
         prefix: "Explosions_Left-animation_",
         suffix: ".png",
         start: 0,
-        end: 15
+        end: 15,
       }),
       frameRate: 4,
-      repeat: 0
+      repeat: 0,
     });
 
     this.player.scale = (0.6 * Math.sqrt(3)) / this.player.width;
@@ -417,7 +477,7 @@ export class GameScene extends Phaser.Scene {
       alpha: { start: 1, end: 0 },
       scale: 0.05,
       rotate: { start: 0, end: 360 },
-      on: false
+      on: false,
     });
     this.particles.depth = 100;
 
@@ -431,7 +491,7 @@ export class GameScene extends Phaser.Scene {
 
     this.inputEnabled = true;
     // respond to switch input
-    this.input.keyboard.on("keydown", async e => {
+    this.input.keyboard.on("keydown", async (e) => {
       if (this.inputEnabled) {
         this.inputEnabled = false;
         if (e.key == "Enter" || e.key == "ArrowLeft") {
@@ -447,14 +507,14 @@ export class GameScene extends Phaser.Scene {
     });
 
     // respond to eye gaze user button click
-    document.getElementById("select").addEventListener("click", async e => {
+    document.getElementById("select").addEventListener("click", async (e) => {
       if (this.inputEnabled) {
         this.inputEnabled = false;
         await this.makeChoice();
         this.inputEnabled = true;
       }
     });
-    document.getElementById("next").addEventListener("click", async e => {
+    document.getElementById("next").addEventListener("click", async (e) => {
       if (this.inputEnabled) {
         this.inputEnabled = false;
         this.selectNext();
@@ -480,13 +540,13 @@ export class GameScene extends Phaser.Scene {
       "sonic_powerup",
       "bounce_powerup",
       "space_powerup",
-      "chimes_powerup"
+      "chimes_powerup",
     ];
     this.powerdownSounds = [
       "awkward",
       "timpani_failure",
       "magical_falling",
-      "troubled_powerdown"
+      "troubled_powerdown",
     ];
     this.numObjects(this.enemy);
   }
@@ -496,7 +556,7 @@ export class GameScene extends Phaser.Scene {
       this.utterThis = new SpeechSynthesisUtterance(text);
       this.utterThis.voice = this.speaker
         .getVoices()
-        .filter(voice => voice.name == settings.voice)[0];
+        .filter((voice) => voice.name == settings.voice)[0];
       this.utterThis.rate = settings.rate;
       this.utterThis.pitch = settings.pitch;
       this.speaker.speak(this.utterThis);
@@ -519,22 +579,23 @@ export class GameScene extends Phaser.Scene {
 
   numObjects(objectType) {
     let objectCount = 0;
-    this.map.rooms.forEach(r => {
-      objectCount += r.objects.filter(o => o.description == objectType).length;
+    this.map.rooms.forEach((r) => {
+      objectCount += r.objects.filter((o) => o.description == objectType)
+        .length;
     });
     console.log(objectType + " " + objectCount);
     return objectCount;
   }
 
   getRoomDescription() {
-    if (this.room.objects.length == 0) {
-      return "This room is empty!";
-    }
+    // if (this.room.objects.length == 0) {
+    //   return "This room is empty!";
+    // }
     return this.roomDescription;
   }
 
   lighting() {
-    this.isoGroup.getChildren().forEach(go => {
+    this.isoGroup.getChildren().forEach((go) => {
       const tile = /** @type{IsoSprite} */ (go);
       if (tile === this.selectionIndicator) return;
       const px = this.player.isoX;
@@ -564,7 +625,7 @@ export class GameScene extends Phaser.Scene {
     let walkingSound = this.playSound("footsteps");
     return new Promise((resolve, reject) => {
       const tweens = [];
-      const start = dir => () => this.player.play(dir, true);
+      const start = (dir) => () => this.player.play(dir, true);
       for (var i = 1; i < path.length; i++) {
         const ex = path[i].x;
         const ey = path[i].y;
@@ -580,7 +641,7 @@ export class GameScene extends Phaser.Scene {
           isoY: ey,
           duration: duration,
           onStart: start(dir),
-          onUpdate: () => this.lighting()
+          onUpdate: () => this.lighting(),
         });
       }
       this.tweens.timeline({
@@ -596,7 +657,7 @@ export class GameScene extends Phaser.Scene {
           if (settings.sound) {
             walkingSound.stop();
           }
-        }
+        },
       });
     });
   }
@@ -636,21 +697,20 @@ export class GameScene extends Phaser.Scene {
     // list of places yet to visit
     // I'm faking up the initial one to get things started
     // later ones will be targets as returned by getTargets
-
     const targetsToVisit = [
       {
         x: this.player.isoX,
         y: this.player.isoY,
         object: this.player,
-        exit: { nextroom: this.room }
-      }
+        exit: { nextroom: this.room },
+      },
     ];
     // keep track of rooms visited so we don't get into loops
     const roomsVisited = [];
     // I'm making these helps internal, they could be methods
 
     // make it look like the player is selecting the object
-    const simulateSelect = async obj => {
+    const simulateSelect = async (obj) => {
       await this.simulateClick("button#next");
       this.selectionIndicator.isoX = obj.isoX;
       this.selectionIndicator.isoY = obj.isoY;
@@ -686,7 +746,7 @@ export class GameScene extends Phaser.Scene {
           x,
           y
         );
-        const exits = this.getTargets().filter(x => "exit" in x);
+        const exits = this.getTargets().filter((x) => "exit" in x);
         // find the first exit on the path
         const exit = firstExitOnPath(exits, path);
         // if we found it go there
@@ -704,14 +764,29 @@ export class GameScene extends Phaser.Scene {
       // get the local targets
       let targets = this.getTargets();
       let numTargets = targets.length;
-
+      let enemiesToRevisit = false;
+      let chestsToRevisit = false;
       if (this.power <= -1 * this.objectConfig.power[this.enemy]) {
-        let result = sortForEnemies(this.enemy, this.getTargets(), this.power);
+        let result = sortForEnemies(this.enemy, targets, this.power);
         targets = result.nonEnemies;
-        if (numTargets - targets.length == 0) {
-          roomsVisited.push(this.room);
+        if (numTargets - targets.length > 0) {
+          enemiesToRevisit = true;
         }
-      } else {
+      } 
+      if (this.level >= 3 && !this.hasAcquired("key")) {
+        // sort so that key is gotten before any chests
+        let items = sortOutChests(targets);
+        targets = items;
+        if (items.length != numTargets) {
+          // revisit this room later with the key to open the chest
+          chestsToRevisit = true;
+        }
+      }
+      console.log("remaining enemies "+enemiesToRevisit);
+      console.log("chests to revisit "+chestsToRevisit);
+      
+      if (!enemiesToRevisit && !chestsToRevisit) {
+        // no need to visit this room later
         roomsVisited.push(this.room);
       }
 
@@ -752,11 +827,12 @@ export class GameScene extends Phaser.Scene {
       if (
         this.previousExit &&
         this.target.exit.x == this.previousExit.x &&
-        this.target.exit.y == this.previousExit.y
+        this.target.exit.y == this.previousExit.y && 
+        this.roomDescription != "back"
       ) {
         // let user know this exit takes them back to where they were so they don't go in circles
         this.roomDescription = "back";
-      } else {
+      } else if(this.roomDescription != "exit "+this.getExitNumber(targets)) {
         this.roomDescription = "exit " + this.getExitNumber(targets);
       }
       this.updateRoomDescription();
@@ -809,6 +885,7 @@ export class GameScene extends Phaser.Scene {
       await this.moveCharacter(path);
       // it is now the current room
       this.room = nextroom;
+      this.visitedRooms.push(this.room);
       // make the sound of a door to indicate room change
       //this.playSound("open_door");
       this.updateOnEnemies();
@@ -836,15 +913,15 @@ export class GameScene extends Phaser.Scene {
       items.enemies.length > 0 &&
       this.power <= -1 * this.objectConfig.power[this.enemy] &&
       this.roomDescription != "Low power" &&
-      this.roomDescription != "Get objects before challenging an enemy" &&
+      this.roomDescription !=
+        "Get objects before challenging " + this.enemy + "s" &&
       this.roomDescription != "Insufficient power"
     ) {
       // this room has enemies and is too weak to fight them
-      this.roomDescription = Phaser.Math.RND.shuffle([
-        "Low power",
-        "Get objects before challenging an enemy",
-        "Insufficient power"
-      ])[0];
+      this.roomDescription = this.lowPowerDescriptions[
+        this.lowPowerIndex % this.lowPowerDescriptions.length
+      ];
+      this.lowPowerIndex++;
     } else {
       this.roomDescription = "";
     }
@@ -852,7 +929,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   async interactWithObject(object, x, y) {
-    if (object.power > 0) {
+    // since the chests are only worth something once you've obtained a key
+    if (
+      object.power > 0 &&
+      object.description != "red chest" &&
+      object.description != "green chest"
+    ) {
       if (
         this.power <= -1 * this.objectConfig.power[this.enemy] &&
         object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
@@ -886,7 +968,12 @@ export class GameScene extends Phaser.Scene {
       await this.interactWithTroll(object, x, y);
     } else if (object.description == "lava_monster") {
       await this.interactWithLavaMonster(object, x, y);
-    } else if (object.description == "closed red chest") {
+    } else if(object.description == "apple"){
+      await this.interactWithApple(object, x, y);
+    } else if (
+      object.description == "red chest" ||
+      object.description == "green chest"
+    ) {
       await this.interactWithChest(object, x, y);
     } else {
       this.playSound(object.audio);
@@ -894,6 +981,7 @@ export class GameScene extends Phaser.Scene {
       // needs a high path weight
       this.map.removeObject(object, x, y, false);
     }
+    await this.delay(2000);
     if (this.numObjects(this.enemy) == 0) {
       if (this.level == 4) {
         this.roomDescription = "You won the game!";
@@ -901,14 +989,31 @@ export class GameScene extends Phaser.Scene {
         await this.delay(settings.delay * 4);
         document.getElementById("setup").click();
       } else if (!this.levelJustStarted) {
-        this.roomDescription = "You won! Moving on to the next level!";
+        if (this.level == 0) {
+          this.roomDescription = "Next up: the mansion of medusa";
+        } else if (this.level == 1) {
+          this.roomDescription = "Going on a troll hunt";
+        } else if (this.level == 2) {
+          this.roomDescription = "Headed to the land of lava monsters";
+        } else if (this.level == 3) {
+          this.roomDescription = "Finally, the dreaded dragon dungeon";
+        } else {
+          console.log(this.level);
+        }
         this.updateRoomDescription();
-        await this.delay(settings.delay * 4);
+        await this.delay(settings.delay * 8);
+        this.playSound("hero");
+        await this.delay(settings.delay * 2);
         this.level++;
         this.scene.restart();
       }
     }
-    this.power += object.power;
+    if (
+      object.description != "red chest" &&
+      object.description != "green chest"
+    ) {
+      this.power += object.power;
+    }
     this.updatePower();
     this.levelJustStarted = false;
   }
@@ -918,17 +1023,61 @@ export class GameScene extends Phaser.Scene {
       // unlock/unlatch sound
       this.playSound("knock");
       this.map.removeObject(object, x, y, false);
-      let d = this.add.isoSprite(x, y, 0, "Chest1_opened", this.isoGroup, null);
+      let d = this.add.isoSprite(
+        x,
+        y,
+        0,
+        object.description == "red chest" ? "Chest1_opened" : "Chest2_opened",
+        this.isoGroup,
+        null
+      );
+      if (
+        this.power <= -1 * this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
+        this.roomDescription != "Sufficient power"
+      ) {
+        this.roomDescription = "Sufficient power";
+        this.updateRoomDescription();
+      }
+      this.power += object.power;
+      this.updatePower();
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
       await this.delay(settings.delay);
-      this.map.addObject(object, x, y);
+      this.map.removeObject(d, x, y, false);
     } else {
       this.playSound("knock");
       this.roomDescription = "Find the key to open the chest";
       this.updateRoomDescription();
       await this.delay(settings.delay);
     }
+  }
+
+   async interactWithApple(object, x, y) {
+      this.playSound("bite");
+      this.map.removeObject(object, x, y, false);
+      let d = this.add.isoSprite(
+        x,
+        y,
+        0,
+        "bittenApple",
+        this.isoGroup,
+        null
+      );
+      if (
+        this.power <= -1 * this.objectConfig.power[this.enemy] &&
+        object.power + this.power > -1 * this.objectConfig.power[this.enemy] &&
+        this.roomDescription != "Sufficient power"
+      ) {
+        this.roomDescription = "Sufficient power";
+        this.updateRoomDescription();
+      }
+      this.power += object.power;
+      this.updatePower();
+      d.scale = Math.sqrt(3) / d.width;
+      object.destroy();
+      await this.delay(settings.delay);
+      this.map.removeObject(d, x, y, false);
   }
 
   async interactWithOgre(object, x, y) {
@@ -946,23 +1095,31 @@ export class GameScene extends Phaser.Scene {
   async interactWithGhost(object, x, y) {
     if (this.power > 20) {
       this.playSound("ghost_scream");
-      this.createAnimation("slime", x, y);
-      await this.delay(settings.delay * 3);
+      this.createAnimation("poisin", x, y);
+      await this.delay(settings.delay * 2);
       this.map.removeObject(object, x, y, true);
       object.destroy();
+      await this.delay(2000);
+      this.roomDescription = [
+        "You've vaporized the ghost",
+        "another " + this.enemy + " down" ,
+        "You barely defeated the ghost",
+        "The crowd goes wild!",
+      ][this.enemiesDealtWith];
+      this.updateRoomDescription();
       await this.delay(settings.delay * 3);
-      this.playSound("hero");
+      this.playSound("applause");
     } else {
       this.playSound("ghost");
       await this.delay(settings.delay * 3);
       this.player.destroy();
       this.inputEnabled = false;
-      this.roomDescription = Phaser.Math.RND.shuffle([
+      this.roomDescription = [
         "Insufficient power to fight the ghost!",
         "You've been taken to the afterlife",
         "The ghost has stolen your soul",
-        "The ghost has overpowered you"
-      ])[0];
+        "The ghost has overpowered you",
+      ][0];
       this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       this.roomDescription = "Game over!";
@@ -970,6 +1127,7 @@ export class GameScene extends Phaser.Scene {
       await this.delay(settings.delay * 3);
       document.getElementById("setup").click();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithDragon(object, x, y) {
@@ -990,9 +1148,17 @@ export class GameScene extends Phaser.Scene {
       );
       d.scale = Math.sqrt(3) / d.width;
       object.destroy();
+      await this.delay(2000);
+      this.roomDescription = [
+        "Only the dragon's skeleton remains",
+         "another " + this.enemy + " down" ,
+        "Narrowly defeated the dragon",
+        "Well fought battle!",
+      ][this.enemiesDealtWith];
+      this.updateRoomDescription();
       await this.delay(settings.delay * 3);
       d.destroy();
-      this.playSound("hero");
+      this.playSound("sonic_powerup");
     } else {
       // change description to you need a shield to fight and defeat the dragon
       // do kill animation at the player's coordinates?
@@ -1003,7 +1169,7 @@ export class GameScene extends Phaser.Scene {
         targets: [fire],
         isoX: this.player.isoX,
         isoY: this.player.isoY,
-        duration: 2000
+        duration: 2000,
       };
       //let bulletSound = this.playSound("lava");
       this.tweens.timeline({
@@ -1019,7 +1185,7 @@ export class GameScene extends Phaser.Scene {
             // this.playSound("deep_scream");
             fire.destroy();
           }
-        }
+        },
       });
       await this.delay(2000);
       this.player.destroy();
@@ -1027,32 +1193,63 @@ export class GameScene extends Phaser.Scene {
         "Insufficient power to fight the dragon!",
         "You poked the dragon without enough power",
         "You're on fire",
-        "The dragon through flames at you"
+        "The dragon threw flames at you",
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(3000);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
+  }
+
+  correctOrientation(playerX, playerY, objectX, objectY) {
+    if (Math.abs(playerX - objectX) > Math.abs(playerY - objectY)) {
+      if (playerX < objectX) {
+        return "arrow_right";
+      } else {
+        return "arrow_left";
+      }
+    } else if (Math.abs(playerX - objectX) < Math.abs(playerY - objectY)) {
+      if (playerY < objectY) {
+        return "arrow_down";
+      } else {
+        return "arrow_up";
+      }
+    } else {
+      if (playerX < objectX) {
+        return "arrow_up";
+      } else {
+        return "arrow_down";
+      }
+    }
   }
 
   async interactWithMedusa(object, x, y) {
     if (this.power > 30) {
-      // throw arrow from player's position to object's x and y
+      let oriented = this.correctOrientation(
+        this.player.isoX,
+        this.player.isoY,
+        x,
+        y
+      );
       let arrow = this.add.isoSprite(
         this.player.isoX,
         this.player.isoY,
         0,
-        "arrow",
+        oriented,
         this.isoGroup,
         null
       );
-      arrow.scale = Math.sqrt(3) / arrow.width;
+      arrow.scale =
+        oriented == "arrow_down" || oriented == "arrow_up"
+          ? Math.sqrt(3) / arrow.height
+          : Math.sqrt(3) / arrow.width;
       let tween = {
         targets: [arrow, object],
         isoX: x,
         isoY: y,
-        duration: 2000
+        duration: 2000,
       };
       let arrowSound = this.playSound("arrow");
       this.tweens.timeline({
@@ -1066,7 +1263,7 @@ export class GameScene extends Phaser.Scene {
           if (settings.sound) {
             arrowSound.stop();
           }
-        }
+        },
       });
       this.playSound("arrow");
       await this.delay(settings.delay * 3);
@@ -1074,8 +1271,16 @@ export class GameScene extends Phaser.Scene {
       this.map.removeObject(object, x, y, true);
       object.destroy();
       arrow.destroy();
+      await this.delay(2000);
+      this.roomDescription = [
+        "Speared Medusa in the heart",
+         "another " + this.enemy + " down" ,
+        "Medusa had you in her grip till the very end",
+        "Score: you 1 Medusa 0",
+      ][this.enemiesDealtWith];
+      this.updateRoomDescription();
       await this.delay(settings.delay * 3);
-      this.playSound("hero");
+      this.playSound("bounce_powerup");
     } else {
       // add a tween that manages this
       this.playSound("medusa");
@@ -1086,13 +1291,14 @@ export class GameScene extends Phaser.Scene {
         "You've turned to stone by medusa's stare",
         "Don't mess with medusa without enough power",
         "You enraged medusa and she killed you",
-        "Score: medusa one you zero"
+        "Score: medusa one - you zero",
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(settings.delay * 3);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithTroll(object, x, y) {
@@ -1110,7 +1316,7 @@ export class GameScene extends Phaser.Scene {
         targets: [bullet],
         isoX: x,
         isoY: y,
-        duration: 1000
+        duration: 1000,
       };
       let bulletSound = this.playSound("sonic_bullets");
       this.tweens.timeline({
@@ -1127,18 +1333,26 @@ export class GameScene extends Phaser.Scene {
             object.destroy();
             bullet.destroy();
           }
-        }
+        },
       });
+      await this.delay(2000);
       this.map.removeObject(object, x, y, true);
-      await this.delay(settings.delay);
-      this.playSound("hero");
+      this.roomDescription = [
+        "Bolted the troll with dark magic",
+       "another " + this.enemy + " down" ,
+        "Close call, you succeeded",
+        "That was impressive",
+      ][this.enemiesDealtWith];
+      this.updateRoomDescription();
+      await this.delay(settings.delay * 3);
+      this.playSound("space_powerup");
     } else {
       // move troll to player's position
       let tween = {
         targets: [object],
         isoX: this.player.isoX,
         isoY: this.player.isoY,
-        duration: 2000
+        duration: 2000,
       };
       let stompingSound = this.playSound("stomping");
       this.tweens.timeline({
@@ -1155,20 +1369,21 @@ export class GameScene extends Phaser.Scene {
             object.destroy();
             this.player.destroy();
           }
-        }
+        },
       });
       await this.delay(2000);
       this.roomDescription = Phaser.Math.RND.shuffle([
         "The troll has stomped on you!",
         "Without enough power, you're no match for the troll",
         "You've aggravated the troll and he's out for revenge",
-        "The troll has flattened you"
+        "The troll has flattened you",
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(settings.delay);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async interactWithLavaMonster(object, x, y) {
@@ -1186,7 +1401,7 @@ export class GameScene extends Phaser.Scene {
         targets: [bullet],
         isoX: x,
         isoY: y,
-        duration: 1000
+        duration: 1000,
       };
       let bulletSound = this.playSound("sonic_bullets");
       this.tweens.timeline({
@@ -1203,36 +1418,43 @@ export class GameScene extends Phaser.Scene {
             object.destroy();
             bullet.destroy();
           }
-        }
+        },
       });
+      await this.delay(2000);
+      this.roomDescription = [
+        "Ice beats fire",
+         "another " + this.enemy + " down" ,
+        "Lava is no match for ice bullets",
+        "Barely made it out alive!",
+      ][this.enemiesDealtWith];
+      this.updateRoomDescription();
       this.map.removeObject(object, x, y, true);
-      await this.delay(settings.delay);
-      this.playSound("hero");
+      await this.delay(settings.delay * 3);
+      this.playSound("chimes_powerup");
     } else {
-      // this.playSound("lava monster");
+      let fireSound = this.playSound("fireball");
       let lava = this.add.isoSprite(x, y, 0, "lava_ball", this.isoGroup, null);
       lava.scale = Math.sqrt(3) / lava.width;
       let tween = {
         targets: [lava],
         isoX: this.player.isoX,
         isoY: this.player.isoY,
-        duration: 2000
+        duration: 2000,
       };
-      //let bulletSound = this.playSound("lava");
       this.tweens.timeline({
         tweens: tween,
         onStart: () => {
           if (settings.sound) {
-            // bulletSound.play();
+            fireSound.play();
           }
         },
         onComplete: () => {
           if (settings.sound) {
-            //bulletSound.stop();
-            this.playSound("deep_scream");
+            fireSound.stop();
+            this.playSound("uh_oh");
             lava.destroy();
           }
-        }
+        },
       });
       await this.delay(2000);
       this.player.destroy();
@@ -1240,13 +1462,14 @@ export class GameScene extends Phaser.Scene {
         "You've melted into a puddle",
         "Without enough power, you couldn't bear the heat of the lava monster",
         "You've ignited in a burst of flames",
-        "NOOOOOOOOOOOO"
+        "NOOOOOOOOOOOO",
       ])[0];
       this.updateRoomDescription();
       this.inputEnabled = false;
       await this.delay(2 * settings.delay);
       await this.levelDown();
     }
+    this.enemiesDealtWith++;
   }
 
   async levelDown() {
@@ -1257,6 +1480,8 @@ export class GameScene extends Phaser.Scene {
     await this.delay(3 * settings.delay);
     this.level--;
     this.acquiredObjects = [];
+    this.enemiesDealtWith = 0;
+    this.visitedRooms = [];
     this.scene.stop();
     this.scene.restart();
   }
@@ -1267,10 +1492,10 @@ export class GameScene extends Phaser.Scene {
     powerBar.style.width = this.power;
     powerBar.innerHTML = "Power " + this.power;
     powerBar.setAttribute(
-        "style",
-        "width: " + (this.power > 100 ? 100 : this.power) + "%"
-      );
-    if(this.power <= -1*this.objectConfig.power[this.enemy]){
+      "style",
+      "width: " + (this.power > 100 ? 100 : this.power) + "%"
+    );
+    if (this.power <= -1 * this.objectConfig.power[this.enemy]) {
       powerBar.classList.remove("progress-bar-success");
       powerBar.classList.add("progress-bar-danger");
     } else {
@@ -1279,14 +1504,14 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  hasAcquired = item => {
+  hasAcquired = (item) => {
     return this.acquiredObjects.indexOf(item) > -1;
   };
 
   async createAnimation(type, x, y) {
     let a = this.add.isoSprite(x, y, 0, type, this.isoGroup, null);
     a.scale = Math.sqrt(3) / a.width;
-    if (type == "slime") {
+    if (type == "slime" || type == "poisin") {
       a.scale /= 100;
     }
     a.play(type, true);
@@ -1298,21 +1523,25 @@ export class GameScene extends Phaser.Scene {
     // get objects in the room
     let px = this.player.isoX;
     let py = this.player.isoY;
-    let targets = this.room.objects.map(object => {
+    let targets = this.room.objects.map((object) => {
       return { object, x: object.isoX, y: object.isoY };
     });
     sortByDistance(targets, px, py);
-    let exits = this.room.exits.map(exit => {
+    let exits = this.room.exits.map((exit) => {
       let { x, y } = exit;
-      const tiles = this.tiles.filter(t => t.isoX == x && t.isoY == y);
+      const tiles = this.tiles.filter((t) => t.isoX == x && t.isoY == y);
       return {
         object: tiles[0],
         exit,
         x,
-        y
+        y,
       };
     });
-    sortByDistance(exits, px, py);
+    if (settings.mode == "full") {
+      exits = sortByVisited(exits, this.visitedRooms);
+    } else {
+      sortByDistance(exits, px, py);
+    }
     targets = [...targets, ...exits];
     return targets;
   }

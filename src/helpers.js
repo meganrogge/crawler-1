@@ -28,8 +28,20 @@ export function sortByDistance(array, x, y) {
     );
 }
 
+export function sortByVisited(array, visitedRooms) {
+  let exitsToVisited = array.filter(exit => visitedRooms.indexOf(exit.exit.nextroom) >= 0);
+  let exitsToUnvisited = array.filter(exit => visitedRooms.indexOf(exit.exit.nextroom) < 0);
+  let arr = exitsToUnvisited.concat(exitsToVisited);
+  return arr;
+}
+
+export function sortOutChests(array){
+  let nonChests = array.filter(i => !i.object.description || (i.object.description && (i.object.description != "red chest" && i.object.description != "green chest")));
+  let chests = array.filter(i => i.objectDescription == "red chest" || i.objectDescription == "green chest");
+  return nonChests;
+}
+
 export function sortForEnemies(enemy, array, power) {
-  console.log(enemy);
   let non_enemies = array.filter(i => !i.object.description || i.object.description && (i.object.description != enemy && i.object.description != "ogre"));
   let enemies = array.filter(i => i.object.description == enemy || i.object.description == "ogre");
   let arr = non_enemies.concat(enemies);
