@@ -15,8 +15,12 @@ Phaser 3 isometric plugin <br>
 <h2> How to build and deploy it </h2>
 
 <code>
-git clone <br>
-npm install <br>
+git clone
+  </code>
+<code> 
+  npm install <br>
+  </code>
+  <code>
 npm start <br>
 </code>
 
