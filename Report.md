@@ -8,16 +8,16 @@ People who would benefit from assisted game progression.
 
 <h2> Technology used </h2>
 
-Dungeon-generator
-Easystar
-Phaser 3 isometric plugin
+Dungeon-generator <br>
+Easystar <br>
+Phaser 3 isometric plugin <br>
 
 <h2> How to build and deploy it </h2>
 
 <code>
-git clone 
-npm install 
-npm start
+git clone <br>
+npm install <br>
+npm start <br>
 </code>
 
 <h2> Problems encountered </h2>
