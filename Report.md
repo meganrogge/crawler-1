@@ -4,7 +4,7 @@ Explore and interact with objects on each of five levels in this dungeon crawler
 
 <h2> Intended Audience </h2>
 
-Those with challenges that might benefit from assisted game progression offered by the settings.
+People who would benefit from assisted game progression.
 
 <h2> Technology used </h2>
 
