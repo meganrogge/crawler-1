@@ -23,3 +23,4 @@ Phaser 3 isometric plugin <br>
 <h2> Problems encountered </h2>
 
 <h2> Future work </h2>
+Gathering feedback, adding multiplayer functionality, and creating custom options in the settings
