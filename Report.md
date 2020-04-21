@@ -8,6 +8,10 @@ People who would benefit from assisted game progression.
 
 <h2> Technology used </h2>
 
+Dungeon-generator
+Easystar
+Phaser 3 isometric plugin
+
 <h2> How to build and deploy it </h2>
 
 <code>
