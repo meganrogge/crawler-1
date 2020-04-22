@@ -7,10 +7,10 @@ Explore and interact with objects on each of five levels in this dungeon crawler
 People who would benefit from assisted game progression.
 
 <h2> Technology used </h2>
+Hacked by Gary Bishop for ES6 compatibility:
+<a href="https://github.com/domasx2/dungeon-generator">Dungeon-generator</a><br>
+<a href="https://github.com/prettymuchbryce/easystarjs">Easystar</a>
 
-Dungeon-generator <br>
-Easystar <br>
-Phaser 3 isometric plugin <br>
 
 <h2> How to build and deploy it </h2>
 
@@ -18,7 +18,7 @@ Phaser 3 isometric plugin <br>
 <br>
 <code>npm install</code>
 <br>
-<code>npm start</code>
+<code>npx browser-sync -sw</code>
 
 <h2> Problems encountered </h2>
 
