@@ -526,7 +526,7 @@ this.load.image("pizza", "assets/objects/pizza.png");
       this.autoPlay();
     }
     let backgroundMusic = this.sound.add("background_music", { loop: true });
-    if (settings.sound && settings.backgroundMusic) {
+    if (settings.backgroundMusic) {
       backgroundMusic.play();
     } else {
       backgroundMusic.stop();
@@ -552,7 +552,7 @@ this.load.image("pizza", "assets/objects/pizza.png");
   }
 
   speak(text) {
-    if (settings.sound && settings.dictation) {
+    if (settings.dictation) {
       this.utterThis = new SpeechSynthesisUtterance(text);
       this.utterThis.voice = this.speaker
         .getVoices()
