@@ -7,8 +7,8 @@ Explore and interact with objects on each of five levels in this dungeon crawler
 People who would benefit from assisted game progression.
 
 <h2> Technology used </h2>
-Hacked by Gary Bishop for ES6 compatibility:
-<a href="https://github.com/domasx2/dungeon-generator">Dungeon-generator</a><br>
+<p>Hacked by Gary Bishop for ES6 compatibility:</p>
+<a href="https://github.com/domasx2/dungeon-generator">Dungeon-generator</a>
 <a href="https://github.com/prettymuchbryce/easystarjs">Easystar</a>
 
 
