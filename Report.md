@@ -21,6 +21,7 @@ People who would benefit from assisted game progression.
 <code>npx browser-sync -sw</code>
 
 <h2> Problems encountered </h2>
+This game was initially developed for young adults with severe motor and/or intellectual disabilities. Adapting it for a target audience of blind children was challenging. Communicating what's happening in the game via dictation is necessary, but can easily be overstimulating and obnoxious. The many settings allow the user to customize the game to their preferences.
 
 <h2> Future work </h2>
-Gathering feedback, adding multiplayer functionality, and creating custom options in the settings
+Gathering feedback, adding multiplayer functionality, and creating custom options in the settings (for example, choosing if they're fighting enemies or befriending them)
